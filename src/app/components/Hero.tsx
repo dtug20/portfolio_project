@@ -93,8 +93,7 @@ export function Hero() {
               fontWeight: 300,
             }}
           >
-            Award-winning Vietnamese musician and composer blending
-            classical mastery with contemporary expression.
+            I am an musician and performer working across ambient, film scoring, and theatre. My practice explores sound as space, blending performance, installation, and multimedia works. This portfolio showcases my projects in theatre, experimental concerts, and collaborative shows.
           </p>
 
           <motion.div

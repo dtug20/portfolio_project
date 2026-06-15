@@ -73,14 +73,14 @@ export function UpcomingShows() {
             transition={{ duration: 0.45 }}
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "0.62rem",
+              fontSize: "1rem",
               letterSpacing: "0.3em",
               textTransform: "uppercase",
               color: "#444444",
-              marginBottom: "1.25rem",
+              marginBottom: "4rem",
             }}
           >
-            02 / LIVE
+            — LIVE
           </motion.p>
 
           <motion.h2
@@ -120,7 +120,7 @@ export function UpcomingShows() {
               }
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.56rem",
+                fontSize: "0.9rem",
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
                 color: "#333333",

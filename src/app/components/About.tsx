@@ -169,7 +169,7 @@ export function About() {
           >
             <div className="relative aspect-[3/4] overflow-hidden">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1762793194424-3c01d83676db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwzfHxtdXNpY2lhbiUyMHBvcnRyYWl0JTIwc3R1ZGlvJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc4MTQxNzc4NHww&ixlib=rb-4.1.0&q=80&w=1080"
+                src="https://nguyennhatminh.carrd.co/assets/images/image01.jpg?v=b"
                 alt="Nguyen Minh — musician portrait"
                 className="w-full h-full object-cover"
                 style={{ filter: "grayscale(20%)" }}

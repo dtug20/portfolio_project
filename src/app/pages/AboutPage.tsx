@@ -194,7 +194,7 @@ export function AboutPage() {
                 style={{ aspectRatio: "3/4" }}
               >
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1681070871828-4f9fb0f80c3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwyfHxhc2lhbiUyMG11c2ljaWFuJTIwY29tcG9zZXIlMjBlbGVnYW50JTIwYmxhY2slMjB3aGl0ZSUyMHBvcnRyYWl0fGVufDF8fHx8MTc4MTQzNDc5M3ww&ixlib=rb-4.1.0&q=80&w=1080"
+                  src="https://nguyennhatminh.carrd.co/assets/images/image01.jpg?v=b"
                   alt="Nguyen Minh — official portrait"
                   className="w-full h-full object-cover"
                   style={{ filter: "grayscale(100%) contrast(1.05)" }}

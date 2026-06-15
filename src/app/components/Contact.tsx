@@ -36,11 +36,11 @@ export function Contact() {
               transition={{ duration: 0.5 }}
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.65rem",
+                fontSize: "1rem",
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
                 color: "#555555",
-                marginBottom: "1.25rem",
+                marginBottom: "4rem",
               }}
             >
               — Contact

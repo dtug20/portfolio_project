@@ -2,9 +2,9 @@ import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { ArrowLeft, ArrowUpRight, Mail } from "lucide-react";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 type ShowStatus = "tickets" | "rsvp" | "sold_out" | "details";
-type ShowTab = "upcoming" | "past";
 
 interface Show {
   id: number;
@@ -204,10 +204,13 @@ export function ShowsPage() {
   const tableInView = useInView(tableRef, { once: true, margin: "-40px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-40px" });
 
-  const [activeTab, setActiveTab] = useState<ShowTab>("upcoming");
+  const allShows = [...upcomingShows, ...pastShows];
+  const uniqueTypes = ["All", ...Array.from(new Set(allShows.map(s => s.type)))];
+
+  const [activeTab, setActiveTab] = useState<string>("All");
   const navigate = useNavigate();
 
-  const displayedShows = activeTab === "upcoming" ? upcomingShows : pastShows;
+  const displayedShows = activeTab === "All" ? allShows : allShows.filter(s => s.type === activeTab);
 
   return (
     <div style={{ backgroundColor: "#0A0A0A", paddingTop: "72px" }}>
@@ -215,9 +218,32 @@ export function ShowsPage() {
       {/* ── HERO HEADER ── */}
       <section
         ref={headerRef}
-        style={{ padding: "80px 0 100px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        className="relative w-full overflow-hidden"
+        style={{ padding: "120px 0 100px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <div className="max-w-[1400px] mx-auto px-8 md:px-16">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <ImageWithFallback
+            src="https://images.unsplash.com/photo-1540039155732-6761b54cbaca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwzfHxjb25jZXJ0fGVufDB8fHx8MTcxMTU1NjE1Mnww&ixlib=rb-4.1.0&q=80&w=1080"
+            alt="Live Stage"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "center 40%" }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to right, rgba(10,10,10,0.92) 40%, rgba(10,10,10,0.3) 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to top, rgba(10,10,10,1) 0%, transparent 50%)",
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 max-w-[1400px] mx-auto px-8 md:px-16">
           {/* Back */}
           <motion.div
             initial={{ opacity: 0, x: -8 }}
@@ -256,14 +282,14 @@ export function ShowsPage() {
                 transition={{ duration: 0.45, delay: 0.05 }}
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.62rem",
+                  fontSize: "1rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
                   color: "#444444",
-                  marginBottom: "1.5rem",
+                  marginBottom: "1.8rem",
                 }}
               >
-                02 / Live
+                - Live
               </motion.p>
 
               <motion.h1
@@ -283,37 +309,6 @@ export function ShowsPage() {
                 <em style={{ fontStyle: "italic", color: "#888888" }}>Stage</em>
               </motion.h1>
             </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={headerInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{ maxWidth: 380, paddingBottom: "0.75rem" }}
-            >
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.82rem",
-                  lineHeight: 1.9,
-                  color: "#555555",
-                  fontWeight: 300,
-                  marginBottom: "1.75rem",
-                }}
-              >
-                Upcoming tour dates, keynotes, media showcases, and live
-                performances. All engagements booked personally through
-                management.
-              </p>
-
-              {/* Stat row */}
-              <div className="flex items-center gap-10">
-                <StatPill value={`${upcomingShows.length}`} label="Upcoming" />
-                <div style={{ width: 1, height: 28, backgroundColor: "rgba(255,255,255,0.08)" }} />
-                <StatPill value={`${pastShows.length}`} label="Past Shows" />
-                <div style={{ width: 1, height: 28, backgroundColor: "rgba(255,255,255,0.08)" }} />
-                <StatPill value="12" label="Countries" />
-              </div>
-            </motion.div>
           </div>
 
           <motion.div
@@ -339,46 +334,49 @@ export function ShowsPage() {
             initial={{ opacity: 0, y: 8 }}
             animate={tableInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.45 }}
-            className="flex items-center gap-0 mb-0"
+            className="flex flex-wrap items-center gap-0 mb-0"
             style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
           >
-            {(["upcoming", "past"] as ShowTab[]).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.16em",
-                  textTransform: "uppercase",
-                  color: activeTab === tab ? "#FFFFFF" : "#444444",
-                  background: "none",
-                  border: "none",
-                  borderBottom: activeTab === tab ? "1px solid #FFFFFF" : "1px solid transparent",
-                  padding: "18px 32px 17px",
-                  cursor: "pointer",
-                  marginBottom: -1,
-                  transition: "color 0.2s",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-                onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#AAAAAA"; }}
-                onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#444444"; }}
-              >
-                {tab === "upcoming" ? "Upcoming Shows" : "Past Events"}
-                <span
+            {uniqueTypes.map((tab) => {
+              const count = tab === "All" ? allShows.length : allShows.filter(s => s.type === tab).length;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
                   style={{
-                    fontSize: "0.55rem",
-                    color: activeTab === tab ? "#555555" : "#2A2A2A",
-                    letterSpacing: "0.08em",
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: activeTab === tab ? "#FFFFFF" : "#444444",
+                    background: "none",
+                    border: "none",
+                    borderBottom: activeTab === tab ? "1px solid #FFFFFF" : "1px solid transparent",
+                    padding: "18px 20px 17px",
+                    cursor: "pointer",
+                    marginBottom: -1,
                     transition: "color 0.2s",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
                   }}
+                  onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#AAAAAA"; }}
+                  onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#444444"; }}
                 >
-                  {tab === "upcoming" ? upcomingShows.length : pastShows.length}
-                </span>
-              </button>
-            ))}
+                  {tab}
+                  <span
+                    style={{
+                      fontSize: "0.55rem",
+                      color: activeTab === tab ? "#555555" : "#2A2A2A",
+                      letterSpacing: "0.08em",
+                      transition: "color 0.2s",
+                    }}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </motion.div>
 
           {/* Column headers */}
@@ -391,9 +389,9 @@ export function ShowsPage() {
           >
             {[
               { label: "Date", span: "lg:col-span-2" },
-              { label: "Event / Venue", span: "lg:col-span-4" },
-              { label: "Location", span: "lg:col-span-2" },
-              { label: "Type", span: "lg:col-span-2" },
+              { label: "Event", span: "lg:col-span-3" },
+              { label: "Location", span: "lg:col-span-4" },
+              { label: "Type", span: "lg:col-span-1" },
               { label: "", span: "lg:col-span-2" },
             ].map(({ label, span }) => (
               <span
@@ -401,7 +399,7 @@ export function ShowsPage() {
                 className={span}
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.55rem",
+                  fontSize: "0.85rem",
                   letterSpacing: "0.24em",
                   textTransform: "uppercase",
                   color: "#2E2E2E",
@@ -427,7 +425,7 @@ export function ShowsPage() {
                   show={show}
                   index={i}
                   inView={tableInView}
-                  isPast={activeTab === "past"}
+                  isPast={pastShows.some(p => p.id === show.id)}
                   isLast={i === displayedShows.length - 1}
                 />
               ))}
@@ -582,35 +580,6 @@ export function ShowsPage() {
 
 /* ── Sub-components ── */
 
-function StatPill({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <span
-        style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: "1.6rem",
-          fontWeight: 300,
-          color: "#FFFFFF",
-          lineHeight: 1,
-        }}
-      >
-        {value}
-      </span>
-      <span
-        style={{
-          fontFamily: "'Inter', sans-serif",
-          fontSize: "0.58rem",
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-          color: "#444444",
-        }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
-
 function ShowRow({
   show,
   index,
@@ -647,7 +616,7 @@ function ShowRow({
             <span
               style={{
                 fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "1.9rem",
+                fontSize: "2.4rem",
                 fontWeight: 300,
                 color: isPast ? "#3A3A3A" : hovered ? "#FFFFFF" : "#CCCCCC",
                 lineHeight: 1,
@@ -660,7 +629,7 @@ function ShowRow({
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.6rem",
+                fontSize: "0.8rem",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
                 color: isPast ? "#2A2A2A" : "#444444",
@@ -671,12 +640,12 @@ function ShowRow({
           </div>
         </div>
 
-        {/* Event + venue */}
-        <div className="lg:col-span-4">
+        {/* Event */}
+        <div className="lg:col-span-3">
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "0.88rem",
+              fontSize: "0.95rem",
               fontWeight: 500,
               color: isPast ? "#555555" : hovered ? "#FFFFFF" : "#DDDDDD",
               letterSpacing: "0.01em",
@@ -687,20 +656,23 @@ function ShowRow({
           >
             {show.event}
           </p>
+        </div>
+
+        {/* Location */}
+        <div className="lg:col-span-4">
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: "0.68rem",
-              color: isPast ? "#2E2E2E" : "#444444",
-              fontWeight: 300,
+              fontSize: "0.85rem",
+              color: isPast ? "#444444" : hovered ? "#EEEEEE" : "#BBBBBB",
+              fontWeight: 400,
+              lineHeight: 1.35,
+              marginBottom: 2,
+              transition: "color 0.3s",
             }}
           >
             {show.venue}
           </p>
-        </div>
-
-        {/* Location */}
-        <div className="lg:col-span-2">
           <p
             style={{
               fontFamily: "'Inter', sans-serif",
@@ -710,23 +682,12 @@ function ShowRow({
               lineHeight: 1.5,
             }}
           >
-            {show.city}
-          </p>
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "0.6rem",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: isPast ? "#2A2A2A" : "#3A3A3A",
-            }}
-          >
-            {show.country}
+            {show.city}, {show.country}
           </p>
         </div>
 
         {/* Type */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-1">
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
@@ -781,6 +742,17 @@ function ShowRow({
             <p
               style={{
                 fontFamily: "'Inter', sans-serif",
+                fontSize: "0.75rem",
+                color: "#999999",
+                fontWeight: 400,
+                marginBottom: 2,
+              }}
+            >
+              {show.venue}
+            </p>
+            <p
+              style={{
+                fontFamily: "'Inter', sans-serif",
                 fontSize: "0.7rem",
                 color: "#555555",
                 fontWeight: 300,
@@ -831,8 +803,8 @@ function ShowCta({
   const label = isPast
     ? "Details"
     : show.status === "rsvp"
-    ? "RSVP"
-    : "Get Tickets";
+      ? "RSVP"
+      : "Get Tickets";
 
   return (
     <button
