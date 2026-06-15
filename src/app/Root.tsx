@@ -1,0 +1,68 @@
+import { Outlet, useLocation } from "react-router";
+import { useEffect } from "react";
+import { Navigation } from "./components/Navigation";
+import { Footer } from "./components/Footer";
+
+export function Root() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const scrollTarget = (location.state as { scrollTo?: string } | null)?.scrollTo;
+
+    if (scrollTarget) {
+      // Coming from a sub-page nav click — scroll to the target section after mount
+      const attempt = (tries = 0) => {
+        const el = document.getElementById(scrollTarget);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        } else if (tries < 10) {
+          setTimeout(() => attempt(tries + 1), 80);
+        }
+      };
+      attempt();
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [location.pathname, location.key]);
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#0A0A0A",
+        minHeight: "100vh",
+        color: "#FFFFFF",
+        fontFamily: "'Inter', sans-serif",
+        overflowX: "hidden",
+      }}
+    >
+      <style>{`
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0A0A0A; }
+        ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3A3A3A; }
+        ::selection { background: rgba(255,255,255,0.15); color: #FFFFFF; }
+        input::placeholder, textarea::placeholder {
+          color: #333333;
+          font-family: 'Inter', sans-serif;
+          font-size: 0.82rem;
+        }
+        input:focus, textarea:focus {
+          outline: none;
+          border-color: rgba(255,255,255,0.25) !important;
+        }
+        button { font-family: 'Inter', sans-serif; }
+        .group:hover .group-hover\\:text-white { color: #FFFFFF !important; }
+        .group:hover .group-hover\\:opacity-100 { opacity: 1 !important; }
+        .group:hover .group-hover\\:w-full { width: 100% !important; }
+      `}</style>
+
+      <Navigation />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
