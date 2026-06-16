@@ -6,53 +6,63 @@ import { ArrowRight } from "lucide-react";
 const shows = [
   {
     id: 1,
-    date: "OCT 12, 2026",
-    month: "OCT",
-    day: "12",
-    year: "2026",
+    date: "2026-10-12",
     event: "Soul Live Project Arena",
-    type: "Solo Recital",
-    city: "Ho Chi Minh City, VN",
+    venue: "Soul Live Project Arena",
+    type: "Personal",
+    city: "Ho Chi Minh City",
+    country: "VN",
     status: "tickets" as const,
     soldOut: false,
   },
   {
     id: 2,
-    date: "NOV 04, 2026",
-    month: "NOV",
-    day: "04",
-    year: "2026",
+    date: "2026-11-04",
     event: "Hanoi International Music Festival",
-    type: "Headline Performance",
-    city: "Hanoi, VN",
+    venue: "Hanoi Opera House",
+    type: "S.E Project",
+    city: "Hanoi",
+    country: "VN",
     status: "rsvp" as const,
     soldOut: false,
   },
   {
     id: 3,
-    date: "NOV 28, 2026",
-    month: "NOV",
-    day: "28",
-    year: "2026",
+    date: "2026-11-28",
     event: "Esplanade Concert Hall",
-    type: "Chamber Ensemble",
-    city: "Singapore, SG",
+    venue: "Esplanade Concert Hall",
+    type: "Bluemato",
+    city: "Singapore",
+    country: "SG",
     status: "tickets" as const,
     soldOut: true,
   },
   {
     id: 4,
-    date: "JAN 17, 2027",
-    month: "JAN",
-    day: "17",
-    year: "2027",
+    date: "2027-01-17",
     event: "Sydney Opera House",
-    type: "World Premiere",
-    city: "Sydney, AU",
+    venue: "Sydney Opera House",
+    type: "Personal",
+    city: "Sydney",
+    country: "AU",
     status: "tickets" as const,
     soldOut: false,
   },
 ];
+
+function parseDateString(dateStr: string) {
+  if (!dateStr) return { dayOfWeek: "", day: "", month: "", year: "" };
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dateObj = new Date(y, m - 1, d);
+  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  return {
+    dayOfWeek: days[dateObj.getDay()],
+    day: String(d).padStart(2, "0"),
+    month: months[m - 1],
+    year: String(y)
+  };
+}
 
 export function UpcomingShows() {
   const ref = useRef(null);
@@ -112,18 +122,18 @@ export function UpcomingShows() {
           className="hidden md:grid grid-cols-12 gap-6 mb-0 pb-4"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
         >
-          {["Date", "Event", ""].map((col, i) => (
+          {["Date", "Event", "Location", ""].map((col, i) => (
             <span
               key={i}
               className={
-                i === 0 ? "col-span-2" : i === 1 ? "col-span-7" : "col-span-3 text-right"
+                i === 0 ? "col-span-2" : i === 1 ? "col-span-3" : i === 2 ? "col-span-4" : "col-span-3 text-right"
               }
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.9rem",
-                letterSpacing: "0.22em",
+                fontSize: "0.85rem",
+                letterSpacing: "0.24em",
                 textTransform: "uppercase",
-                color: "#333333",
+                color: "#444444",
               }}
             >
               {col}
@@ -181,6 +191,7 @@ function ShowRow({
   inView: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
+  const { dayOfWeek, day, month, year } = parseDateString(show.date);
 
   return (
     <motion.div
@@ -200,49 +211,62 @@ function ShowRow({
       <div className="hidden md:grid grid-cols-12 gap-6 items-center">
         {/* Date */}
         <div className="col-span-2">
-          <div className="flex flex-col gap-0.5">
+          <div className="flex flex-col gap-1 mt-1">
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.72rem",
-                fontWeight: 500,
-                letterSpacing: "0.12em",
-                color: hovered ? "#FFFFFF" : "#AAAAAA",
-                transition: "color 0.3s",
+                fontSize: "0.65rem",
+                letterSpacing: "0.15em",
                 textTransform: "uppercase",
+                color: "#666666",
+                marginBottom: -4,
               }}
             >
-              {show.month} {show.day}
+              {dayOfWeek}
+            </span>
+            <span
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "2.3rem",
+                fontWeight: 300,
+                color: hovered ? "#FFFFFF" : "#DDDDDD",
+                transition: "color 0.3s",
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {day}
             </span>
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.6rem",
-                letterSpacing: "0.12em",
-                color: "#3A3A3A",
+                fontSize: "0.68rem",
+                letterSpacing: "0.15em",
+                color: "#555555",
                 textTransform: "uppercase",
               }}
             >
-              {show.year}
+              {month} {year}
             </span>
           </div>
         </div>
 
         {/* Event */}
-        <div className="col-span-7 flex flex-col gap-1">
+        <div className="col-span-3 flex flex-col gap-1 pt-1">
           <div className="flex items-center gap-4">
-            <span
+            <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.95rem",
-                fontWeight: 400,
-                color: hovered ? "#FFFFFF" : "#DDDDDD",
+                fontSize: "1.05rem",
+                fontWeight: 500,
+                color: hovered ? "#FFFFFF" : "#EEEEEE",
                 transition: "color 0.3s",
                 letterSpacing: "0.01em",
+                lineHeight: 1.35,
               }}
             >
               {show.event}
-            </span>
+            </p>
             {show.soldOut && (
               <span
                 style={{
@@ -259,30 +283,51 @@ function ShowRow({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-3">
-            <span
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.65rem",
-                color: "#555555",
-                letterSpacing: "0.06em",
-              }}
-            >
-              {show.city}
-            </span>
-            <span style={{ color: "#2A2A2A", fontSize: "0.5rem" }}>·</span>
-            <span
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.6rem",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "#3A3A3A",
-              }}
-            >
-              {show.type}
-            </span>
-          </div>
+          <span
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "0.62rem",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "#444444",
+              border: "1px solid",
+              borderColor: "rgba(255,255,255,0.09)",
+              padding: "4px 10px",
+              display: "inline-block",
+              alignSelf: "flex-start",
+              marginTop: 4,
+            }}
+          >
+            {show.type}
+          </span>
+        </div>
+
+        {/* Location */}
+        <div className="col-span-4 flex flex-col pt-1">
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "0.95rem",
+              color: hovered ? "#FFFFFF" : "#CCCCCC",
+              fontWeight: 400,
+              lineHeight: 1.35,
+              marginBottom: 3,
+              transition: "color 0.3s",
+            }}
+          >
+            {show.venue}
+          </p>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "0.78rem",
+              color: "#888888",
+              fontWeight: 300,
+              lineHeight: 1.5,
+            }}
+          >
+            {show.city}, {show.country}
+          </p>
         </div>
 
         {/* CTA */}
@@ -292,42 +337,56 @@ function ShowRow({
       </div>
 
       {/* Mobile layout */}
-      <div className="flex md:hidden flex-col gap-3">
+      <div className="md:hidden py-6">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-0.5">
-            <span
+          <div className="flex flex-col gap-1 flex-1">
+            <p
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.68rem",
-                fontWeight: 500,
-                letterSpacing: "0.12em",
-                color: "#AAAAAA",
+                letterSpacing: "0.15em",
                 textTransform: "uppercase",
+                color: "#666666",
+                marginBottom: 4,
               }}
             >
-              {show.month} {show.day}, {show.year}
-            </span>
-            <span
+              {dayOfWeek}, {month} {day}, {year}
+            </p>
+            <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.92rem",
-                fontWeight: 400,
-                color: "#DDDDDD",
-                marginTop: 4,
+                fontSize: "1.05rem",
+                fontWeight: 500,
+                color: "#EEEEEE",
+                marginBottom: 2,
+                lineHeight: 1.3,
               }}
             >
               {show.event}
-            </span>
-            <span
+            </p>
+            <p
               style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: "0.65rem",
-                color: "#555555",
-                marginTop: 2,
+                fontSize: "0.95rem",
+                color: "#CCCCCC",
+                fontWeight: 400,
+                lineHeight: 1.35,
+                marginTop: 4,
+                marginBottom: 2,
               }}
             >
-              {show.city}
-            </span>
+              {show.venue}
+            </p>
+            <p
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.78rem",
+                color: "#888888",
+                fontWeight: 300,
+              }}
+            >
+              {show.city}, {show.country}
+            </p>
           </div>
           <CtaButton show={show} hovered={false} />
         </div>

@@ -5,8 +5,10 @@ import { AboutPage } from "./pages/AboutPage";
 import { MediaPage } from "./pages/MediaPage";
 import { ServicesPage } from "./pages/ServicesPage";
 import { ShowsPage } from "./pages/ShowsPage";
+import { AdminRoot } from "./admin/AdminRoot";
 
 export const router = createBrowserRouter([
+  // ── Public portfolio ─────────────────────────────────────
   {
     path: "/",
     Component: Root,
@@ -17,5 +19,10 @@ export const router = createBrowserRouter([
       { path: "services", Component: ServicesPage },
       { path: "shows", Component: ShowsPage },
     ],
+  },
+  // ── Admin CRM ────────────────────────────────────────────
+  {
+    path: "/admin/*",
+    Component: AdminRoot,
   },
 ]);
