@@ -425,10 +425,25 @@ function CtaButton({
     );
   }
 
+  const handleClick = () => {
+    // Note: UpcomingShows static data doesn't currently use ticketUrl, but adding for future compatibility
+    if ('ticketUrl' in show && show.ticketUrl) {
+      let url = show.ticketUrl as string;
+      if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+      }
+      window.open(url, "_blank");
+    } else {
+      const locationQuery = encodeURIComponent(`${show.venue}, ${show.city}, ${show.country}`);
+      window.open(`https://www.google.com/maps/search/?api=1&query=${locationQuery}`, "_blank");
+    }
+  };
+
   return (
     <button
       onMouseEnter={() => setBtnHovered(true)}
       onMouseLeave={() => setBtnHovered(false)}
+      onClick={handleClick}
       style={{
         fontFamily: "'Inter', sans-serif",
         fontSize: "0.6rem",

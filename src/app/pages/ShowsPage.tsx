@@ -261,9 +261,22 @@ function ShowCta({ show, hovered, isPast }: { show: Show; hovered: boolean; isPa
     return <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#333333", border: "1px solid #1E1E1E", padding: "9px 16px", display: "inline-block", whiteSpace: "nowrap" }}>Sold Out</span>;
   }
   const label = isPast ? "Details" : show.status === "rsvp" ? "RSVP" : "Get Tickets";
+  const handleClick = () => {
+    if (show.ticketUrl) {
+      let url = show.ticketUrl;
+      if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+      }
+      window.open(url, "_blank");
+    } else {
+      const locationQuery = encodeURIComponent(`${show.venue}, ${show.city}, ${show.country}`);
+      window.open(`https://www.google.com/maps/search/?api=1&query=${locationQuery}`, "_blank");
+    }
+  };
+
   return (
     <button onMouseEnter={() => setBtnHovered(true)} onMouseLeave={() => setBtnHovered(false)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: active ? "#0A0A0A" : "#888888", backgroundColor: active ? "#FFFFFF" : "transparent", border: "1px solid", borderColor: active ? "#FFFFFF" : "rgba(255,255,255,0.15)", padding: "9px 20px", cursor: "pointer", transition: "all 0.25s ease", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6 }}
-      onClick={() => show.ticketUrl && window.open(show.ticketUrl, "_blank")}>
+      onClick={handleClick}>
       {label}
       {!isPast && <ArrowUpRight size={10} strokeWidth={1.5} />}
     </button>
