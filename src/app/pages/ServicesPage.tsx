@@ -78,7 +78,7 @@ export function ServicesPage() {
   const navigate = useNavigate();
 
   return (
-    <div style={{ backgroundColor: "#0A0A0A", paddingTop: "72px" }}>
+    <div style={{ backgroundColor: "#11100F", paddingTop: "72px" }}>
 
       {/* ── HEADER ── */}
       <section
@@ -100,15 +100,15 @@ export function ServicesPage() {
                 fontSize: "0.65rem",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 transition: "color 0.2s",
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#AAAAAA"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#444444"; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}
             >
               <ArrowLeft size={12} strokeWidth={1.5} />
               Back to Home
@@ -126,7 +126,7 @@ export function ServicesPage() {
                   fontSize: "0.62rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
-                  color: "#444444",
+                  color: "#8A7F72",
                   marginBottom: "1.5rem",
                 }}
               >
@@ -142,13 +142,13 @@ export function ServicesPage() {
                   fontSize: "clamp(3.5rem, 9vw, 8.5rem)",
                   fontWeight: 300,
                   lineHeight: 0.95,
-                  color: "#FFFFFF",
+                  color: "#FFFDF8",
                   letterSpacing: "-0.02em",
                 }}
               >
                 Services &amp;
                 <br />
-                <em style={{ fontStyle: "italic", color: "#888888" }}>Expertise</em>
+                <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Expertise</em>
               </motion.h1>
             </div>
 
@@ -163,7 +163,7 @@ export function ServicesPage() {
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.82rem",
                   lineHeight: 1.9,
-                  color: "#555555",
+                  color: "#A09588",
                   fontWeight: 300,
                   marginBottom: "1.5rem",
                 }}
@@ -179,7 +179,7 @@ export function ServicesPage() {
                   fontSize: "0.68rem",
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  color: "#888888",
+                  color: "#CDC1B3",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -189,8 +189,8 @@ export function ServicesPage() {
                   padding: 0,
                   transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFFFF"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#888888"; }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFDF8"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#CDC1B3"; }}
               >
                 Start a conversation <ArrowUpRight size={13} strokeWidth={1.5} />
               </button>
@@ -235,7 +235,7 @@ export function ServicesPage() {
         style={{
           padding: "120px 0 140px",
           borderTop: "1px solid rgba(255,255,255,0.06)",
-          backgroundColor: "#0D0D0D",
+          backgroundColor: "#151412",
         }}
       >
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
@@ -251,7 +251,7 @@ export function ServicesPage() {
                 fontSize: "0.62rem",
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
                 marginBottom: "1.25rem",
               }}
             >
@@ -263,11 +263,11 @@ export function ServicesPage() {
                 fontSize: "clamp(2.5rem, 4.5vw, 3.8rem)",
                 fontWeight: 400,
                 lineHeight: 1.05,
-                color: "#FFFFFF",
+                color: "#FFFDF8",
               }}
             >
               The{" "}
-              <em style={{ fontStyle: "italic", color: "#888888", fontWeight: 300 }}>
+              <em style={{ fontStyle: "italic", color: "#CDC1B3", fontWeight: 300 }}>
                 Process
               </em>
             </h2>
@@ -280,14 +280,14 @@ export function ServicesPage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={processInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.55, delay: 0.1 + i * 0.08 }}
-                style={{ backgroundColor: "#0D0D0D", padding: "40px 28px" }}
+                style={{ backgroundColor: "#151412", padding: "40px 28px" }}
               >
                 <span
                   style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontSize: "2.2rem",
                     fontWeight: 300,
-                    color: "#222222",
+                    color: "#4E473F",
                     display: "block",
                     lineHeight: 1,
                     marginBottom: "1.5rem",
@@ -300,7 +300,7 @@ export function ServicesPage() {
                     fontFamily: "'Inter', sans-serif",
                     fontSize: "0.78rem",
                     fontWeight: 500,
-                    color: "#CCCCCC",
+                    color: "#E8E1D8",
                     letterSpacing: "0.04em",
                     marginBottom: "0.75rem",
                     lineHeight: 1.4,
@@ -313,7 +313,7 @@ export function ServicesPage() {
                     fontFamily: "'Inter', sans-serif",
                     fontSize: "0.72rem",
                     lineHeight: 1.75,
-                    color: "#555555",
+                    color: "#A09588",
                     fontWeight: 300,
                   }}
                 >
@@ -344,7 +344,7 @@ export function ServicesPage() {
               fontSize: "0.62rem",
               letterSpacing: "0.3em",
               textTransform: "uppercase",
-              color: "#444444",
+              color: "#8A7F72",
               marginBottom: "2rem",
             }}
           >
@@ -360,14 +360,14 @@ export function ServicesPage() {
               fontSize: "clamp(3rem, 7vw, 7rem)",
               fontWeight: 300,
               lineHeight: 1.0,
-              color: "#FFFFFF",
+              color: "#FFFDF8",
               letterSpacing: "-0.01em",
               marginBottom: "2rem",
             }}
           >
             Have a project
             <br />
-            <em style={{ fontStyle: "italic", color: "#888888" }}>in mind?</em>
+            <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>in mind?</em>
           </motion.h2>
 
           <motion.p
@@ -378,7 +378,7 @@ export function ServicesPage() {
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.85rem",
               lineHeight: 1.85,
-              color: "#555555",
+              color: "#A09588",
               fontWeight: 300,
               maxWidth: 500,
               marginBottom: "3.5rem",
@@ -402,9 +402,9 @@ export function ServicesPage() {
                 fontSize: "0.68rem",
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                color: "#0A0A0A",
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #FFFFFF",
+                color: "#11100F",
+                backgroundColor: "#FFFDF8",
+                border: "1px solid #FFFDF8",
                 padding: "16px 44px",
                 cursor: "pointer",
                 transition: "all 0.25s ease",
@@ -415,12 +415,12 @@ export function ServicesPage() {
               onMouseEnter={(e) => {
                 const btn = e.currentTarget as HTMLButtonElement;
                 btn.style.backgroundColor = "transparent";
-                btn.style.color = "#FFFFFF";
+                btn.style.color = "#FFFDF8";
               }}
               onMouseLeave={(e) => {
                 const btn = e.currentTarget as HTMLButtonElement;
-                btn.style.backgroundColor = "#FFFFFF";
-                btn.style.color = "#0A0A0A";
+                btn.style.backgroundColor = "#FFFDF8";
+                btn.style.color = "#11100F";
               }}
             >
               Get in Touch <ArrowRight size={13} strokeWidth={1.5} />
@@ -433,15 +433,15 @@ export function ServicesPage() {
                 fontSize: "0.68rem",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 transition: "color 0.2s",
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#AAAAAA"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#444444"; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}
             >
               Back to Home
             </Link>
@@ -501,7 +501,7 @@ function ServiceBlock({
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "0.9rem",
                 fontWeight: 400,
-                color: "#333333",
+                color: "#6E655B",
                 letterSpacing: "0.06em",
               }}
             >
@@ -517,7 +517,7 @@ function ServiceBlock({
                 style={{
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "0.82rem",
-                  color: "#333333",
+                  color: "#6E655B",
                 }}
               >
                 {service.number}
@@ -527,7 +527,7 @@ function ServiceBlock({
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
                   fontWeight: 400,
-                  color: hovered ? "#FFFFFF" : "#DDDDDD",
+                  color: hovered ? "#FFFDF8" : "#F0EAE3",
                   transition: "color 0.3s",
                   lineHeight: 1.1,
                 }}
@@ -540,7 +540,7 @@ function ServiceBlock({
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.78rem",
                 lineHeight: 1.65,
-                color: "#555555",
+                color: "#A09588",
                 fontWeight: 300,
                 maxWidth: 480,
               }}
@@ -559,7 +559,7 @@ function ServiceBlock({
                   fontSize: "0.55rem",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#3A3A3A",
+                  color: "#776D62",
                   border: "1px solid rgba(255,255,255,0.07)",
                   padding: "4px 9px",
                 }}
@@ -578,7 +578,7 @@ function ServiceBlock({
               <ArrowRight
                 size={18}
                 strokeWidth={1.5}
-                color={hovered ? "#FFFFFF" : "#444444"}
+                color={hovered ? "#FFFDF8" : "#8A7F72"}
                 style={{ transition: "color 0.25s" }}
               />
             </motion.div>
@@ -611,7 +611,7 @@ function ServiceBlock({
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.82rem",
                 lineHeight: 1.9,
-                color: "#777777",
+                color: "#BFB3A5",
                 fontWeight: 300,
                 marginBottom: "2rem",
               }}
@@ -629,7 +629,7 @@ function ServiceBlock({
                     fontSize: "0.58rem",
                     letterSpacing: "0.14em",
                     textTransform: "uppercase",
-                    color: "#444444",
+                    color: "#8A7F72",
                     border: "1px solid rgba(255,255,255,0.07)",
                     padding: "5px 11px",
                   }}
@@ -649,7 +649,7 @@ function ServiceBlock({
                   fontSize: "0.58rem",
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
-                  color: "#333333",
+                  color: "#6E655B",
                   marginBottom: "0.75rem",
                 }}
               >
@@ -663,12 +663,12 @@ function ServiceBlock({
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontSize: "0.72rem",
-                      color: "#666666",
+                      color: "#B0A496",
                       fontWeight: 300,
                       lineHeight: 1.5,
                     }}
                   >
-                    <span style={{ color: "#333333", marginTop: 2, flexShrink: 0 }}>—</span>
+                    <span style={{ color: "#6E655B", marginTop: 2, flexShrink: 0 }}>—</span>
                     {d}
                   </li>
                 ))}
@@ -687,7 +687,7 @@ function ServiceBlock({
                   fontSize: "0.58rem",
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
-                  color: "#333333",
+                  color: "#6E655B",
                   marginBottom: "0.5rem",
                 }}
               >
@@ -698,7 +698,7 @@ function ServiceBlock({
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "1.1rem",
                   fontWeight: 400,
-                  color: "#AAAAAA",
+                  color: "#DED4C8",
                 }}
               >
                 {service.timeline}

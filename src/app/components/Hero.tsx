@@ -11,7 +11,7 @@ export function Hero() {
     <section
       id="home"
       className="relative w-full flex items-end overflow-hidden"
-      style={{ minHeight: "100vh", backgroundColor: "#0A0A0A" }}
+      style={{ minHeight: "100vh", backgroundColor: "#11100F" }}
     >
       {/* Background Image */}
       <div className="absolute inset-0">
@@ -49,7 +49,7 @@ export function Hero() {
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.7rem",
               letterSpacing: "0.28em",
-              color: "#888888",
+              color: "#CDC1B3",
               textTransform: "uppercase",
               marginBottom: "1.5rem",
             }}
@@ -63,7 +63,7 @@ export function Hero() {
               fontSize: "clamp(3.5rem, 9vw, 8.5rem)",
               fontWeight: 300,
               lineHeight: 1.0,
-              color: "#FFFFFF",
+              color: "#FFFDF8",
               letterSpacing: "-0.01em",
               marginBottom: "2rem",
             }}
@@ -77,7 +77,7 @@ export function Hero() {
             style={{
               width: 48,
               height: 1,
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "#FFFDF8",
               opacity: 0.3,
               marginBottom: "1.75rem",
             }}
@@ -88,7 +88,7 @@ export function Hero() {
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.9rem",
               lineHeight: 1.8,
-              color: "#888888",
+              color: "#CDC1B3",
               maxWidth: "420px",
               fontWeight: 300,
             }}
@@ -109,7 +109,7 @@ export function Hero() {
                 fontSize: "0.7rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
-                color: "#FFFFFF",
+                color: "#FFFDF8",
                 border: "1px solid rgba(255,255,255,0.25)",
                 padding: "14px 32px",
                 background: "transparent",
@@ -135,14 +135,14 @@ export function Hero() {
                 fontSize: "0.7rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
-                color: "#666666",
+                color: "#B0A496",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
                 transition: "color 0.25s",
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFFFF"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#666666"; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFDF8"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#B0A496"; }}
             >
               Book a Session →
             </button>
@@ -163,14 +163,14 @@ export function Hero() {
             fontFamily: "'Inter', sans-serif",
             fontSize: "0.6rem",
             letterSpacing: "0.2em",
-            color: "#444444",
+            color: "#8A7F72",
             textTransform: "uppercase",
             writingMode: "vertical-rl",
           }}
         >
           Scroll
         </span>
-        <ChevronDown size={14} color="#444444" />
+        <ChevronDown size={14} color="#8A7F72" />
       </motion.button>
 
       {/* Right edge vertical line */}

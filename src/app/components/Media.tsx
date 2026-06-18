@@ -54,7 +54,7 @@ export function Media() {
     <section
       id="media"
       ref={ref}
-      style={{ backgroundColor: "#111111", padding: "120px 0 140px" }}
+      style={{ backgroundColor: "#171513", padding: "120px 0 140px" }}
     >
       <div className="max-w-[1400px] mx-auto px-8 md:px-16">
         {/* Header */}
@@ -69,7 +69,7 @@ export function Media() {
                 fontSize: "1rem",
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
-                color: "#555555",
+                color: "#A09588",
                 marginBottom: "4rem",
               }}
             >
@@ -84,7 +84,7 @@ export function Media() {
                 fontSize: "clamp(2.5rem, 4.5vw, 4rem)",
                 fontWeight: 400,
                 lineHeight: 1.1,
-                color: "#FFFFFF",
+                color: "#FFFDF8",
               }}
             >
               Selected Works
@@ -111,19 +111,19 @@ export function Media() {
                   background: activeFilter === tab ? "rgba(255,255,255,0.1)" : "transparent",
                   border: "1px solid",
                   borderColor: activeFilter === tab ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.08)",
-                  color: activeFilter === tab ? "#FFFFFF" : "#555555",
+                  color: activeFilter === tab ? "#FFFDF8" : "#A09588",
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
                 onMouseEnter={(e) => {
                   if (activeFilter !== tab) {
-                    (e.currentTarget as HTMLButtonElement).style.color = "#AAAAAA";
+                    (e.currentTarget as HTMLButtonElement).style.color = "#DED4C8";
                     (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.15)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeFilter !== tab) {
-                    (e.currentTarget as HTMLButtonElement).style.color = "#555555";
+                    (e.currentTarget as HTMLButtonElement).style.color = "#A09588";
                     (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.08)";
                   }
                 }}
@@ -147,7 +147,7 @@ export function Media() {
                   ? "lg:col-span-8 group relative overflow-hidden cursor-pointer"
                   : "lg:col-span-4 group relative overflow-hidden cursor-pointer"
               }
-              style={{ backgroundColor: "#111111" }}
+              style={{ backgroundColor: "#171513" }}
             >
               <MediaCard item={item} featured={item.featured} />
             </motion.div>
@@ -168,15 +168,15 @@ export function Media() {
               fontSize: "0.7rem",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "#888888",
+              color: "#CDC1B3",
               textDecoration: "none",
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
               transition: "color 0.2s",
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFFFF"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#888888"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#CDC1B3"; }}
           >
             View All Works <ArrowUpRight size={14} />
           </Link>
@@ -217,7 +217,7 @@ function MediaCard({ item, featured }: { item: (typeof mediaItems)[0]; featured:
             backdropFilter: "blur(8px)",
           }}
         >
-          <Play size={18} color="#FFFFFF" fill="#FFFFFF" style={{ marginLeft: 3 }} />
+          <Play size={18} color="#FFFDF8" fill="#FFFDF8" style={{ marginLeft: 3 }} />
         </div>
       </div>
 
@@ -229,7 +229,7 @@ function MediaCard({ item, featured }: { item: (typeof mediaItems)[0]; featured:
             fontSize: "0.6rem",
             letterSpacing: "0.2em",
             textTransform: "uppercase",
-            color: "#888888",
+            color: "#CDC1B3",
             display: "block",
             marginBottom: 6,
           }}
@@ -241,7 +241,7 @@ function MediaCard({ item, featured }: { item: (typeof mediaItems)[0]; featured:
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: featured ? "1.75rem" : "1.3rem",
             fontWeight: 400,
-            color: "#FFFFFF",
+            color: "#FFFDF8",
             lineHeight: 1.2,
             marginBottom: 4,
           }}
@@ -252,7 +252,7 @@ function MediaCard({ item, featured }: { item: (typeof mediaItems)[0]; featured:
           style={{
             fontFamily: "'Inter', sans-serif",
             fontSize: "0.7rem",
-            color: "#666666",
+            color: "#B0A496",
             letterSpacing: "0.05em",
           }}
         >

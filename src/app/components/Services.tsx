@@ -42,7 +42,7 @@ export function Services() {
     <section
       id="services"
       ref={ref}
-      style={{ backgroundColor: "#0A0A0A", padding: "120px 0 140px" }}
+      style={{ backgroundColor: "#11100F", padding: "120px 0 140px" }}
     >
       <div className="max-w-[1400px] mx-auto px-8 md:px-16">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-20">
@@ -56,7 +56,7 @@ export function Services() {
                 fontSize: "1rem",
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
-                color: "#555555",
+                color: "#A09588",
                 marginBottom: "4rem",
               }}
             >
@@ -71,7 +71,7 @@ export function Services() {
                 fontSize: "clamp(2.5rem, 4.5vw, 4rem)",
                 fontWeight: 400,
                 lineHeight: 1.1,
-                color: "#FFFFFF",
+                color: "#FFFDF8",
               }}
             >
               What I Offer
@@ -85,7 +85,7 @@ export function Services() {
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.8rem",
               lineHeight: 1.8,
-              color: "#555555",
+              color: "#A09588",
               maxWidth: 340,
               fontWeight: 300,
             }}
@@ -113,7 +113,7 @@ export function Services() {
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.7rem",
-              color: "#333333",
+              color: "#6E655B",
               letterSpacing: "0.08em",
             }}
           >
@@ -126,15 +126,15 @@ export function Services() {
               fontSize: "0.68rem",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#666666",
+              color: "#B0A496",
               textDecoration: "none",
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
               transition: "color 0.2s",
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFFFF"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#666666"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#B0A496"; }}
           >
             See more <ArrowRight size={13} strokeWidth={1.5} />
           </Link>
@@ -176,7 +176,7 @@ function ServiceRow({
             style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "0.85rem",
-              color: "#333333",
+              color: "#6E655B",
               fontWeight: 400,
             }}
           >
@@ -190,7 +190,7 @@ function ServiceRow({
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "1.75rem",
               fontWeight: 400,
-              color: hovered ? "#FFFFFF" : "#CCCCCC",
+              color: hovered ? "#FFFDF8" : "#E8E1D8",
               transition: "color 0.3s",
               lineHeight: 1.2,
             }}
@@ -205,7 +205,7 @@ function ServiceRow({
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.8rem",
               lineHeight: 1.85,
-              color: "#666666",
+              color: "#B0A496",
               fontWeight: 300,
               marginBottom: "1.25rem",
             }}
@@ -221,7 +221,7 @@ function ServiceRow({
                   fontSize: "0.58rem",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#444444",
+                  color: "#8A7F72",
                   border: "1px solid rgba(255,255,255,0.07)",
                   padding: "4px 10px",
                 }}
@@ -237,7 +237,7 @@ function ServiceRow({
             animate={{ x: hovered ? 4 : 0, opacity: hovered ? 1 : 0.25 }}
             transition={{ duration: 0.2 }}
           >
-            <ArrowRight size={18} color="#FFFFFF" />
+            <ArrowRight size={18} color="#FFFDF8" />
           </motion.div>
         </div>
       </div>

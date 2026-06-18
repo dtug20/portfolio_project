@@ -24,7 +24,7 @@ export function Contact() {
     <section
       id="contact"
       ref={ref}
-      style={{ backgroundColor: "#111111", padding: "120px 0 140px" }}
+      style={{ backgroundColor: "#171513", padding: "120px 0 140px" }}
     >
       <div className="max-w-[1400px] mx-auto px-8 md:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32">
@@ -39,7 +39,7 @@ export function Contact() {
                 fontSize: "1rem",
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
-                color: "#555555",
+                color: "#A09588",
                 marginBottom: "4rem",
               }}
             >
@@ -55,13 +55,13 @@ export function Contact() {
                 fontSize: "clamp(2.5rem, 4.5vw, 4rem)",
                 fontWeight: 400,
                 lineHeight: 1.1,
-                color: "#FFFFFF",
+                color: "#FFFDF8",
                 marginBottom: "2.5rem",
               }}
             >
               Let's Create
               <br />
-              <em style={{ fontStyle: "italic", color: "#AAAAAA" }}>Together</em>
+              <em style={{ fontStyle: "italic", color: "#DED4C8" }}>Together</em>
             </motion.h2>
 
             <motion.div
@@ -69,14 +69,14 @@ export function Contact() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div style={{ width: 40, height: 1, backgroundColor: "#333333", marginBottom: "2rem" }} />
+              <div style={{ width: 40, height: 1, backgroundColor: "#6E655B", marginBottom: "2rem" }} />
 
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.85rem",
                   lineHeight: 1.9,
-                  color: "#666666",
+                  color: "#B0A496",
                   fontWeight: 300,
                   marginBottom: "3rem",
                 }}
@@ -118,14 +118,14 @@ export function Contact() {
                     marginBottom: "1.5rem",
                   }}
                 >
-                  <Send size={20} color="#FFFFFF" />
+                  <Send size={20} color="#FFFDF8" />
                 </div>
                 <h3
                   style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontSize: "2rem",
                     fontWeight: 400,
-                    color: "#FFFFFF",
+                    color: "#FFFDF8",
                     marginBottom: "1rem",
                   }}
                 >
@@ -135,7 +135,7 @@ export function Contact() {
                   style={{
                     fontFamily: "'Inter', sans-serif",
                     fontSize: "0.8rem",
-                    color: "#666666",
+                    color: "#B0A496",
                     lineHeight: 1.8,
                   }}
                 >
@@ -162,7 +162,7 @@ export function Contact() {
                           background: formState.type === type ? "rgba(255,255,255,0.1)" : "transparent",
                           border: "1px solid",
                           borderColor: formState.type === type ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.1)",
-                          color: formState.type === type ? "#FFFFFF" : "#555555",
+                          color: formState.type === type ? "#FFFDF8" : "#A09588",
                           cursor: "pointer",
                           transition: "all 0.2s",
                         }}
@@ -214,8 +214,8 @@ export function Contact() {
                     fontSize: "0.7rem",
                     letterSpacing: "0.2em",
                     textTransform: "uppercase",
-                    color: "#0A0A0A",
-                    backgroundColor: "#FFFFFF",
+                    color: "#11100F",
+                    backgroundColor: "#FFFDF8",
                     border: "none",
                     padding: "16px 40px",
                     cursor: "pointer",
@@ -241,7 +241,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: "0.62rem",
   letterSpacing: "0.18em",
   textTransform: "uppercase",
-  color: "#555555",
+  color: "#A09588",
   display: "block",
   marginBottom: "10px",
 };
@@ -249,7 +249,7 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
   fontSize: "0.82rem",
-  color: "#CCCCCC",
+  color: "#E8E1D8",
   backgroundColor: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   padding: "14px 16px",
@@ -297,7 +297,7 @@ function ContactDetail({ label, value }: { label: string; value: string }) {
           fontSize: "0.6rem",
           letterSpacing: "0.18em",
           textTransform: "uppercase",
-          color: "#444444",
+          color: "#8A7F72",
           marginBottom: 4,
         }}
       >
@@ -307,7 +307,7 @@ function ContactDetail({ label, value }: { label: string; value: string }) {
         style={{
           fontFamily: "'Inter', sans-serif",
           fontSize: "0.82rem",
-          color: "#888888",
+          color: "#CDC1B3",
           fontWeight: 300,
         }}
       >

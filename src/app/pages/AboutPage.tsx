@@ -65,7 +65,7 @@ export function AboutPage() {
   const timelineInView = useInView(timelineRef, { once: true, margin: "-60px" });
 
   return (
-    <div style={{ backgroundColor: "#0A0A0A", paddingTop: "72px" }}>
+    <div style={{ backgroundColor: "#11100F", paddingTop: "72px" }}>
       {/* ── SECTION 1: Header ── */}
       <section
         ref={headerRef}
@@ -89,15 +89,15 @@ export function AboutPage() {
                 fontSize: "0.65rem",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 transition: "color 0.2s",
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#AAAAAA"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#444444"; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}
             >
               <ArrowLeft size={12} strokeWidth={1.5} />
               Back to Home
@@ -115,7 +115,7 @@ export function AboutPage() {
                   fontSize: "0.62rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
-                  color: "#444444",
+                  color: "#8A7F72",
                   marginBottom: "1.5rem",
                 }}
               >
@@ -131,7 +131,7 @@ export function AboutPage() {
                   fontSize: "clamp(4rem, 10vw, 9rem)",
                   fontWeight: 300,
                   lineHeight: 0.95,
-                  color: "#FFFFFF",
+                  color: "#FFFDF8",
                   letterSpacing: "-0.02em",
                 }}
               >
@@ -148,7 +148,7 @@ export function AboutPage() {
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.8rem",
                 lineHeight: 1.9,
-                color: "#555555",
+                color: "#A09588",
                 maxWidth: 360,
                 fontWeight: 300,
                 paddingBottom: "0.5rem",
@@ -219,7 +219,7 @@ export function AboutPage() {
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.62rem",
                   letterSpacing: "0.12em",
-                  color: "#3A3A3A",
+                  color: "#776D62",
                   marginTop: "1.25rem",
                   textTransform: "uppercase",
                 }}
@@ -283,7 +283,7 @@ export function AboutPage() {
                 fontSize: "0.62rem",
                 letterSpacing: "0.3em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
                 marginBottom: "1.25rem",
               }}
             >
@@ -295,11 +295,11 @@ export function AboutPage() {
                 fontSize: "clamp(2.5rem, 5vw, 4rem)",
                 fontWeight: 400,
                 lineHeight: 1.05,
-                color: "#FFFFFF",
+                color: "#FFFDF8",
               }}
             >
               Key{" "}
-              <em style={{ fontStyle: "italic", color: "#888888", fontWeight: 300 }}>
+              <em style={{ fontStyle: "italic", color: "#CDC1B3", fontWeight: 300 }}>
                 Achievements
               </em>
             </h2>
@@ -344,7 +344,7 @@ function BioParagraph({ label, text }: { label: string; text: string }) {
           fontSize: "0.58rem",
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: "#3A3A3A",
+          color: "#776D62",
           marginBottom: "0.75rem",
         }}
       >
@@ -355,7 +355,7 @@ function BioParagraph({ label, text }: { label: string; text: string }) {
           fontFamily: "'Inter', sans-serif",
           fontSize: "0.875rem",
           lineHeight: 1.9,
-          color: "#777777",
+          color: "#BFB3A5",
           fontWeight: 300,
         }}
       >
@@ -395,7 +395,7 @@ function TimelineRow({
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "1.15rem",
             fontWeight: 400,
-            color: "#3A3A3A",
+            color: "#776D62",
             letterSpacing: "0.04em",
             lineHeight: 1,
           }}
@@ -412,7 +412,7 @@ function TimelineRow({
             height: 5,
             borderRadius: "50%",
             border: "1px solid rgba(255,255,255,0.25)",
-            backgroundColor: "#0A0A0A",
+            backgroundColor: "#11100F",
             flexShrink: 0,
             marginTop: 2,
           }}
@@ -426,7 +426,7 @@ function TimelineRow({
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "1.35rem",
             fontWeight: 400,
-            color: "#DDDDDD",
+            color: "#F0EAE3",
             lineHeight: 1.2,
             marginBottom: "0.6rem",
           }}
@@ -438,7 +438,7 @@ function TimelineRow({
             fontFamily: "'Inter', sans-serif",
             fontSize: "0.78rem",
             lineHeight: 1.85,
-            color: "#555555",
+            color: "#A09588",
             fontWeight: 300,
             maxWidth: 620,
           }}

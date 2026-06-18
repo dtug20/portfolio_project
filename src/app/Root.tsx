@@ -28,9 +28,9 @@ export function Root() {
   return (
     <div
       style={{
-        backgroundColor: "#0A0A0A",
+        backgroundColor: "#11100F",
         minHeight: "100vh",
-        color: "#FFFFFF",
+        color: "#FFFDF8",
         fontFamily: "'Inter', sans-serif",
         overflowX: "hidden",
       }}
@@ -39,12 +39,12 @@ export function Root() {
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0A0A0A; }
-        ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3A3A3A; }
-        ::selection { background: rgba(255,255,255,0.15); color: #FFFFFF; }
+        ::-webkit-scrollbar-track { background: #11100F; }
+        ::-webkit-scrollbar-thumb { background: #514A42; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #776D62; }
+        ::selection { background: rgba(255,255,255,0.15); color: #FFFDF8; }
         input::placeholder, textarea::placeholder {
-          color: #333333;
+          color: #6E655B;
           font-family: 'Inter', sans-serif;
           font-size: 0.82rem;
         }
@@ -53,7 +53,7 @@ export function Root() {
           border-color: rgba(255,255,255,0.25) !important;
         }
         button { font-family: 'Inter', sans-serif; }
-        .group:hover .group-hover\\:text-white { color: #FFFFFF !important; }
+        .group:hover .group-hover\\:text-white { color: #FFFDF8 !important; }
         .group:hover .group-hover\\:opacity-100 { opacity: 1 !important; }
         .group:hover .group-hover\\:w-full { width: 100% !important; }
       `}</style>

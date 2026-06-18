@@ -19,7 +19,7 @@ export function About() {
     <section
       id="about"
       ref={ref}
-      style={{ backgroundColor: "#0A0A0A", padding: "120px 0 140px" }}
+      style={{ backgroundColor: "#11100F", padding: "120px 0 140px" }}
     >
       <div className="max-w-[1400px] mx-auto px-8 md:px-16">
         {/* Section Label */}
@@ -32,7 +32,7 @@ export function About() {
             fontSize: "1rem",
             letterSpacing: "0.3em",
             textTransform: "uppercase",
-            color: "#555555",
+            color: "#A09588",
             marginBottom: "4rem",
           }}
         >
@@ -51,13 +51,13 @@ export function About() {
                 fontSize: "clamp(2.8rem, 5vw, 4.5rem)",
                 fontWeight: 400,
                 lineHeight: 1.1,
-                color: "#FFFFFF",
+                color: "#FFFDF8",
                 marginBottom: "2.5rem",
               }}
             >
               A Voice Between
               <br />
-              <em style={{ fontStyle: "italic", color: "#AAAAAA" }}>Two Worlds</em>
+              <em style={{ fontStyle: "italic", color: "#DED4C8" }}>Two Worlds</em>
             </motion.h2>
 
             <motion.div
@@ -65,14 +65,14 @@ export function About() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div style={{ width: 40, height: 1, backgroundColor: "#444444", marginBottom: "2rem" }} />
+              <div style={{ width: 40, height: 1, backgroundColor: "#8A7F72", marginBottom: "2rem" }} />
 
               <p
                 style={{
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.875rem",
                   lineHeight: 1.9,
-                  color: "#777777",
+                  color: "#BFB3A5",
                   fontWeight: 300,
                   marginBottom: "1.5rem",
                 }}
@@ -88,7 +88,7 @@ export function About() {
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.875rem",
                   lineHeight: 1.9,
-                  color: "#666666",
+                  color: "#B0A496",
                   fontWeight: 300,
                 }}
               >
@@ -108,12 +108,12 @@ export function About() {
                   fontSize: "0.68rem",
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  color: "#666666",
+                  color: "#B0A496",
                   textDecoration: "none",
                   transition: "color 0.25s",
                 }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFFFF"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#666666"; }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#B0A496"; }}
               >
                 See more <ArrowRight size={13} strokeWidth={1.5} />
               </Link>
@@ -131,14 +131,14 @@ export function About() {
                 <div
                   key={s.label}
                   className="flex flex-col gap-1 p-7"
-                  style={{ backgroundColor: "#0A0A0A" }}
+                  style={{ backgroundColor: "#11100F" }}
                 >
                   <span
                     style={{
                       fontFamily: "'Cormorant Garamond', serif",
                       fontSize: "2.4rem",
                       fontWeight: 300,
-                      color: "#FFFFFF",
+                      color: "#FFFDF8",
                       lineHeight: 1,
                     }}
                   >
@@ -150,7 +150,7 @@ export function About() {
                       fontSize: "0.65rem",
                       letterSpacing: "0.15em",
                       textTransform: "uppercase",
-                      color: "#555555",
+                      color: "#A09588",
                     }}
                   >
                     {s.label}
@@ -209,7 +209,7 @@ export function About() {
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.65rem",
                   letterSpacing: "0.15em",
-                  color: "#555555",
+                  color: "#A09588",
                   textTransform: "uppercase",
                   marginTop: 8,
                 }}

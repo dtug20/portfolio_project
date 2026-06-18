@@ -72,7 +72,7 @@ export function UpcomingShows() {
     <section
       id="shows"
       ref={ref}
-      style={{ backgroundColor: "#0A0A0A", padding: "120px 0 140px" }}
+      style={{ backgroundColor: "#11100F", padding: "120px 0 140px" }}
     >
       <div className="max-w-[1400px] mx-auto px-8 md:px-16">
         {/* Section Header */}
@@ -86,7 +86,7 @@ export function UpcomingShows() {
               fontSize: "1rem",
               letterSpacing: "0.3em",
               textTransform: "uppercase",
-              color: "#444444",
+              color: "#8A7F72",
               marginBottom: "4rem",
             }}
           >
@@ -102,13 +102,13 @@ export function UpcomingShows() {
               fontSize: "clamp(2.8rem, 5vw, 4.5rem)",
               fontWeight: 400,
               lineHeight: 1.05,
-              color: "#FFFFFF",
+              color: "#FFFDF8",
               letterSpacing: "-0.01em",
             }}
           >
             Upcoming
             <br />
-            <em style={{ fontStyle: "italic", color: "#AAAAAA", fontWeight: 300 }}>
+            <em style={{ fontStyle: "italic", color: "#DED4C8", fontWeight: 300 }}>
               Appearances
             </em>
           </motion.h2>
@@ -126,14 +126,14 @@ export function UpcomingShows() {
             <span
               key={i}
               className={
-                i === 0 ? "col-span-2" : i === 1 ? "col-span-3" : i === 2 ? "col-span-4" : "col-span-3 text-right"
+                i === 0 ? "col-span-2 text-center" : i === 1 ? "col-span-3" : i === 2 ? "col-span-4" : "col-span-3 text-right"
               }
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.85rem",
                 letterSpacing: "0.24em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
               }}
             >
               {col}
@@ -162,15 +162,15 @@ export function UpcomingShows() {
               fontSize: "0.68rem",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#666666",
+              color: "#B0A496",
               textDecoration: "none",
               display: "inline-flex",
               alignItems: "center",
               gap: 10,
               transition: "color 0.25s",
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFFFF"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#666666"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#B0A496"; }}
           >
             View All Dates
             <ArrowRight size={13} strokeWidth={1.5} />
@@ -210,15 +210,15 @@ function ShowRow({
       {/* Desktop layout */}
       <div className="hidden md:grid grid-cols-12 gap-6 items-center">
         {/* Date */}
-        <div className="col-span-2">
-          <div className="flex flex-col gap-1 mt-1">
+        <div className="col-span-2 flex justify-center">
+          <div className="flex flex-col items-center gap-1 mt-1 text-center">
             <span
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.65rem",
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: "#666666",
+                color: "#B0A496",
                 marginBottom: -4,
               }}
             >
@@ -229,7 +229,7 @@ function ShowRow({
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "2.3rem",
                 fontWeight: 300,
-                color: hovered ? "#FFFFFF" : "#DDDDDD",
+                color: hovered ? "#FFFDF8" : "#F0EAE3",
                 transition: "color 0.3s",
                 lineHeight: 1,
                 letterSpacing: "-0.02em",
@@ -242,7 +242,7 @@ function ShowRow({
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.68rem",
                 letterSpacing: "0.15em",
-                color: "#555555",
+                color: "#A09588",
                 textTransform: "uppercase",
               }}
             >
@@ -259,7 +259,7 @@ function ShowRow({
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "1.05rem",
                 fontWeight: 500,
-                color: hovered ? "#FFFFFF" : "#EEEEEE",
+                color: hovered ? "#FFFDF8" : "#F7F2EC",
                 transition: "color 0.3s",
                 letterSpacing: "0.01em",
                 lineHeight: 1.35,
@@ -274,8 +274,8 @@ function ShowRow({
                   fontSize: "0.5rem",
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  color: "#555555",
-                  border: "1px solid #2A2A2A",
+                  color: "#A09588",
+                  border: "1px solid #514A42",
                   padding: "2px 7px",
                 }}
               >
@@ -289,7 +289,7 @@ function ShowRow({
               fontSize: "0.62rem",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "#444444",
+              color: "#8A7F72",
               border: "1px solid",
               borderColor: "rgba(255,255,255,0.09)",
               padding: "4px 10px",
@@ -308,7 +308,7 @@ function ShowRow({
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.95rem",
-              color: hovered ? "#FFFFFF" : "#CCCCCC",
+              color: hovered ? "#FFFDF8" : "#E8E1D8",
               fontWeight: 400,
               lineHeight: 1.35,
               marginBottom: 3,
@@ -321,7 +321,7 @@ function ShowRow({
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.78rem",
-              color: "#888888",
+              color: "#CDC1B3",
               fontWeight: 300,
               lineHeight: 1.5,
             }}
@@ -346,7 +346,7 @@ function ShowRow({
                 fontSize: "0.68rem",
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: "#666666",
+                color: "#B0A496",
                 marginBottom: 4,
               }}
             >
@@ -357,7 +357,7 @@ function ShowRow({
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "1.05rem",
                 fontWeight: 500,
-                color: "#EEEEEE",
+                color: "#F7F2EC",
                 marginBottom: 2,
                 lineHeight: 1.3,
               }}
@@ -368,7 +368,7 @@ function ShowRow({
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.95rem",
-                color: "#CCCCCC",
+                color: "#E8E1D8",
                 fontWeight: 400,
                 lineHeight: 1.35,
                 marginTop: 4,
@@ -381,7 +381,7 @@ function ShowRow({
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.78rem",
-                color: "#888888",
+                color: "#CDC1B3",
                 fontWeight: 300,
               }}
             >
@@ -413,9 +413,9 @@ function CtaButton({
           fontSize: "0.6rem",
           letterSpacing: "0.2em",
           textTransform: "uppercase",
-          color: "#333333",
+          color: "#6E655B",
           padding: "10px 20px",
-          border: "1px solid #1E1E1E",
+          border: "1px solid #342F2A",
           display: "inline-block",
           whiteSpace: "nowrap",
         }}
@@ -449,10 +449,10 @@ function CtaButton({
         fontSize: "0.6rem",
         letterSpacing: "0.2em",
         textTransform: "uppercase",
-        color: active ? "#0A0A0A" : "#AAAAAA",
-        backgroundColor: active ? "#FFFFFF" : "transparent",
+        color: active ? "#11100F" : "#DED4C8",
+        backgroundColor: active ? "#FFFDF8" : "transparent",
         border: "1px solid",
-        borderColor: active ? "#FFFFFF" : "rgba(255,255,255,0.18)",
+        borderColor: active ? "#FFFDF8" : "rgba(255,255,255,0.18)",
         padding: "10px 24px",
         cursor: "pointer",
         transition: "all 0.25s ease",

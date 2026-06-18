@@ -63,7 +63,7 @@ export function ShowsPage() {
   const displayedShows = activeTab === "All" ? allShows : allShows.filter(s => s.type === activeTab);
 
   return (
-    <div style={{ backgroundColor: "#0A0A0A", paddingTop: "72px" }}>
+    <div style={{ backgroundColor: "#11100F", paddingTop: "72px" }}>
 
       {/* ── HERO HEADER ── */}
       <section
@@ -95,20 +95,20 @@ export function ShowsPage() {
 
         <div className="relative z-10 max-w-[1400px] mx-auto px-8 md:px-16">
           <motion.div initial={{ opacity: 0, x: -8 }} animate={headerInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.4 }} className="mb-14">
-            <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#444444", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, transition: "color 0.2s" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#AAAAAA"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#444444"; }}>
+            <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7F72", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, transition: "color 0.2s" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}>
               <ArrowLeft size={12} strokeWidth={1.5} /> Back to Home
             </Link>
           </motion.div>
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
             <div>
-              <motion.p initial={{ opacity: 0, y: 10 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: 0.05 }} style={{ fontFamily: "'Inter', sans-serif", fontSize: "1rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#444444", marginBottom: "1.8rem" }}>
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: 0.05 }} style={{ fontFamily: "'Inter', sans-serif", fontSize: "1rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#8A7F72", marginBottom: "1.8rem" }}>
                 - Live
               </motion.p>
-              <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 9.5rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFFFF", letterSpacing: "-0.025em" }}>
-                On <em style={{ fontStyle: "italic", color: "#888888" }}>Stage</em>
+              <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 9.5rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFDF8", letterSpacing: "-0.025em" }}>
+                On <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Stage</em>
               </motion.h1>
             </div>
           </div>
@@ -123,11 +123,11 @@ export function ShowsPage() {
           {/* Tab row */}
           <motion.div initial={{ opacity: 0, y: 8 }} animate={tableInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45 }} className="flex flex-wrap items-center gap-0 mb-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             {["All", ...Array.from(new Set(allShows.map(s => s.type)))].map((tab) => (
-              <button key={tab} onClick={() => setActiveTab(tab)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.7rem", letterSpacing: "0.16em", textTransform: "uppercase", color: activeTab === tab ? "#FFFFFF" : "#444444", background: "none", border: "none", borderBottom: activeTab === tab ? "1px solid #FFFFFF" : "1px solid transparent", padding: "18px 32px 17px", cursor: "pointer", marginBottom: -1, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 10 }}
-                onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#AAAAAA"; }}
-                onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#444444"; }}>
+              <button key={tab} onClick={() => setActiveTab(tab)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.7rem", letterSpacing: "0.16em", textTransform: "uppercase", color: activeTab === tab ? "#FFFDF8" : "#8A7F72", background: "none", border: "none", borderBottom: activeTab === tab ? "1px solid #FFFDF8" : "1px solid transparent", padding: "18px 32px 17px", cursor: "pointer", marginBottom: -1, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 10 }}
+                onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#DED4C8"; }}
+                onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#8A7F72"; }}>
                 {tab}
-                <span style={{ fontSize: "0.55rem", color: activeTab === tab ? "#555555" : "#2A2A2A", letterSpacing: "0.08em", transition: "color 0.2s" }}>
+                <span style={{ fontSize: "0.55rem", color: activeTab === tab ? "#A09588" : "#514A42", letterSpacing: "0.08em", transition: "color 0.2s" }}>
                   {tab === "All" ? allShows.length : allShows.filter(s => s.type === tab).length}
                 </span>
               </button>
@@ -136,8 +136,8 @@ export function ShowsPage() {
 
           {/* Column headers */}
           <motion.div initial={{ opacity: 0 }} animate={tableInView ? { opacity: 1 } : {}} transition={{ duration: 0.4, delay: 0.15 }} className="hidden lg:grid lg:grid-cols-12 gap-6 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-            {[{ label: "Date", span: "lg:col-span-2" }, { label: "Event", span: "lg:col-span-3" }, { label: "Location", span: "lg:col-span-4" }, { label: "Type", span: "lg:col-span-1" }, { label: "", span: "lg:col-span-2" }].map(({ label, span }) => (
-              <span key={label} className={span} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", letterSpacing: "0.24em", textTransform: "uppercase", color: "#444444" }}>{label}</span>
+            {[{ label: "Date", span: "lg:col-span-2 text-center" }, { label: "Event", span: "lg:col-span-3" }, { label: "Location", span: "lg:col-span-4" }, { label: "Type", span: "lg:col-span-1" }, { label: "", span: "lg:col-span-2" }].map(({ label, span }) => (
+              <span key={label} className={span} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", letterSpacing: "0.24em", textTransform: "uppercase", color: "#8A7F72" }}>{label}</span>
             ))}
           </motion.div>
 
@@ -157,15 +157,15 @@ export function ShowsPage() {
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={ctaInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#444444", marginBottom: "1.5rem" }}>— Booking</p>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.5rem, 4.5vw, 4.2rem)", fontWeight: 400, lineHeight: 1.08, color: "#FFFFFF", marginBottom: "2rem" }}>
-                For booking inquiries<br />and live <em style={{ fontStyle: "italic", color: "#888888", fontWeight: 300 }}>scheduling</em>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#8A7F72", marginBottom: "1.5rem" }}>— Booking</p>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.5rem, 4.5vw, 4.2rem)", fontWeight: 400, lineHeight: 1.08, color: "#FFFDF8", marginBottom: "2rem" }}>
+                For booking inquiries<br />and live <em style={{ fontStyle: "italic", color: "#CDC1B3", fontWeight: 300 }}>scheduling</em>
               </h2>
-              <div style={{ width: 40, height: 1, backgroundColor: "#333333" }} />
+              <div style={{ width: 40, height: 1, backgroundColor: "#6E655B" }} />
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={ctaInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.15 }} className="flex flex-col gap-8">
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", lineHeight: 1.9, color: "#555555", fontWeight: 300, maxWidth: 420 }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", lineHeight: 1.9, color: "#A09588", fontWeight: 300, maxWidth: 420 }}>
                 Please contact management directly for all live performance bookings, festival appearances, keynote engagements, and touring enquiries.
               </p>
               <div className="flex flex-col gap-4">
@@ -174,14 +174,14 @@ export function ShowsPage() {
                 <BookingContact label="Press & Media" email="press@nguyenminh.asia" />
               </div>
               <div className="flex items-center gap-4 mt-2">
-                <button onClick={() => navigate("/", { state: { scrollTo: "contact" } })} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#0A0A0A", backgroundColor: "#FFFFFF", border: "1px solid #FFFFFF", padding: "14px 36px", cursor: "pointer", transition: "all 0.25s ease", display: "inline-flex", alignItems: "center", gap: 8 }}
-                  onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "transparent"; b.style.color = "#FFFFFF"; }}
-                  onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "#FFFFFF"; b.style.color = "#0A0A0A"; }}>
+                <button onClick={() => navigate("/", { state: { scrollTo: "contact" } })} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#11100F", backgroundColor: "#FFFDF8", border: "1px solid #FFFDF8", padding: "14px 36px", cursor: "pointer", transition: "all 0.25s ease", display: "inline-flex", alignItems: "center", gap: 8 }}
+                  onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "transparent"; b.style.color = "#FFFDF8"; }}
+                  onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "#FFFDF8"; b.style.color = "#11100F"; }}>
                   Send an Enquiry <ArrowUpRight size={13} strokeWidth={1.5} />
                 </button>
-                <Link to="/services" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#444444", textDecoration: "none", transition: "color 0.2s" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#AAAAAA"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#444444"; }}>
+                <Link to="/services" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7F72", textDecoration: "none", transition: "color 0.2s" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}>
                   View Services
                 </Link>
               </div>
@@ -217,22 +217,22 @@ function ShowRow({ show, index, inView, isPast, isLast }: { show: Show; index: n
     <motion.div initial={{ opacity: 0, y: 12 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.05 + index * 0.07 }} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", backgroundColor: hovered ? "rgba(255,255,255,0.025)" : "transparent", transition: "background-color 0.3s" }}>
       {/* Desktop */}
       <div className="hidden lg:grid lg:grid-cols-12 gap-6 items-center py-7">
-        <div className="lg:col-span-2">
-          <div className="flex flex-col gap-1 mt-1">
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#333333" : "#666666", marginBottom: -4 }}>{dayOfWeek}</span>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2.3rem", fontWeight: 300, color: isPast ? "#444444" : hovered ? "#FFFFFF" : "#DDDDDD", lineHeight: 1, letterSpacing: "-0.02em", transition: "color 0.3s" }}>{day}</span>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#333333" : "#666666" }}>{month} {year}</span>
+        <div className="lg:col-span-2 flex justify-center">
+          <div className="flex flex-col items-center gap-1 mt-1 text-center">
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", marginBottom: -4 }}>{dayOfWeek}</span>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2.3rem", fontWeight: 300, color: isPast ? "#8A7F72" : hovered ? "#FFFDF8" : "#F0EAE3", lineHeight: 1, letterSpacing: "-0.02em", transition: "color 0.3s" }}>{day}</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496" }}>{month} {year}</span>
           </div>
         </div>
         <div className="lg:col-span-3 pt-2">
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", fontWeight: 500, color: isPast ? "#666666" : hovered ? "#FFFFFF" : "#EEEEEE", letterSpacing: "0.01em", transition: "color 0.3s", lineHeight: 1.35 }}>{show.event}</p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", fontWeight: 500, color: isPast ? "#B0A496" : hovered ? "#FFFDF8" : "#F7F2EC", letterSpacing: "0.01em", transition: "color 0.3s", lineHeight: 1.35 }}>{show.event}</p>
         </div>
         <div className="lg:col-span-4 pt-2">
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.95rem", color: isPast ? "#555555" : hovered ? "#FFFFFF" : "#CCCCCC", fontWeight: 400, lineHeight: 1.35, marginBottom: 3, transition: "color 0.3s" }}>{show.venue}</p>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.78rem", color: isPast ? "#444444" : "#888888", fontWeight: 300, lineHeight: 1.5 }}>{show.city}, {show.country}</p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.95rem", color: isPast ? "#A09588" : hovered ? "#FFFDF8" : "#E8E1D8", fontWeight: 400, lineHeight: 1.35, marginBottom: 3, transition: "color 0.3s" }}>{show.venue}</p>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.78rem", color: isPast ? "#8A7F72" : "#CDC1B3", fontWeight: 300, lineHeight: 1.5 }}>{show.city}, {show.country}</p>
         </div>
         <div className="lg:col-span-1">
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: isPast ? "#2E2E2E" : "#444444", border: "1px solid", borderColor: isPast ? "#1E1E1E" : "rgba(255,255,255,0.09)", padding: "4px 10px", display: "inline-block" }}>{show.type}</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: isPast ? "#5B534A" : "#8A7F72", border: "1px solid", borderColor: isPast ? "#342F2A" : "rgba(255,255,255,0.09)", padding: "4px 10px", display: "inline-block" }}>{show.type}</span>
         </div>
         <div className="lg:col-span-2 flex justify-end">
           <ShowCta show={show} hovered={hovered} isPast={isPast} />
@@ -242,10 +242,10 @@ function ShowRow({ show, index, inView, isPast, isLast }: { show: Show; index: n
       <div className="lg:hidden py-8">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#666666", marginBottom: 8 }}>{dayOfWeek}, {month} {day}, {year}</p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", fontWeight: 500, color: "#EEEEEE", marginBottom: 6, lineHeight: 1.3 }}>{show.event}</p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.9rem", color: "#CCCCCC", fontWeight: 400, marginBottom: 3 }}>{show.venue}</p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.78rem", color: "#888888", fontWeight: 300 }}>{show.city}, {show.country} · {show.type}</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#B0A496", marginBottom: 8 }}>{dayOfWeek}, {month} {day}, {year}</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", fontWeight: 500, color: "#F7F2EC", marginBottom: 6, lineHeight: 1.3 }}>{show.event}</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.9rem", color: "#E8E1D8", fontWeight: 400, marginBottom: 3 }}>{show.venue}</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.78rem", color: "#CDC1B3", fontWeight: 300 }}>{show.city}, {show.country} · {show.type}</p>
           </div>
           <ShowCta show={show} hovered={false} isPast={isPast} />
         </div>
@@ -258,7 +258,7 @@ function ShowCta({ show, hovered, isPast }: { show: Show; hovered: boolean; isPa
   const [btnHovered, setBtnHovered] = useState(false);
   const active = hovered || btnHovered;
   if (show.status === "sold_out") {
-    return <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#333333", border: "1px solid #1E1E1E", padding: "9px 16px", display: "inline-block", whiteSpace: "nowrap" }}>Sold Out</span>;
+    return <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#6E655B", border: "1px solid #342F2A", padding: "9px 16px", display: "inline-block", whiteSpace: "nowrap" }}>Sold Out</span>;
   }
   const label = isPast ? "Details" : show.status === "rsvp" ? "RSVP" : "Get Tickets";
   const handleClick = () => {
@@ -275,7 +275,7 @@ function ShowCta({ show, hovered, isPast }: { show: Show; hovered: boolean; isPa
   };
 
   return (
-    <button onMouseEnter={() => setBtnHovered(true)} onMouseLeave={() => setBtnHovered(false)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: active ? "#0A0A0A" : "#888888", backgroundColor: active ? "#FFFFFF" : "transparent", border: "1px solid", borderColor: active ? "#FFFFFF" : "rgba(255,255,255,0.15)", padding: "9px 20px", cursor: "pointer", transition: "all 0.25s ease", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6 }}
+    <button onMouseEnter={() => setBtnHovered(true)} onMouseLeave={() => setBtnHovered(false)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: active ? "#11100F" : "#CDC1B3", backgroundColor: active ? "#FFFDF8" : "transparent", border: "1px solid", borderColor: active ? "#FFFDF8" : "rgba(255,255,255,0.15)", padding: "9px 20px", cursor: "pointer", transition: "all 0.25s ease", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6 }}
       onClick={handleClick}>
       {label}
       {!isPast && <ArrowUpRight size={10} strokeWidth={1.5} />}
@@ -286,10 +286,10 @@ function ShowCta({ show, hovered, isPast }: { show: Show; hovered: boolean; isPa
 function BookingContact({ label, email }: { label: string; email: string }) {
   return (
     <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "1rem" }}>
-      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#333333", marginBottom: 6 }}>{label}</p>
-      <a href={`mailto:${email}`} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", color: "#666666", textDecoration: "none", fontWeight: 300, transition: "color 0.2s", display: "inline-flex", alignItems: "center", gap: 8 }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFFFF"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#666666"; }}>
+      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#6E655B", marginBottom: 6 }}>{label}</p>
+      <a href={`mailto:${email}`} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", color: "#B0A496", textDecoration: "none", fontWeight: 300, transition: "color 0.2s", display: "inline-flex", alignItems: "center", gap: 8 }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#B0A496"; }}>
         <Mail size={13} strokeWidth={1.5} color="currentColor" />
         {email}
       </a>

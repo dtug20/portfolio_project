@@ -32,30 +32,30 @@ export function MediaPage() {
     : mediaItems.filter((m: any) => m.category === activeTab);
 
   return (
-    <div style={{ backgroundColor: "#0A0A0A", paddingTop: "72px", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#11100F", paddingTop: "72px", minHeight: "100vh" }}>
       {/* ── HERO HEADER ── */}
       <section ref={headerRef} style={{ padding: "80px 0 100px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           <motion.div initial={{ opacity: 0, x: -8 }} animate={headerInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.4 }} className="mb-14">
-            <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#444444", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, transition: "color 0.2s" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#AAAAAA"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#444444"; }}>
+            <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7F72", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, transition: "color 0.2s" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}>
               <ArrowLeft size={12} strokeWidth={1.5} /> Back to Home
             </Link>
           </motion.div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
             <div>
-              <motion.p initial={{ opacity: 0, y: 10 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: 0.05 }} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#444444", marginBottom: "1.5rem" }}>
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: 0.05 }} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#8A7F72", marginBottom: "1.5rem" }}>
                 03 / Media
               </motion.p>
-              <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFFFF", letterSpacing: "-0.025em" }}>
-                Selected <em style={{ fontStyle: "italic", color: "#888888" }}>Works</em>
+              <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFDF8", letterSpacing: "-0.025em" }}>
+                Selected <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Works</em>
               </motion.h1>
             </div>
 
             <motion.div initial={{ opacity: 0 }} animate={headerInView ? { opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.3 }} style={{ maxWidth: 380, paddingBottom: "0.75rem" }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", lineHeight: 1.9, color: "#555555", fontWeight: 300 }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", lineHeight: 1.9, color: "#A09588", fontWeight: 300 }}>
                 Explore an archive of live performances, studio sessions, film scores, and commissioned projects.
               </p>
             </motion.div>
@@ -72,9 +72,9 @@ export function MediaPage() {
           {/* Tabs */}
           <motion.div initial={{ opacity: 0, y: 8 }} animate={gridInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45 }} className="flex items-center gap-0 mb-12" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             {tabs.map((tab) => (
-              <button key={tab} onClick={() => setActiveTab(tab)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.7rem", letterSpacing: "0.16em", textTransform: "uppercase", color: activeTab === tab ? "#FFFFFF" : "#444444", background: "none", border: "none", borderBottom: activeTab === tab ? "1px solid #FFFFFF" : "1px solid transparent", padding: "18px 32px 17px", cursor: "pointer", marginBottom: -1, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 10 }}
-                onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#AAAAAA"; }}
-                onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#444444"; }}>
+              <button key={tab} onClick={() => setActiveTab(tab)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.7rem", letterSpacing: "0.16em", textTransform: "uppercase", color: activeTab === tab ? "#FFFDF8" : "#8A7F72", background: "none", border: "none", borderBottom: activeTab === tab ? "1px solid #FFFDF8" : "1px solid transparent", padding: "18px 32px 17px", cursor: "pointer", marginBottom: -1, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 10 }}
+                onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#DED4C8"; }}
+                onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#8A7F72"; }}>
                 {tab}
               </button>
             ))}
@@ -87,7 +87,7 @@ export function MediaPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={gridInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.1 + i * 0.08 }}
-                className="group relative overflow-hidden cursor-pointer bg-[#111111]"
+                className="group relative overflow-hidden cursor-pointer bg-[#171513]"
               >
                 <div className="relative overflow-hidden aspect-[4/5]">
                   <ImageWithFallback
@@ -119,7 +119,7 @@ export function MediaPage() {
                           backdropFilter: "blur(8px)",
                         }}
                       >
-                        <Play size={18} color="#FFFFFF" fill="#FFFFFF" style={{ marginLeft: 3 }} />
+                        <Play size={18} color="#FFFDF8" fill="#FFFDF8" style={{ marginLeft: 3 }} />
                       </div>
                     </div>
                   )}
@@ -132,7 +132,7 @@ export function MediaPage() {
                         fontSize: "0.6rem",
                         letterSpacing: "0.2em",
                         textTransform: "uppercase",
-                        color: "#888888",
+                        color: "#CDC1B3",
                         display: "block",
                         marginBottom: 6,
                       }}
@@ -144,7 +144,7 @@ export function MediaPage() {
                         fontFamily: "'Cormorant Garamond', serif",
                         fontSize: "1.5rem",
                         fontWeight: 400,
-                        color: "#FFFFFF",
+                        color: "#FFFDF8",
                         lineHeight: 1.2,
                         marginBottom: 4,
                       }}
@@ -155,7 +155,7 @@ export function MediaPage() {
                       style={{
                         fontFamily: "'Inter', sans-serif",
                         fontSize: "0.7rem",
-                        color: "#666666",
+                        color: "#B0A496",
                         letterSpacing: "0.05em",
                       }}
                     >

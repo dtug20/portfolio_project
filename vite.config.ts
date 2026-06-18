@@ -17,6 +17,12 @@ function figmaAssetResolver() {
 }
 
 export default defineConfig({
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+    allowedHosts: ['9487324w-5173.asse.devtunnels.ms'],
+  },
   plugins: [
     figmaAssetResolver(),
     // The React and Tailwind plugins are both required for Make, even if

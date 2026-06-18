@@ -43,7 +43,7 @@ export function Footer() {
   return (
     <footer
       style={{
-        backgroundColor: "#0A0A0A",
+        backgroundColor: "#11100F",
         borderTop: "1px solid rgba(255,255,255,0.07)",
         padding: "64px 0 40px",
       }}
@@ -69,7 +69,7 @@ export function Footer() {
                 fontSize: "1.2rem",
                 fontWeight: 600,
                 letterSpacing: "0.18em",
-                color: "#FFFFFF",
+                color: "#FFFDF8",
                 marginBottom: "1rem",
               }}
             >
@@ -80,7 +80,7 @@ export function Footer() {
                 fontFamily: "'Inter', sans-serif",
                 fontSize: "0.72rem",
                 lineHeight: 1.8,
-                color: "#444444",
+                color: "#8A7F72",
                 fontWeight: 300,
                 maxWidth: 240,
               }}
@@ -98,7 +98,7 @@ export function Footer() {
                 fontSize: "0.58rem",
                 letterSpacing: "0.24em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
                 marginBottom: "1.25rem",
               }}
             >
@@ -112,7 +112,7 @@ export function Footer() {
                   style={{
                     fontFamily: "'Inter', sans-serif",
                     fontSize: "0.78rem",
-                    color: "#666666",
+                    color: "#B0A496",
                     background: "none",
                     border: "none",
                     cursor: "pointer",
@@ -121,8 +121,8 @@ export function Footer() {
                     transition: "color 0.2s",
                     fontWeight: 300,
                   }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#CCCCCC"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#666666"; }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#E8E1D8"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#B0A496"; }}
                 >
                   {link}
                 </button>
@@ -138,7 +138,7 @@ export function Footer() {
                 fontSize: "0.58rem",
                 letterSpacing: "0.24em",
                 textTransform: "uppercase",
-                color: "#444444",
+                color: "#8A7F72",
                 marginBottom: "1.25rem",
               }}
             >
@@ -155,7 +155,7 @@ export function Footer() {
                 >
                   <span
                     style={{
-                      color: "#555555",
+                      color: "#A09588",
                       transition: "color 0.2s",
                     }}
                     className="group-hover:text-white"
@@ -166,7 +166,7 @@ export function Footer() {
                     style={{
                       fontFamily: "'Inter', sans-serif",
                       fontSize: "0.75rem",
-                      color: "#555555",
+                      color: "#A09588",
                       transition: "color 0.2s",
                       fontWeight: 300,
                     }}
@@ -189,7 +189,7 @@ export function Footer() {
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.65rem",
-              color: "#333333",
+              color: "#6E655B",
               letterSpacing: "0.06em",
               fontWeight: 300,
             }}
@@ -204,13 +204,13 @@ export function Footer() {
                 style={{
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.62rem",
-                  color: "#333333",
+                  color: "#6E655B",
                   letterSpacing: "0.08em",
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#888888"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#333333"; }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#CDC1B3"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#6E655B"; }}
               >
                 {item}
               </a>
@@ -220,7 +220,7 @@ export function Footer() {
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.62rem",
-              color: "#2A2A2A",
+              color: "#514A42",
               letterSpacing: "0.06em",
             }}
           >

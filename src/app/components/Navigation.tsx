@@ -5,6 +5,14 @@ import { Menu, X } from "lucide-react";
 
 const navLinks = ["Home", "Shows", "About", "Media", "Services", "Contact"];
 
+const linkToPath: Record<string, string> = {
+  Home: "/",
+  Shows: "/shows",
+  About: "/about",
+  Media: "/media",
+  Services: "/services",
+};
+
 const pathToSection: Record<string, string> = {
   "/about": "About",
   "/media": "Media",
@@ -35,22 +43,15 @@ export function Navigation() {
 
   const handleNavClick = (link: string) => {
     setMobileOpen(false);
-    const sectionId = link.toLowerCase();
 
-    if (isHome) {
-      // On home page: smooth scroll to section
-      const el = document.getElementById(sectionId);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (link === "Contact") {
+      navigate("/", { state: { scrollTo: "contact" } });
       setActiveSection(link);
-    } else {
-      // On sub-pages: navigate to home with scroll target as state
-      if (link === "Home") {
-        navigate("/");
-      } else {
-        navigate("/", { state: { scrollTo: sectionId } });
-      }
-      setActiveSection(link);
+      return;
     }
+
+    navigate(linkToPath[link]);
+    setActiveSection(link);
   };
 
   return (
@@ -78,7 +79,7 @@ export function Navigation() {
                 fontSize: "1.35rem",
                 fontWeight: 600,
                 letterSpacing: "0.18em",
-                color: "#FFFFFF",
+                color: "#FFFDF8",
               }}
             >
               NGUYEN MINH
@@ -88,7 +89,7 @@ export function Navigation() {
                 width: 5,
                 height: 5,
                 borderRadius: "50%",
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "#FFFDF8",
                 marginLeft: 8,
                 opacity: 0.5,
                 display: "inline-block",
@@ -147,7 +148,7 @@ export function Navigation() {
                   fontFamily: "'Inter', sans-serif",
                   fontSize: "0.85rem",
                   letterSpacing: "0.14em",
-                  color: activeSection === link ? "#FFFFFF" : "#999999",
+                  color: activeSection === link ? "#FFFDF8" : "#D7CCBF",
                   borderBottom: "1px solid rgba(255,255,255,0.05)",
                   textTransform: "uppercase",
                 }}
@@ -180,7 +181,7 @@ function NavLink({
         fontSize: "0.72rem",
         letterSpacing: "0.16em",
         textTransform: "uppercase",
-        color: active ? "#FFFFFF" : "#888888",
+        color: active ? "#FFFDF8" : "#CDC1B3",
         transition: "color 0.25s",
         background: "none",
         border: "none",
@@ -199,7 +200,7 @@ function NavLink({
           display: "block",
           height: 1,
           width: active ? "100%" : "0%",
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#FFFDF8",
           transition: "width 0.3s ease",
           position: "absolute",
           bottom: -2,
