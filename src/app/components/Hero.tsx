@@ -10,34 +10,34 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative w-full flex items-end overflow-hidden"
-      style={{ minHeight: "100vh", backgroundColor: "#11100F" }}
+      className="relative w-full flex items-start overflow-hidden portrait:min-h-[80vh] landscape:min-h-screen"
+      style={{ backgroundColor: "#11100F" }}
     >
       {/* Background Image */}
       <div className="absolute inset-0">
         <ImageWithFallback
-          src="https://images.unsplash.com/photo-1558620013-a08999547a36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25jZXJ0JTIwbGl2ZSUyMHBlcmZvcm1hbmNlJTIwc3RhZ2UlMjBkYXJrJTIwZWxlZ2FudHxlbnwxfHx8fDE3ODE0MTc3ODR8MA&ixlib=rb-4.1.0&q=80&w=1080"
+          src="/images/hero.jpg"
           alt="Stage performance"
-          className="w-full h-full object-cover"
-          style={{ objectPosition: "center 40%" }}
+          className="w-full h-full object-cover landscape:object-contain object-center landscape:object-left"
+          style={{ transform: "scaleX(-1)" }}
         />
         {/* Gradient overlays */}
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(to right, rgba(10,10,10,0.92) 40%, rgba(10,10,10,0.3) 100%)",
+            background: "linear-gradient(to right, rgba(17,16,15,0.95) 40%, rgba(17,16,15,0.2) 100%)",
           }}
         />
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(to top, rgba(10,10,10,1) 0%, transparent 50%)",
+            background: "linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,1) 3%, rgba(17,16,15,0) 40%)",
           }}
         />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pb-24 md:pb-32 pt-32">
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pb-24 md:pb-32 pt-24 md:pt-32">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -52,9 +52,16 @@ export function Hero() {
               color: "#CDC1B3",
               textTransform: "uppercase",
               marginBottom: "1.5rem",
+              lineHeight: "1.8",
             }}
           >
-            Composer · Performer · Music Director
+            Composer
+            <span className="hidden md:inline"> · </span>
+            <br className="md:hidden" />
+            Performer
+            <span className="hidden md:inline"> · </span>
+            <br className="md:hidden" />
+            Music Director
           </p>
 
           <h1
@@ -70,6 +77,7 @@ export function Hero() {
           >
             Nguyen
             <br />
+
             <em style={{ fontStyle: "italic", fontWeight: 300 }}>Minh</em>
           </h1>
 
@@ -83,7 +91,7 @@ export function Hero() {
             }}
           />
 
-          <p
+          {/* <p
             style={{
               fontFamily: "'Inter', sans-serif",
               fontSize: "0.9rem",
@@ -94,13 +102,13 @@ export function Hero() {
             }}
           >
             I am an musician and performer working across ambient, film scoring, and theatre. My practice explores sound as space, blending performance, installation, and multimedia works. This portfolio showcases my projects in theatre, experimental concerts, and collaborative shows.
-          </p>
+          </p> */}
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="flex items-center gap-8 mt-12"
+            className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 mt-10 md:mt-12"
           >
             <button
               onClick={scrollToAbout}
@@ -155,7 +163,7 @@ export function Hero() {
         onClick={scrollToAbout}
         animate={{ y: [0, 6, 0] }}
         transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-        className="absolute bottom-8 right-16 z-10 flex flex-col items-center gap-2"
+        className="absolute bottom-8 right-8 z-10 flex flex-col items-center gap-2"
         style={{ background: "none", border: "none", cursor: "pointer" }}
       >
         <span
@@ -173,11 +181,7 @@ export function Hero() {
         <ChevronDown size={14} color="#8A7F72" />
       </motion.button>
 
-      {/* Right edge vertical line */}
-      <div
-        className="hidden md:block absolute top-0 right-16 bottom-0 z-10"
-        style={{ width: 1, backgroundColor: "rgba(255,255,255,0.05)" }}
-      />
+
     </section>
   );
 }

@@ -63,37 +63,37 @@ export function ShowsPage() {
   const displayedShows = activeTab === "All" ? allShows : allShows.filter(s => s.type === activeTab);
 
   return (
-    <div style={{ backgroundColor: "#11100F", paddingTop: "72px" }}>
+    <div style={{ backgroundColor: "#11100F" }}>
 
       {/* ── HERO HEADER ── */}
       <section
         ref={headerRef}
-        className="relative w-full overflow-hidden"
-        style={{ padding: "120px 0 100px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        className="relative w-full flex items-start overflow-hidden mb-0"
       >
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="https://images.unsplash.com/photo-1540039155732-6761b54cbaca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwzfHxjb25jZXJ0fGVufDB8fHx8MTcxMTU1NjE1Mnww&ixlib=rb-4.1.0&q=80&w=1080"
+            src="/images/on_stage.jpeg"
             alt="Live Stage"
             className="w-full h-full object-cover"
             style={{ objectPosition: "center 40%" }}
           />
+          {/* Soft gradient overlays for readability without obscuring the image */}
           <div
             className="absolute inset-0"
             style={{
-              background: "linear-gradient(to right, rgba(10,10,10,0.92) 40%, rgba(10,10,10,0.3) 100%)",
+              background: "linear-gradient(to right, rgba(17,16,15,0.95) 0%, rgba(17,16,15,0.6) 50%, rgba(17,16,15,0.15) 100%)",
             }}
           />
           <div
             className="absolute inset-0"
             style={{
-              background: "linear-gradient(to top, rgba(10,10,10,1) 0%, transparent 50%)",
+              background: "linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,0.5) 30%, rgba(17,16,15,0) 60%)",
             }}
           />
         </div>
 
-        <div className="relative z-10 max-w-[1400px] mx-auto px-8 md:px-16">
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pt-32 pb-[120px] md:pb-[180px]">
           <motion.div initial={{ opacity: 0, x: -8 }} animate={headerInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.4 }} className="mb-14">
             <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7F72", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, transition: "color 0.2s" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
@@ -104,21 +104,16 @@ export function ShowsPage() {
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
             <div>
-              <motion.p initial={{ opacity: 0, y: 10 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: 0.05 }} style={{ fontFamily: "'Inter', sans-serif", fontSize: "1rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#8A7F72", marginBottom: "1.8rem" }}>
-                - Live
-              </motion.p>
               <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 9.5rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFDF8", letterSpacing: "-0.025em" }}>
                 On <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Stage</em>
               </motion.h1>
             </div>
           </div>
-
-          <motion.div initial={{ scaleX: 0 }} animate={headerInView ? { scaleX: 1 } : {}} transition={{ duration: 0.9, delay: 0.5, ease: "easeOut" }} style={{ height: 1, backgroundColor: "rgba(255,255,255,0.08)", marginTop: "5rem", transformOrigin: "left" }} />
         </div>
       </section>
 
       {/* ── SCHEDULE ── */}
-      <section ref={tableRef} style={{ padding: "72px 0 0" }}>
+      <section ref={tableRef} style={{ padding: "0" }}>
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           {/* Tab row */}
           <motion.div initial={{ opacity: 0, y: 8 }} animate={tableInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45 }} className="flex flex-wrap items-center gap-0 mb-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>

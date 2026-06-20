@@ -21,7 +21,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
-    allowedHosts: ['9487324w-5173.asse.devtunnels.ms'],
+    allowedHosts: ['9487324w-5173.asse.devtunnels.ms', 'memories-recognize-learn-smith.trycloudflare.com'],
   },
   plugins: [
     figmaAssetResolver(),

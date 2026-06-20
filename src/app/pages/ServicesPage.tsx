@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 const services = [
   {
@@ -78,14 +79,37 @@ export function ServicesPage() {
   const navigate = useNavigate();
 
   return (
-    <div style={{ backgroundColor: "#11100F", paddingTop: "72px" }}>
+    <div style={{ backgroundColor: "#11100F" }}>
 
       {/* ── HEADER ── */}
       <section
         ref={headerRef}
-        style={{ padding: "80px 0 100px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        className="relative w-full flex items-start overflow-hidden mb-0"
       >
-        <div className="max-w-[1400px] mx-auto px-8 md:px-16">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <ImageWithFallback
+            src="/images/hero.jpg"
+            alt="Services"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "center 40%" }}
+          />
+          {/* Soft gradient overlays for readability without obscuring the image */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to right, rgba(17,16,15,0.95) 0%, rgba(17,16,15,0.6) 50%, rgba(17,16,15,0.15) 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,0.5) 30%, rgba(17,16,15,0) 60%)",
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pt-32 pb-[120px] md:pb-[180px]">
           {/* Back */}
           <motion.div
             initial={{ opacity: 0, x: -8 }}
@@ -117,22 +141,6 @@ export function ServicesPage() {
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={headerInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.45, delay: 0.05 }}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.62rem",
-                  letterSpacing: "0.3em",
-                  textTransform: "uppercase",
-                  color: "#8A7F72",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                05 / Work With Me
-              </motion.p>
-
               <motion.h1
                 initial={{ opacity: 0, y: 24 }}
                 animate={headerInView ? { opacity: 1, y: 0 } : {}}
@@ -151,70 +159,14 @@ export function ServicesPage() {
                 <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Expertise</em>
               </motion.h1>
             </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={headerInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{ maxWidth: 380, paddingBottom: "0.5rem" }}
-            >
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.82rem",
-                  lineHeight: 1.9,
-                  color: "#A09588",
-                  fontWeight: 300,
-                  marginBottom: "1.5rem",
-                }}
-              >
-                A focused offering built for organisations, productions, and artists
-                who require musical excellence without compromise. Every engagement
-                is handled personally — no intermediaries, no templates.
-              </p>
-              <button
-                onClick={() => navigate("/", { state: { scrollTo: "contact" } })}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.68rem",
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  color: "#CDC1B3",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: 0,
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFDF8"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#CDC1B3"; }}
-              >
-                Start a conversation <ArrowUpRight size={13} strokeWidth={1.5} />
-              </button>
-            </motion.div>
           </div>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={headerInView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.9, delay: 0.45, ease: "easeOut" }}
-            style={{
-              height: 1,
-              backgroundColor: "rgba(255,255,255,0.08)",
-              marginTop: "5rem",
-              transformOrigin: "left",
-            }}
-          />
         </div>
       </section>
 
       {/* ── SERVICE LIST ── */}
       <section
         ref={listRef}
-        style={{ padding: "80px 0 0" }}
+        style={{ padding: "0" }}
       >
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           {services.map((service, i) => (

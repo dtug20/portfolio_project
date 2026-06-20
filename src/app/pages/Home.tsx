@@ -9,8 +9,8 @@ export function Home() {
   return (
     <>
       <Hero />
-      <UpcomingShows />
       <About />
+      <UpcomingShows />
       <Media />
       <Services />
       <Contact />

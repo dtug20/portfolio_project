@@ -7,8 +7,8 @@ const navLinks = ["Home", "Shows", "About", "Media", "Services", "Contact"];
 
 const linkToPath: Record<string, string> = {
   Home: "/",
-  Shows: "/shows",
   About: "/about",
+  Shows: "/shows",
   Media: "/media",
   Services: "/services",
 };
@@ -44,6 +44,12 @@ export function Navigation() {
   const handleNavClick = (link: string) => {
     setMobileOpen(false);
 
+    if (link === "Home" && isHome) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSection("Home");
+      return;
+    }
+
     if (link === "Contact") {
       navigate("/", { state: { scrollTo: "contact" } });
       setActiveSection(link);
@@ -67,7 +73,7 @@ export function Navigation() {
           borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
         }}
       >
-        <div className="max-w-[1400px] mx-auto px-8 md:px-16 flex items-center justify-between h-[72px]">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-8 lg:px-16 flex items-center justify-between h-[72px]">
           {/* Logo */}
           <button
             onClick={() => handleNavClick("Home")}
@@ -80,6 +86,7 @@ export function Navigation() {
                 fontWeight: 600,
                 letterSpacing: "0.18em",
                 color: "#FFFDF8",
+                whiteSpace: "nowrap",
               }}
             >
               NGUYEN MINH
@@ -100,7 +107,7 @@ export function Navigation() {
           </button>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-6 lg:gap-10">
             {navLinks.map((link) => (
               <NavLink
                 key={link}

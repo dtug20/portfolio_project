@@ -65,16 +65,36 @@ export function AboutPage() {
   const timelineInView = useInView(timelineRef, { once: true, margin: "-60px" });
 
   return (
-    <div style={{ backgroundColor: "#11100F", paddingTop: "72px" }}>
+    <div style={{ backgroundColor: "#11100F" }}>
       {/* ── SECTION 1: Header ── */}
       <section
         ref={headerRef}
-        style={{
-          padding: "80px 0 100px",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-        }}
+        className="relative w-full flex items-start overflow-hidden mb-0"
       >
-        <div className="max-w-[1400px] mx-auto px-8 md:px-16">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <ImageWithFallback
+            src="/images/about.jpg"
+            alt="Biography"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "center 20%" }}
+          />
+          {/* Soft gradient overlays for readability without obscuring the image */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to right, rgba(17,16,15,0.95) 0%, rgba(17,16,15,0.6) 50%, rgba(17,16,15,0.15) 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,0.5) 30%, rgba(17,16,15,0) 60%)",
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pt-32 pb-[120px] md:pb-[180px]">
           {/* Back link */}
           <motion.div
             initial={{ opacity: 0, x: -8 }}
@@ -106,22 +126,6 @@ export function AboutPage() {
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={headerInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.45, delay: 0.05 }}
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.62rem",
-                  letterSpacing: "0.3em",
-                  textTransform: "uppercase",
-                  color: "#8A7F72",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                03 / Biography
-              </motion.p>
-
               <motion.h1
                 initial={{ opacity: 0, y: 24 }}
                 animate={headerInView ? { opacity: 1, y: 0 } : {}}
@@ -139,46 +143,14 @@ export function AboutPage() {
                 <em style={{ fontStyle: "italic" }}>phy</em>
               </motion.h1>
             </div>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={headerInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.8rem",
-                lineHeight: 1.9,
-                color: "#A09588",
-                maxWidth: 360,
-                fontWeight: 300,
-                paddingBottom: "0.5rem",
-              }}
-            >
-              Composer. Performer. Cultural bridge-builder. Over two decades
-              shaping the landscape of contemporary Vietnamese music on the
-              world stage.
-            </motion.p>
           </div>
-
-          {/* Horizontal rule */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={headerInView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.9, delay: 0.4, ease: "easeOut" }}
-            style={{
-              height: 1,
-              backgroundColor: "rgba(255,255,255,0.08)",
-              marginTop: "5rem",
-              transformOrigin: "left",
-            }}
-          />
         </div>
       </section>
 
       {/* ── SECTION 2: Story (2-column) ── */}
       <section
         ref={storyRef}
-        style={{ padding: "100px 0 120px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        style={{ padding: "40px 0 120px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">

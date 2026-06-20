@@ -32,10 +32,36 @@ export function MediaPage() {
     : mediaItems.filter((m: any) => m.category === activeTab);
 
   return (
-    <div style={{ backgroundColor: "#11100F", paddingTop: "72px", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#11100F", minHeight: "100vh" }}>
       {/* ── HERO HEADER ── */}
-      <section ref={headerRef} style={{ padding: "80px 0 100px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="max-w-[1400px] mx-auto px-8 md:px-16">
+      <section
+        ref={headerRef}
+        className="relative w-full flex items-start overflow-hidden mb-0"
+      >
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <ImageWithFallback
+            src="/images/on_stage.jpeg"
+            alt="Selected Works"
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "center 40%" }}
+          />
+          {/* Soft gradient overlays for readability without obscuring the image */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to right, rgba(17,16,15,0.95) 0%, rgba(17,16,15,0.6) 50%, rgba(17,16,15,0.15) 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,0.5) 30%, rgba(17,16,15,0) 60%)",
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pt-32 pb-[120px] md:pb-[180px]">
           <motion.div initial={{ opacity: 0, x: -8 }} animate={headerInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.4 }} className="mb-14">
             <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7F72", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, transition: "color 0.2s" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
@@ -44,31 +70,20 @@ export function MediaPage() {
             </Link>
           </motion.div>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div>
-              <motion.p initial={{ opacity: 0, y: 10 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: 0.05 }} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#8A7F72", marginBottom: "1.5rem" }}>
-                03 / Media
-              </motion.p>
               <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFDF8", letterSpacing: "-0.025em" }}>
                 Selected <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Works</em>
               </motion.h1>
             </div>
-
-            <motion.div initial={{ opacity: 0 }} animate={headerInView ? { opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.3 }} style={{ maxWidth: 380, paddingBottom: "0.75rem" }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", lineHeight: 1.9, color: "#A09588", fontWeight: 300 }}>
-                Explore an archive of live performances, studio sessions, film scores, and commissioned projects.
-              </p>
-            </motion.div>
           </div>
-          
-          <motion.div initial={{ scaleX: 0 }} animate={headerInView ? { scaleX: 1 } : {}} transition={{ duration: 0.9, delay: 0.5, ease: "easeOut" }} style={{ height: 1, backgroundColor: "rgba(255,255,255,0.08)", transformOrigin: "left" }} />
         </div>
       </section>
 
       {/* ── MEDIA GRID ── */}
-      <section ref={gridRef} style={{ padding: "72px 0 120px" }}>
+      <section ref={gridRef} style={{ padding: "0 0 120px" }}>
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
-          
+
           {/* Tabs */}
           <motion.div initial={{ opacity: 0, y: 8 }} animate={gridInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45 }} className="flex items-center gap-0 mb-12" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             {tabs.map((tab) => (

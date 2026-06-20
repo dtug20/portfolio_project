@@ -19,7 +19,7 @@ export function About() {
     <section
       id="about"
       ref={ref}
-      style={{ backgroundColor: "#11100F", padding: "120px 0 140px" }}
+      style={{ backgroundColor: "#11100F", padding: "200px 0 140px" }}
     >
       <div className="max-w-[1400px] mx-auto px-8 md:px-16">
         {/* Section Label */}
@@ -40,8 +40,66 @@ export function About() {
         </motion.p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
-          {/* Left: Text */}
-          <div>
+          {/* Left: Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.9, delay: 0.15 }}
+            className="relative"
+          >
+            <div className="relative aspect-[3/4] overflow-hidden">
+              <ImageWithFallback
+                src="/images/about.jpg"
+                alt="Nguyen Minh — musician portrait"
+                className="w-full h-full object-cover"
+                style={{ filter: "grayscale(20%)" }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: `
+                    linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,0) 12%),
+                    linear-gradient(to bottom, rgba(17,16,15,1) 0%, rgba(17,16,15,0) 12%),
+                    linear-gradient(to left, rgba(17,16,15,1) 0%, rgba(17,16,15,0) 12%),
+                    linear-gradient(to right, rgba(17,16,15,1) 0%, rgba(17,16,15,0) 12%)
+                  `
+                }}
+              />
+            </div>
+
+            {/* Quote overlay */}
+            <div
+              className="absolute bottom-0 left-0 right-0 p-8"
+            >
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: "1.15rem",
+                  fontWeight: 300,
+                  fontStyle: "italic",
+                  color: "rgba(255,255,255,0.7)",
+                  lineHeight: 1.6,
+                }}
+              >
+                "Music is a bridge — not a boundary."
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.15em",
+                  color: "#A09588",
+                  textTransform: "uppercase",
+                  marginTop: 8,
+                }}
+              >
+                — Nguyen Minh, 2023
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Right: Text */}
+          <div className="lg:pt-8">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -159,65 +217,6 @@ export function About() {
               ))}
             </motion.div>
           </div>
-
-          {/* Right: Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.9, delay: 0.15 }}
-            className="relative"
-          >
-            <div className="relative aspect-[3/4] overflow-hidden">
-              <ImageWithFallback
-                src="https://nguyennhatminh.carrd.co/assets/images/image01.jpg?v=b"
-                alt="Nguyen Minh — musician portrait"
-                className="w-full h-full object-cover"
-                style={{ filter: "grayscale(20%)" }}
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(to top, rgba(10,10,10,0.6) 0%, transparent 50%)",
-                }}
-              />
-            </div>
-
-            {/* Decorative border offset */}
-            <div
-              className="absolute -bottom-4 -right-4 w-full h-full"
-              style={{ border: "1px solid rgba(255,255,255,0.08)", zIndex: -1 }}
-            />
-
-            {/* Quote overlay */}
-            <div
-              className="absolute bottom-0 left-0 right-0 p-8"
-            >
-              <p
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: "1.15rem",
-                  fontWeight: 300,
-                  fontStyle: "italic",
-                  color: "rgba(255,255,255,0.7)",
-                  lineHeight: 1.6,
-                }}
-              >
-                "Music is a bridge — not a boundary."
-              </p>
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.65rem",
-                  letterSpacing: "0.15em",
-                  color: "#A09588",
-                  textTransform: "uppercase",
-                  marginTop: 8,
-                }}
-              >
-                — Nguyen Minh, 2023
-              </p>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>
