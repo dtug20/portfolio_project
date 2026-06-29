@@ -20,27 +20,12 @@ interface Show {
   status: ShowStatus;
   ticketUrl?: string;
   isPast: boolean;
+  notes?: string;
+  coverUrl?: string;
+  time?: string;
 }
 
-// ── Hardcoded fallback (used until Convex data seeded) ────
-const FALLBACK_UPCOMING: Show[] = [
-  { day: "12", month: "OCT", year: "2026", event: "Soul Live Project Arena", venue: "Soul Live Project Arena", city: "Ho Chi Minh City", country: "VN", type: "Solo Recital", status: "tickets", isPast: false },
-  { day: "04", month: "NOV", year: "2026", event: "Hanoi International Music Festival", venue: "Hanoi Opera House", city: "Hanoi", country: "VN", type: "Headline Performance", status: "rsvp", isPast: false },
-  { day: "28", month: "NOV", year: "2026", event: "Esplanade Presents — Southeast Asia Series", venue: "Esplanade Concert Hall", city: "Singapore", country: "SG", type: "Chamber Ensemble", status: "sold_out", isPast: false },
-  { day: "17", month: "JAN", year: "2027", event: "World Premiere — Between Silence II", venue: "Sydney Opera House", city: "Sydney", country: "AU", type: "World Premiere", status: "tickets", isPast: false },
-  { day: "08", month: "FEB", year: "2027", event: "Asia Contemporary Music Summit", venue: "Seoul Arts Centre", city: "Seoul", country: "KR", type: "Keynote & Performance", status: "details", isPast: false },
-  { day: "21", month: "MAR", year: "2027", event: "Barbican International Residency", venue: "Barbican Centre", city: "London", country: "UK", type: "Artist Residency", status: "tickets", isPast: false },
-  { day: "05", month: "APR", year: "2027", event: "Carnegie Hall — Spring Series", venue: "Carnegie Hall", city: "New York", country: "US", type: "Solo Recital", status: "tickets", isPast: false },
-];
-
-const FALLBACK_PAST: Show[] = [
-  { day: "14", month: "SEP", year: "2025", event: "Hanoi Opera House — Season Opening", venue: "Hanoi Opera House", city: "Hanoi", country: "VN", type: "Solo Recital", status: "details", isPast: true },
-  { day: "22", month: "JUL", year: "2025", event: "Esplanade Festival on the Bay", venue: "Esplanade Outdoor Theatre", city: "Singapore", country: "SG", type: "Live Set", status: "details", isPast: true },
-  { day: "03", month: "MAY", year: "2025", event: "UNESCO — World Press Freedom Day Concert", venue: "UNESCO Headquarters", city: "Paris", country: "FR", type: "Keynote & Performance", status: "details", isPast: true },
-  { day: "18", month: "MAR", year: "2025", event: "Sydney Opera House — Artist in Residence", venue: "Sydney Opera House", city: "Sydney", country: "AU", type: "Residency Concert", status: "details", isPast: true },
-  { day: "30", month: "NOV", year: "2024", event: "Barbican — Asian Music Now", venue: "Barbican Centre", city: "London", country: "UK", type: "Chamber Ensemble", status: "details", isPast: true },
-  { day: "12", month: "AUG", year: "2024", event: "Salzburg Music Festival", venue: "Mozarteum", city: "Salzburg", country: "AT", type: "Invited Performance", status: "details", isPast: true },
-];
+// ── Fallback array removed ────
 
 export function ShowsPage() {
   const headerRef = useRef(null);
@@ -56,51 +41,80 @@ export function ShowsPage() {
   const dbUpcoming = useQuery(api.shows.listUpcoming);
   const dbPast = useQuery(api.shows.listPast);
 
-  // Use DB data once available, fallback to hardcoded otherwise
-  const upcomingShows: Show[] = (dbUpcoming && dbUpcoming.length > 0) ? dbUpcoming : FALLBACK_UPCOMING;
-  const pastShows: Show[] = (dbPast && dbPast.length > 0) ? dbPast : FALLBACK_PAST;
+  const upcomingShows: Show[] = dbUpcoming ? dbUpcoming : [];
+  const pastShows: Show[] = dbPast ? dbPast : [];
   const allShows = [...upcomingShows, ...pastShows];
   const displayedShows = activeTab === "All" ? allShows : allShows.filter(s => s.type === activeTab);
+
+  const getHeroImage = (tab: string) => {
+    switch (tab) {
+      case "S.E Project": return "/images/S.E_project.jpg";
+      case "Bluemato": return "/images/bluemato.jpg";
+      case "Personal": return "/images/personal.png";
+      case "OPEN - project": return "/images/open_project.jpg";
+      default: return "/images/on_stage.jpeg";
+    }
+  };
+
+  const getHeroImagePosition = (tab: string) => {
+    switch (tab) {
+      case "Personal": return "center 35%";
+      case "S.E Project": return "70% 40%";
+      default: return "center 40%";
+    }
+  };
+
+  const getHeroImageFilter = (tab: string) => {
+    switch (tab) {
+      case "S.E Project": return "brightness(1.15)";
+      default: return "none";
+    }
+  };
 
   return (
     <div style={{ backgroundColor: "#11100F" }}>
 
       {/* ── HERO HEADER ── */}
-      <section
-        ref={headerRef}
-        className="relative w-full flex items-start overflow-hidden mb-0"
-      >
+      <section ref={headerRef} className="relative w-full h-[65vh] min-h-[500px] bg-[#0A0A0A] overflow-hidden flex flex-col justify-end">
         {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <ImageWithFallback
-            src="/images/on_stage.jpeg"
-            alt="Live Stage"
-            className="w-full h-full object-cover"
-            style={{ objectPosition: "center 40%" }}
-          />
+        <div className="absolute inset-0 z-0 bg-[#11100F]">
+          <AnimatePresence>
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="absolute inset-0"
+            >
+              <ImageWithFallback
+                src={getHeroImage(activeTab)}
+                alt={`${activeTab} Stage`}
+                className="w-full h-full object-cover"
+                style={{ 
+                  objectPosition: getHeroImagePosition(activeTab),
+                  filter: getHeroImageFilter(activeTab)
+                }}
+              />
+            </motion.div>
+          </AnimatePresence>
           {/* Soft gradient overlays for readability without obscuring the image */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 z-10 pointer-events-none"
             style={{
               background: "linear-gradient(to right, rgba(17,16,15,0.95) 0%, rgba(17,16,15,0.6) 50%, rgba(17,16,15,0.15) 100%)",
             }}
           />
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 z-10 pointer-events-none"
             style={{
               background: "linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,0.5) 30%, rgba(17,16,15,0) 60%)",
             }}
           />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pt-32 pb-[120px] md:pb-[180px]">
-          <motion.div initial={{ opacity: 0, x: -8 }} animate={headerInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.4 }} className="mb-14">
-            <Link to="/" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7F72", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, transition: "color 0.2s" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}>
-              <ArrowLeft size={12} strokeWidth={1.5} /> Back to Home
-            </Link>
-          </motion.div>
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pb-12 md:pb-16">
+
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
             <div>
@@ -117,7 +131,7 @@ export function ShowsPage() {
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           {/* Tab row */}
           <motion.div initial={{ opacity: 0, y: 8 }} animate={tableInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45 }} className="flex flex-wrap items-center gap-0 mb-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-            {["All", ...Array.from(new Set(allShows.map(s => s.type)))].map((tab) => (
+            {["All", ...Array.from(new Set(["Personal", "OPEN - project", "Bluemato", "S.E Project", ...allShows.map(s => s.type)]))].map((tab) => (
               <button key={tab} onClick={() => setActiveTab(tab)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.7rem", letterSpacing: "0.16em", textTransform: "uppercase", color: activeTab === tab ? "#FFFDF8" : "#8A7F72", background: "none", border: "none", borderBottom: activeTab === tab ? "1px solid #FFFDF8" : "1px solid transparent", padding: "18px 32px 17px", cursor: "pointer", marginBottom: -1, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 10 }}
                 onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#DED4C8"; }}
                 onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#8A7F72"; }}>
@@ -129,12 +143,7 @@ export function ShowsPage() {
             ))}
           </motion.div>
 
-          {/* Column headers */}
-          <motion.div initial={{ opacity: 0 }} animate={tableInView ? { opacity: 1 } : {}} transition={{ duration: 0.4, delay: 0.15 }} className="hidden lg:grid lg:grid-cols-12 gap-6 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-            {[{ label: "Date", span: "lg:col-span-2 text-center" }, { label: "Event", span: "lg:col-span-3" }, { label: "Location", span: "lg:col-span-4" }, { label: "Type", span: "lg:col-span-1" }, { label: "", span: "lg:col-span-2" }].map(({ label, span }) => (
-              <span key={label} className={span} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", letterSpacing: "0.24em", textTransform: "uppercase", color: "#8A7F72" }}>{label}</span>
-            ))}
-          </motion.div>
+
 
           {/* Show rows */}
           <AnimatePresence mode="wait">
@@ -209,40 +218,86 @@ function ShowRow({ show, index, inView, isPast, isLast }: { show: Show; index: n
   const { dayOfWeek, day, month, year } = parseDateString(show.date);
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.05 + index * 0.07 }} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", backgroundColor: hovered ? "rgba(255,255,255,0.025)" : "transparent", transition: "background-color 0.3s" }}>
-      {/* Desktop */}
-      <div className="hidden lg:grid lg:grid-cols-12 gap-6 items-center py-7">
-        <div className="lg:col-span-2 flex justify-center">
-          <div className="flex flex-col items-center gap-1 mt-1 text-center">
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", marginBottom: -4 }}>{dayOfWeek}</span>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2.3rem", fontWeight: 300, color: isPast ? "#8A7F72" : hovered ? "#FFFDF8" : "#F0EAE3", lineHeight: 1, letterSpacing: "-0.02em", transition: "color 0.3s" }}>{day}</span>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496" }}>{month} {year}</span>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: 0.05 + index * 0.07 }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative overflow-hidden group"
+      style={{
+        borderBottom: "1px solid rgba(255,255,255,0.07)",
+        backgroundColor: hovered && !show.coverUrl ? "rgba(255,255,255,0.025)" : "transparent",
+        transition: "background-color 0.3s"
+      }}
+    >
+      {/* Background Image Logic */}
+      {show.coverUrl && (
+        <div className="absolute inset-0 z-0 pointer-events-none flex justify-center">
+          <img
+            src={show.coverUrl}
+            alt={show.event}
+            className="object-cover object-center transition-opacity duration-500 w-full h-full"
+            style={{
+              opacity: hovered ? 0.85 : 0.55,
+              filter: "grayscale(20%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
+              maskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)"
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to right, rgba(17,16,15,0.92) 0%, rgba(17,16,15,0.4) 45%, rgba(17,16,15,0.7) 100%)"
+            }}
+          />
+        </div>
+      )}
+
+      <div className="relative z-10 px-4 lg:px-6 py-10 lg:py-16">
+        {/* Desktop */}
+        <div className="hidden lg:flex items-center w-full min-h-[160px]">
+          <div className="flex flex-1 items-center gap-10">
+            <div className="flex flex-col items-center justify-center min-w-[90px]">
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", marginBottom: -4 }}>{dayOfWeek}</span>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "3.2rem", fontWeight: 300, color: isPast ? "#8A7F72" : hovered ? "#FFFDF8" : "#F0EAE3", lineHeight: 1, letterSpacing: "-0.02em", transition: "color 0.3s" }}>{day}</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", mt: 1 }}>{month} {year}</span>
+              {show.time && <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.75rem", color: isPast ? "#6E655B" : "#B0A496", marginTop: 8 }}>{show.time}</span>}
+            </div>
+
+            {/* Event Info */}
+            <div className="flex flex-col items-start flex-1 max-w-[65%]">
+              <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.45rem", fontWeight: 500, color: isPast ? "#B0A496" : hovered ? "#FFFDF8" : "#F7F2EC", letterSpacing: "0.01em", transition: "color 0.3s", lineHeight: 1.3, marginBottom: 8 }}>{show.event}</h3>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", color: isPast ? "#A09588" : hovered ? "#FFFDF8" : "#E8E1D8", fontWeight: 400, lineHeight: 1.35, marginBottom: 2, transition: "color 0.3s" }}>{show.venue}</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", color: isPast ? "#8A7F72" : "#CDC1B3", fontWeight: 300, lineHeight: 1.5, marginBottom: 12 }}>{show.city}, {show.country}</p>
+
+              <div className="flex items-center gap-4">
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: isPast ? "#5B534A" : "#8A7F72", border: "1px solid", borderColor: isPast ? "#342F2A" : "rgba(255,255,255,0.09)", padding: "4px 10px", display: "inline-block" }}>{show.type}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side CTA (always show on the right) */}
+          <div className="flex items-center justify-end min-w-[150px]">
+            <ShowCta show={show} hovered={hovered} isPast={isPast} />
           </div>
         </div>
-        <div className="lg:col-span-3 pt-2">
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", fontWeight: 500, color: isPast ? "#B0A496" : hovered ? "#FFFDF8" : "#F7F2EC", letterSpacing: "0.01em", transition: "color 0.3s", lineHeight: 1.35 }}>{show.event}</p>
-        </div>
-        <div className="lg:col-span-4 pt-2">
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.95rem", color: isPast ? "#A09588" : hovered ? "#FFFDF8" : "#E8E1D8", fontWeight: 400, lineHeight: 1.35, marginBottom: 3, transition: "color 0.3s" }}>{show.venue}</p>
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.78rem", color: isPast ? "#8A7F72" : "#CDC1B3", fontWeight: 300, lineHeight: 1.5 }}>{show.city}, {show.country}</p>
-        </div>
-        <div className="lg:col-span-1">
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: isPast ? "#5B534A" : "#8A7F72", border: "1px solid", borderColor: isPast ? "#342F2A" : "rgba(255,255,255,0.09)", padding: "4px 10px", display: "inline-block" }}>{show.type}</span>
-        </div>
-        <div className="lg:col-span-2 flex justify-end">
-          <ShowCta show={show} hovered={hovered} isPast={isPast} />
-        </div>
-      </div>
-      {/* Mobile */}
-      <div className="lg:hidden py-8">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#B0A496", marginBottom: 8 }}>{dayOfWeek}, {month} {day}, {year}</p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", fontWeight: 500, color: "#F7F2EC", marginBottom: 6, lineHeight: 1.3 }}>{show.event}</p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.9rem", color: "#E8E1D8", fontWeight: 400, marginBottom: 3 }}>{show.venue}</p>
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.78rem", color: "#CDC1B3", fontWeight: 300 }}>{show.city}, {show.country} · {show.type}</p>
+
+        {/* Mobile */}
+        <div className="lg:hidden flex flex-col gap-5">
+          <div className="flex flex-col gap-1">
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", marginBottom: 8 }}>
+              {dayOfWeek}, {month} {day}, {year} {show.time && ` • ${show.time}`}
+            </p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.2rem", fontWeight: 500, color: isPast ? "#B0A496" : "#F7F2EC", marginBottom: 4, lineHeight: 1.3 }}>{show.event}</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.95rem", color: isPast ? "#A09588" : "#E8E1D8", fontWeight: 400, marginBottom: 2 }}>{show.venue}</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", color: isPast ? "#8A7F72" : "#CDC1B3", fontWeight: 300, marginBottom: 12 }}>{show.city}, {show.country}</p>
+
+            <div className="flex items-center justify-between mt-2">
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: isPast ? "#5B534A" : "#8A7F72", border: "1px solid", borderColor: isPast ? "#342F2A" : "rgba(255,255,255,0.09)", padding: "4px 10px", display: "inline-block" }}>{show.type}</span>
+              <ShowCta show={show} hovered={false} isPast={isPast} />
+            </div>
           </div>
-          <ShowCta show={show} hovered={false} isPast={isPast} />
         </div>
       </div>
     </motion.div>

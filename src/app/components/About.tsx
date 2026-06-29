@@ -4,12 +4,7 @@ import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-const stats = [
-  { value: "20+", label: "Years of Performance" },
-  { value: "300+", label: "Live Concerts" },
-  { value: "12", label: "Studio Albums" },
-  { value: "8", label: "International Awards" },
-];
+
 
 export function About() {
   const ref = useRef(null);
@@ -133,6 +128,7 @@ export function About() {
                   color: "#BFB3A5",
                   fontWeight: 300,
                   marginBottom: "1.5rem",
+                  textAlign: "justify",
                 }}
               >
                 Nguyen Minh is a Hanoi-born composer and multi-instrumentalist whose
@@ -148,6 +144,7 @@ export function About() {
                   lineHeight: 1.9,
                   color: "#B0A496",
                   fontWeight: 300,
+                  textAlign: "justify",
                 }}
               >
                 His compositions have been performed at venues spanning Carnegie Hall,
@@ -177,45 +174,7 @@ export function About() {
               </Link>
             </motion.div>
 
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.35 }}
-              className="grid grid-cols-2 gap-px mt-14"
-              style={{ border: "1px solid rgba(255,255,255,0.07)", backgroundColor: "rgba(255,255,255,0.07)" }}
-            >
-              {stats.map((s) => (
-                <div
-                  key={s.label}
-                  className="flex flex-col gap-1 p-7"
-                  style={{ backgroundColor: "#11100F" }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: "2.4rem",
-                      fontWeight: 300,
-                      color: "#FFFDF8",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {s.value}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: "0.65rem",
-                      letterSpacing: "0.15em",
-                      textTransform: "uppercase",
-                      color: "#A09588",
-                    }}
-                  >
-                    {s.label}
-                  </span>
-                </div>
-              ))}
-            </motion.div>
+
           </div>
         </div>
       </div>

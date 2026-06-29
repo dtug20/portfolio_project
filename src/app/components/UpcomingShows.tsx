@@ -2,53 +2,27 @@ import { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
-const shows = [
-  {
-    id: 1,
-    date: "2026-10-12",
-    event: "Soul Live Project Arena",
-    venue: "Soul Live Project Arena",
-    type: "Personal",
-    city: "Ho Chi Minh City",
-    country: "VN",
-    status: "tickets" as const,
-    soldOut: false,
-  },
-  {
-    id: 2,
-    date: "2026-11-04",
-    event: "Hanoi International Music Festival",
-    venue: "Hanoi Opera House",
-    type: "S.E Project",
-    city: "Hanoi",
-    country: "VN",
-    status: "rsvp" as const,
-    soldOut: false,
-  },
-  {
-    id: 3,
-    date: "2026-11-28",
-    event: "Esplanade Concert Hall",
-    venue: "Esplanade Concert Hall",
-    type: "Bluemato",
-    city: "Singapore",
-    country: "SG",
-    status: "tickets" as const,
-    soldOut: true,
-  },
-  {
-    id: 4,
-    date: "2027-01-17",
-    event: "Sydney Opera House",
-    venue: "Sydney Opera House",
-    type: "Personal",
-    city: "Sydney",
-    country: "AU",
-    status: "tickets" as const,
-    soldOut: false,
-  },
-];
+type ShowStatus = "tickets" | "rsvp" | "sold_out" | "details";
+
+interface Show {
+  _id?: string;
+  id?: number;
+  date: string;
+  event: string;
+  venue: string;
+  city: string;
+  country: string;
+  type: string;
+  status: ShowStatus;
+  ticketUrl?: string;
+  isPast: boolean;
+  coverUrl?: string;
+  soldOut?: boolean;
+  time?: string;
+}
 
 function parseDateString(dateStr: string) {
   if (!dateStr) return { dayOfWeek: "", day: "", month: "", year: "" };
@@ -67,6 +41,9 @@ function parseDateString(dateStr: string) {
 export function UpcomingShows() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+
+  const dbUpcoming = useQuery(api.shows.listUpcoming);
+  const shows: Show[] = dbUpcoming ? dbUpcoming.slice(0, 4) : [];
 
   return (
     <section
@@ -114,37 +91,12 @@ export function UpcomingShows() {
           </motion.h2>
         </div>
 
-        {/* Column headers — desktop only */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="hidden md:grid grid-cols-12 gap-6 mb-0 pb-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
-        >
-          {["Date", "Event", "Location", ""].map((col, i) => (
-            <span
-              key={i}
-              className={
-                i === 0 ? "col-span-2 text-center" : i === 1 ? "col-span-3" : i === 2 ? "col-span-4" : "col-span-3 text-right"
-              }
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.85rem",
-                letterSpacing: "0.24em",
-                textTransform: "uppercase",
-                color: "#8A7F72",
-              }}
-            >
-              {col}
-            </span>
-          ))}
-        </motion.div>
+
 
         {/* Show Rows */}
         <div>
           {shows.map((show, i) => (
-            <ShowRow key={show.id} show={show} index={i} inView={inView} />
+            <ShowRow key={show._id ?? show.id} show={show} index={i} inView={inView} />
           ))}
         </div>
 
@@ -186,7 +138,7 @@ function ShowRow({
   index,
   inView,
 }: {
-  show: (typeof shows)[0];
+  show: Show;
   index: number;
   inView: boolean;
 }) {
@@ -200,195 +152,83 @@ function ShowRow({
       transition={{ duration: 0.55, delay: 0.25 + index * 0.08 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="relative overflow-hidden group"
       style={{
         borderBottom: "1px solid rgba(255,255,255,0.07)",
-        padding: "28px 0",
+        backgroundColor: hovered && !show.coverUrl ? "rgba(255,255,255,0.025)" : "transparent",
         transition: "background-color 0.3s",
-        backgroundColor: hovered ? "rgba(255,255,255,0.025)" : "transparent",
       }}
     >
-      {/* Desktop layout */}
-      <div className="hidden md:grid grid-cols-12 gap-6 items-center">
-        {/* Date */}
-        <div className="col-span-2 flex justify-center">
-          <div className="flex flex-col items-center gap-1 mt-1 text-center">
-            <span
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.65rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "#B0A496",
-                marginBottom: -4,
-              }}
-            >
-              {dayOfWeek}
-            </span>
-            <span
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "2.3rem",
-                fontWeight: 300,
-                color: hovered ? "#FFFDF8" : "#F0EAE3",
-                transition: "color 0.3s",
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              {day}
-            </span>
-            <span
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.68rem",
-                letterSpacing: "0.15em",
-                color: "#A09588",
-                textTransform: "uppercase",
-              }}
-            >
-              {month} {year}
-            </span>
+      {/* Background Image Logic */}
+      {show.coverUrl && (
+        <div className="absolute inset-0 z-0 pointer-events-none flex justify-center">
+          <img 
+            src={show.coverUrl} 
+            alt={show.event}
+            className="object-cover object-center transition-opacity duration-500 w-full h-full"
+            style={{ 
+              opacity: hovered ? 0.85 : 0.55,
+              filter: "grayscale(20%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
+              maskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)"
+            }}
+          />
+          <div 
+            className="absolute inset-0" 
+            style={{ 
+              background: "linear-gradient(to right, rgba(17,16,15,0.92) 0%, rgba(17,16,15,0.4) 45%, rgba(17,16,15,0.7) 100%)" 
+            }} 
+          />
+        </div>
+      )}
+
+      {/* Content wrapper */}
+      <div className="relative z-10 px-4 md:px-0 py-10 md:py-16">
+        {/* Desktop Layout */}
+        <div className="hidden md:flex items-center w-full min-h-[160px]">
+          {/* Left side: Date & Info */}
+          <div className="flex flex-1 items-center gap-10">
+            {/* Date */}
+            <div className="flex flex-col items-center justify-center min-w-[90px]">
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#B0A496", marginBottom: -4 }}>{dayOfWeek}</span>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "3.2rem", fontWeight: 300, color: hovered ? "#FFFDF8" : "#F0EAE3", lineHeight: 1, letterSpacing: "-0.02em", transition: "color 0.3s" }}>{day}</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#A09588", mt: 1 }}>{month} {year}</span>
+              {show.time && <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.75rem", color: "#A09588", marginTop: 8 }}>{show.time}</span>}
+            </div>
+
+            {/* Event Info */}
+            <div className="flex flex-col items-start flex-1 max-w-[65%]">
+              <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.45rem", fontWeight: 500, color: hovered ? "#FFFDF8" : "#F7F2EC", letterSpacing: "0.01em", transition: "color 0.3s", lineHeight: 1.3, marginBottom: 8 }}>{show.event}</h3>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.05rem", color: hovered ? "#FFFDF8" : "#E8E1D8", fontWeight: 400, lineHeight: 1.35, marginBottom: 2, transition: "color 0.3s" }}>{show.venue}</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", color: "#CDC1B3", fontWeight: 300, lineHeight: 1.5, marginBottom: 12 }}>{show.city}, {show.country}</p>
+              
+              <div className="flex items-center gap-4">
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A7F72", border: "1px solid", borderColor: "rgba(255,255,255,0.09)", padding: "4px 10px", display: "inline-block" }}>{show.type}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side CTA (always show on the right) */}
+          <div className="flex items-center justify-end min-w-[150px]">
+            <CtaButton show={show} hovered={hovered} />
           </div>
         </div>
 
-        {/* Event */}
-        <div className="col-span-3 flex flex-col gap-1 pt-1">
-          <div className="flex items-center gap-4">
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "1.05rem",
-                fontWeight: 500,
-                color: hovered ? "#FFFDF8" : "#F7F2EC",
-                transition: "color 0.3s",
-                letterSpacing: "0.01em",
-                lineHeight: 1.35,
-              }}
-            >
-              {show.event}
-            </p>
-            {show.soldOut && (
-              <span
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.5rem",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "#A09588",
-                  border: "1px solid #514A42",
-                  padding: "2px 7px",
-                }}
-              >
-                Sold Out
-              </span>
-            )}
-          </div>
-          <span
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "0.62rem",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "#8A7F72",
-              border: "1px solid",
-              borderColor: "rgba(255,255,255,0.09)",
-              padding: "4px 10px",
-              display: "inline-block",
-              alignSelf: "flex-start",
-              marginTop: 4,
-            }}
-          >
-            {show.type}
-          </span>
-        </div>
-
-        {/* Location */}
-        <div className="col-span-4 flex flex-col pt-1">
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "0.95rem",
-              color: hovered ? "#FFFDF8" : "#E8E1D8",
-              fontWeight: 400,
-              lineHeight: 1.35,
-              marginBottom: 3,
-              transition: "color 0.3s",
-            }}
-          >
-            {show.venue}
-          </p>
-          <p
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: "0.78rem",
-              color: "#CDC1B3",
-              fontWeight: 300,
-              lineHeight: 1.5,
-            }}
-          >
-            {show.city}, {show.country}
-          </p>
-        </div>
-
-        {/* CTA */}
-        <div className="col-span-3 flex justify-end">
-          <CtaButton show={show} hovered={hovered} />
-        </div>
-      </div>
-
-      {/* Mobile layout */}
-      <div className="md:hidden py-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-1 flex-1">
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.68rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color: "#B0A496",
-                marginBottom: 4,
-              }}
-            >
-              {dayOfWeek}, {month} {day}, {year}
-            </p>
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "1.05rem",
-                fontWeight: 500,
-                color: "#F7F2EC",
-                marginBottom: 2,
-                lineHeight: 1.3,
-              }}
-            >
-              {show.event}
-            </p>
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.95rem",
-                color: "#E8E1D8",
-                fontWeight: 400,
-                lineHeight: 1.35,
-                marginTop: 4,
-                marginBottom: 2,
-              }}
-            >
-              {show.venue}
-            </p>
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.78rem",
-                color: "#CDC1B3",
-                fontWeight: 300,
-              }}
-            >
-              {show.city}, {show.country}
-            </p>
-          </div>
-          <CtaButton show={show} hovered={false} />
+        {/* Mobile Layout */}
+        <div className="md:hidden flex flex-col gap-5">
+           <div className="flex flex-col gap-1">
+             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#B0A496", marginBottom: 8 }}>
+               {dayOfWeek}, {month} {day}, {year} {show.time && ` • ${show.time}`}
+             </p>
+             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.2rem", fontWeight: 500, color: "#F7F2EC", marginBottom: 4, lineHeight: 1.3 }}>{show.event}</p>
+             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.95rem", color: "#E8E1D8", fontWeight: 400, marginBottom: 2 }}>{show.venue}</p>
+             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", color: "#CDC1B3", fontWeight: 300, marginBottom: 12 }}>{show.city}, {show.country}</p>
+             
+             <div className="flex items-center justify-between mt-2">
+               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A7F72", border: "1px solid", borderColor: "rgba(255,255,255,0.09)", padding: "4px 10px", display: "inline-block" }}>{show.type}</span>
+               <CtaButton show={show} hovered={false} />
+             </div>
+           </div>
         </div>
       </div>
     </motion.div>
@@ -399,13 +239,13 @@ function CtaButton({
   show,
   hovered,
 }: {
-  show: (typeof shows)[0];
+  show: Show;
   hovered: boolean;
 }) {
   const [btnHovered, setBtnHovered] = useState(false);
   const active = hovered || btnHovered;
 
-  if (show.soldOut) {
+  if (show.soldOut || show.status === "sold_out") {
     return (
       <span
         style={{
@@ -426,9 +266,8 @@ function CtaButton({
   }
 
   const handleClick = () => {
-    // Note: UpcomingShows static data doesn't currently use ticketUrl, but adding for future compatibility
-    if ('ticketUrl' in show && show.ticketUrl) {
-      let url = show.ticketUrl as string;
+    if (show.ticketUrl) {
+      let url = show.ticketUrl;
       if (!/^https?:\/\//i.test(url)) {
         url = "https://" + url;
       }

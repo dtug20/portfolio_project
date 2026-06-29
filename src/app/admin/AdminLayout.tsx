@@ -10,6 +10,7 @@ import {
   X,
   ChevronRight,
   LayoutDashboard,
+  BookOpen,
 } from "lucide-react";
 import { useAdminAuth } from "./hooks/useAdminAuth";
 import { Toaster } from "sonner";
@@ -24,7 +25,9 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Tổng quan", path: "/admin", icon: <LayoutDashboard size={15} strokeWidth={1.5} /> },
   { label: "Lịch diễn", path: "/admin/shows", icon: <Calendar size={15} strokeWidth={1.5} /> },
+  { label: "Thư viện ảnh", path: "/admin/gallery", icon: <Film size={15} strokeWidth={1.5} /> },
   { label: "Tác phẩm & Media", path: "/admin/media", icon: <Film size={15} strokeWidth={1.5} /> },
+  { label: "Blog", path: "/admin/blog", icon: <BookOpen size={15} strokeWidth={1.5} /> },
   { label: "Hồ sơ nghệ sĩ", path: "/admin/artist", icon: <User size={15} strokeWidth={1.5} /> },
   { label: "Cài đặt", path: "/admin/settings", icon: <Settings size={15} strokeWidth={1.5} /> },
 ];

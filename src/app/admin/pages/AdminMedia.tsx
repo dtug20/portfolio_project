@@ -4,7 +4,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { AdminLayout } from "../AdminLayout";
 import {
-  Plus, Pencil, Trash2, X, Check, Upload, Film, Music, Image, Eye, EyeOff, AlertTriangle,
+  Plus, Pencil, Trash2, X, Check, Upload, Film, Music, Image, Eye, EyeOff, AlertTriangle, Star
 } from "lucide-react";
 
 type Category = "Video" | "Projects" | "Campaigns";
@@ -17,6 +17,7 @@ interface MediaForm {
   year: string;
   hasPlay: boolean;
   isPublished: boolean;
+  isFeatured: boolean;
   coverUrl: string;
   videoUrl: string;
   audioFilename: string;
@@ -27,7 +28,7 @@ interface MediaForm {
 
 const EMPTY_FORM: MediaForm = {
   category: "Video", title: "", description: "", tag: "", year: new Date().getFullYear().toString(),
-  hasPlay: false, isPublished: true, coverUrl: "", videoUrl: "", audioFilename: "",
+  hasPlay: false, isPublished: true, isFeatured: false, coverUrl: "", videoUrl: "", audioFilename: "",
 };
 
 const CATEGORIES: Category[] = ["Video", "Projects", "Campaigns"];
@@ -61,7 +62,7 @@ export function AdminMedia() {
   const openEdit = (item: any) => {
     setForm({
       category: item.category, title: item.title, description: item.description,
-      tag: item.tag, year: item.year, hasPlay: item.hasPlay, isPublished: item.isPublished,
+      tag: item.tag, year: item.year, hasPlay: item.hasPlay, isPublished: item.isPublished, isFeatured: item.isFeatured ?? false,
       coverUrl: item.coverUrl ?? "", videoUrl: item.videoUrl ?? "", audioFilename: item.audioFilename ?? "",
       coverStorageId: item.coverStorageId, audioStorageId: item.audioStorageId,
     });
@@ -101,10 +102,13 @@ export function AdminMedia() {
 
   const handleSave = async () => {
     if (!form.title || !form.category) return;
+    if (editing !== "new") {
+      if (!window.confirm("Bạn có chắc chắn muốn lưu các thay đổi này?")) return;
+    }
     setSaving(true);
     const data = {
       category: form.category, title: form.title, description: form.description,
-      tag: form.tag, year: form.year, hasPlay: form.hasPlay, isPublished: form.isPublished,
+      tag: form.tag, year: form.year, hasPlay: form.hasPlay, isPublished: form.isPublished, isFeatured: form.isFeatured,
       order: editing === "new" ? items.length : (items.find((i) => i._id === editing)?.order ?? items.length),
       coverUrl: form.coverStorageId ? undefined : form.coverUrl || undefined,
       coverStorageId: form.coverStorageId,
@@ -124,9 +128,15 @@ export function AdminMedia() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    await removeItem({ id: id as Id<"mediaItems"> });
-    setDeleteConfirm(null);
+  const handleDeleteFromForm = async () => {
+    if (!editing || editing === "new") return;
+    if (!window.confirm("Bạn có chắc chắn muốn xóa tác phẩm này không? Hành động này không thể hoàn tác.")) return;
+    try {
+      await removeItem({ id: editing as Id<"mediaItems"> });
+      setEditing(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleSeed = async () => {
@@ -135,8 +145,49 @@ export function AdminMedia() {
     setSeeding(false);
   };
 
-  const togglePublish = async (item: any) => {
-    await updateItem({ id: item._id as Id<"mediaItems">, ...item, isPublished: !item.isPublished });
+  const togglePublish = async (e: React.MouseEvent, item: any) => {
+    e.stopPropagation();
+    await updateItem({ 
+      id: item._id as Id<"mediaItems">, 
+      category: item.category,
+      title: item.title,
+      description: item.description,
+      tag: item.tag,
+      year: item.year,
+      hasPlay: item.hasPlay,
+      isPublished: !item.isPublished,
+      order: item.order,
+      coverStorageId: item.coverStorageId,
+      coverUrl: item.coverUrl,
+      videoUrl: item.videoUrl,
+      videoStorageId: item.videoStorageId,
+      audioStorageId: item.audioStorageId,
+      audioFilename: item.audioFilename,
+      galleryStorageIds: item.galleryStorageIds,
+    });
+  };
+
+  const toggleFeature = async (e: React.MouseEvent, item: any) => {
+    e.stopPropagation();
+    await updateItem({ 
+      id: item._id as Id<"mediaItems">, 
+      category: item.category,
+      title: item.title,
+      description: item.description,
+      tag: item.tag,
+      year: item.year,
+      hasPlay: item.hasPlay,
+      isPublished: item.isPublished,
+      isFeatured: !item.isFeatured,
+      order: item.order,
+      coverStorageId: item.coverStorageId,
+      coverUrl: item.coverUrl,
+      videoUrl: item.videoUrl,
+      videoStorageId: item.videoStorageId,
+      audioStorageId: item.audioStorageId,
+      audioFilename: item.audioFilename,
+      galleryStorageIds: item.galleryStorageIds,
+    });
   };
 
   return (
@@ -168,15 +219,16 @@ export function AdminMedia() {
         ))}
       </div>
 
-      {/* Edit form */}
+      {/* Edit form (Modal) */}
       {editing && (
-        <div style={styles.formCard}>
-          <div style={styles.formHeader}>
-            <span style={styles.formTitle}>{editing === "new" ? "Thêm tác phẩm mới" : "Chỉnh sửa tác phẩm"}</span>
-            <button onClick={() => setEditing(null)} style={styles.iconBtn}><X size={16} strokeWidth={1.5} /></button>
-          </div>
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div style={{ ...styles.formCard, maxHeight: "90vh", overflowY: "auto", width: "100%", maxWidth: 800 }}>
+            <div style={styles.formHeader}>
+              <span style={styles.formTitle}>{editing === "new" ? "Thêm tác phẩm mới" : "Chỉnh sửa tác phẩm"}</span>
+              <button onClick={() => setEditing(null)} style={styles.iconBtn}><X size={16} strokeWidth={1.5} /></button>
+            </div>
 
-          <div style={styles.formGrid}>
+            <div style={styles.formGrid}>
             <Field label="Tiêu đề" required>
               <input style={styles.input} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Echoes of the Red River" />
             </Field>
@@ -268,14 +320,26 @@ export function AdminMedia() {
               <input type="checkbox" checked={form.isPublished} onChange={(e) => setForm({ ...form, isPublished: e.target.checked })} style={{ accentColor: "#111827", marginRight: 8, width: 16, height: 16 }} />
               Công bố (Published)
             </label>
+            <label style={styles.checkboxLabel}>
+              <input type="checkbox" checked={form.isFeatured} onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })} style={{ accentColor: "#111827", marginRight: 8, width: 16, height: 16 }} />
+              Nổi bật (Homepage)
+            </label>
           </div>
 
-          <div style={styles.formActions}>
-            <button onClick={() => setEditing(null)} style={styles.btnSecondary}>Hủy</button>
-            <button onClick={handleSave} disabled={saving} style={styles.btnPrimary}>
-              {saving ? "Đang lưu…" : <><Check size={16} strokeWidth={2} /> Lưu</>}
-            </button>
+          <div style={{ ...styles.formActions, justifyContent: "space-between" }}>
+            {editing !== "new" ? (
+              <button onClick={handleDeleteFromForm} style={{ ...styles.iconBtn, color: "#EF4444", border: "1px solid #FCA5A5", padding: "8px 16px", borderRadius: 6, display: "flex", alignItems: "center", gap: 6, cursor: "pointer", background: "#FEF2F2" }}>
+                <Trash2 size={16} strokeWidth={1.5} /> Delete
+              </button>
+            ) : <div />}
+            <div style={{ display: "flex", gap: 12 }}>
+              <button onClick={() => setEditing(null)} style={styles.btnSecondary}>Hủy</button>
+              <button onClick={handleSave} disabled={saving} style={styles.btnPrimary}>
+                {saving ? "Đang lưu…" : <><Check size={16} strokeWidth={2} /> Lưu</>}
+              </button>
+            </div>
           </div>
+        </div>
         </div>
       )}
 
@@ -290,7 +354,7 @@ export function AdminMedia() {
       ) : (
         <div style={styles.grid}>
           {displayed.map((item) => (
-            <div key={item._id} style={styles.card}>
+            <div key={item._id} onClick={() => openEdit(item)} style={{ ...styles.card, cursor: "pointer" }}>
               {/* Cover */}
               <div style={styles.cardCover}>
                 {item.coverUrl ? (
@@ -302,6 +366,7 @@ export function AdminMedia() {
                 <div style={styles.cardOverlay}>
                   <span style={styles.catBadge}>{item.category}</span>
                   {item.hasPlay && <span style={styles.playBadge}>▶</span>}
+                  {item.isFeatured && <span style={styles.featureBadge}><Star size={10} fill="#FDE047" color="#FDE047" style={{ marginRight: 4 }}/> Nổi bật</span>}
                   {!item.isPublished && <span style={styles.draftBadge}>Bản nháp</span>}
                 </div>
               </div>
@@ -323,17 +388,20 @@ export function AdminMedia() {
               </div>
               {/* Actions */}
               <div style={styles.cardActions}>
-                <button onClick={() => togglePublish(item)} style={styles.iconBtn} title={item.isPublished ? "Ẩn" : "Hiện"}>
-                  {item.isPublished ? <Eye size={16} strokeWidth={1.5} color="#10B981" /> : <EyeOff size={16} strokeWidth={1.5} color="#9CA3AF" />}
+                <button 
+                  onClick={(e) => toggleFeature(e, item)} 
+                  style={{ ...styles.iconBtn, flex: 1, justifyContent: "center", backgroundColor: item.isFeatured ? "#FEF9C3" : "#F3F4F6", color: item.isFeatured ? "#CA8A04" : "#6B7280", borderRadius: 4, padding: "8px 0" }} 
+                  title={item.isFeatured ? "Đang nổi bật (Click để bỏ)" : "Bình thường (Click để nổi bật)"}
+                >
+                  <Star size={16} strokeWidth={1.5} fill={item.isFeatured ? "#CA8A04" : "none"} style={{ marginRight: 6 }}/> {item.isFeatured ? "Đã nổi bật" : "Nổi bật"}
                 </button>
-                <button onClick={() => openEdit(item)} style={styles.iconBtn} title="Sửa"><Pencil size={16} strokeWidth={1.5} /></button>
-                {deleteConfirm === item._id ? (
-                  <button onClick={() => handleDelete(item._id)} style={{ ...styles.iconBtn, color: "#EF4444" }} title="Xác nhận xóa">
-                    <AlertTriangle size={16} strokeWidth={1.5} />
-                  </button>
-                ) : (
-                  <button onClick={() => setDeleteConfirm(item._id)} style={styles.iconBtn} title="Xóa"><Trash2 size={16} strokeWidth={1.5} /></button>
-                )}
+                <button 
+                  onClick={(e) => togglePublish(e, item)} 
+                  style={{ ...styles.iconBtn, flex: 1, justifyContent: "center", backgroundColor: item.isPublished ? "#ECFDF5" : "#F3F4F6", color: item.isPublished ? "#10B981" : "#6B7280", borderRadius: 4, padding: "8px 0" }} 
+                  title={item.isPublished ? "Đang công bố (Click để ẩn)" : "Bản nháp (Click để công bố)"}
+                >
+                  {item.isPublished ? <><Eye size={16} strokeWidth={1.5} style={{ marginRight: 6 }}/> Đang công bố</> : <><EyeOff size={16} strokeWidth={1.5} style={{ marginRight: 6 }}/> Bản nháp</>}
+                </button>
               </div>
             </div>
           ))}
@@ -384,6 +452,7 @@ const styles: Record<string, React.CSSProperties> = {
   catBadge: { fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", backgroundColor: "rgba(255,255,255,0.9)", color: "#111827", padding: "4px 10px", borderRadius: "4px", border: "1px solid rgba(0,0,0,0.05)" },
   playBadge: { fontSize: "0.75rem", backgroundColor: "rgba(17,24,39,0.7)", color: "#FFFFFF", padding: "4px 10px", borderRadius: "4px", backdropFilter: "blur(4px)" },
   draftBadge: { fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", backgroundColor: "#FEF3C7", color: "#D97706", padding: "4px 10px", borderRadius: "4px", border: "1px solid #FDE68A" },
+  featureBadge: { fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", backgroundColor: "rgba(0,0,0,0.7)", color: "#FFF", padding: "4px 10px", borderRadius: "4px", display: "flex", alignItems: "center" },
   cardBody: { padding: "20px", flex: 1 },
   cardTitle: { fontSize: "1.125rem", fontWeight: 600, color: "#111827", margin: "0 0 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const },
   cardMeta: { fontSize: "0.875rem", color: "#6B7280", margin: "0 0 12px" },

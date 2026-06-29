@@ -5,6 +5,7 @@ import { AboutPage } from "./pages/AboutPage";
 import { MediaPage } from "./pages/MediaPage";
 import { ServicesPage } from "./pages/ServicesPage";
 import { ShowsPage } from "./pages/ShowsPage";
+import { BlogDetailPage } from "./pages/BlogDetailPage";
 import { AdminRoot } from "./admin/AdminRoot";
 
 export const router = createBrowserRouter([
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: "media", Component: MediaPage },
       { path: "services", Component: ServicesPage },
       { path: "shows", Component: ShowsPage },
+      { path: "blog/:id", Component: BlogDetailPage },
     ],
   },
   // ── Admin CRM ────────────────────────────────────────────

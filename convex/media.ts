@@ -54,6 +54,28 @@ export const listPublished = query({
   },
 });
 
+export const listFeatured = query({
+  args: {},
+  handler: async (ctx) => {
+    const items = await ctx.db
+      .query("mediaItems")
+      .withIndex("by_published", (q) => q.eq("isPublished", true))
+      .filter((q) => q.eq(q.field("isFeatured"), true))
+      .order("asc")
+      .collect();
+
+    return Promise.all(
+      items.map(async (item) => {
+        let coverUrl = item.coverUrl;
+        if (item.coverStorageId) {
+          coverUrl = (await ctx.storage.getUrl(item.coverStorageId)) ?? coverUrl;
+        }
+        return { ...item, coverUrl };
+      }),
+    );
+  },
+});
+
 export const getById = query({
   args: { id: v.id("mediaItems") },
   handler: async (ctx, { id }) => {
@@ -84,6 +106,7 @@ const mediaArgs = {
   year: v.string(),
   hasPlay: v.boolean(),
   isPublished: v.boolean(),
+  isFeatured: v.optional(v.boolean()),
   order: v.number(),
   coverStorageId: v.optional(v.id("_storage")),
   coverUrl: v.optional(v.string()),

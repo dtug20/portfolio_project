@@ -3,7 +3,8 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { AdminLayout } from "../AdminLayout";
-import { Plus, Trash2, Calendar, X, Check } from "lucide-react";
+import { useRef } from "react";
+import { Plus, Trash2, Calendar, X, Check, Upload, Image } from "lucide-react";
 import { toast } from "sonner";
 
 type ShowStatus = "tickets" | "rsvp" | "sold_out" | "details";
@@ -18,14 +19,17 @@ interface ShowForm {
   status: ShowStatus;
   ticketUrl: string;
   isPast: boolean;
+  time: string;
   notes: string;
+  coverUrl: string;
+  coverStorageId?: Id<"_storage">;
 }
 
 const EMPTY_FORM: ShowForm = {
-  date: "",
+  date: "", time: "",
   event: "", venue: "", city: "", country: "",
   type: "", status: "tickets", ticketUrl: "",
-  isPast: false, notes: "",
+  isPast: false, notes: "", coverUrl: "",
 };
 
 const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
@@ -41,15 +45,18 @@ export function AdminShows() {
   const createShow = useMutation(api.shows.create);
   const updateShow = useMutation(api.shows.update);
   const removeShow = useMutation(api.shows.remove);
+  const generateUploadUrl = useMutation(api.shows.generateUploadUrl);
   const seedShows = useMutation(api.shows.seedInitialShows);
 
   const [activeType, setActiveType] = useState<string>("All");
   const [editing, setEditing] = useState<string | null>(null); // show id or "new"
   const [form, setForm] = useState<ShowForm>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
-  const types = ["All", ...Array.from(new Set(allShows.map(s => s.type || "").filter(Boolean)))];
+  const types = ["All", ...Array.from(new Set(["S.E Project", "Bluemato", "Personal", "OPEN Project", ...allShows.map(s => s.type || "").filter(Boolean)]))];
 
   const displayed = allShows
     .filter((s) => activeType === "All" || s.type === activeType)
@@ -62,13 +69,52 @@ export function AdminShows() {
 
   const openEdit = (show: any) => {
     setForm({
-      date: show.date,
-      event: show.event, venue: show.venue, city: show.city, country: show.country,
-      type: show.type, status: show.status, ticketUrl: show.ticketUrl ?? "",
-      isPast: show.isPast, notes: show.notes ?? "",
+      date: show.date || "",
+      time: show.time || "",
+      event: show.event || "",
+      venue: show.venue || "",
+      city: show.city || "",
+      country: show.country || "",
+      type: show.type || "",
+      status: show.status || "tickets",
+      ticketUrl: show.ticketUrl || "",
+      isPast: show.isPast || false,
+      notes: show.notes || "",
+      coverUrl: show.coverUrl || "",
+      coverStorageId: show.coverStorageId,
     });
     setEditing(show._id);
   };
+
+  const uploadFile = async (file: File, setUploading: (u: boolean) => void): Promise<Id<"_storage">> => {
+    setUploading(true);
+    try {
+      const uploadUrl = await generateUploadUrl();
+      const res = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      const { storageId } = await res.json();
+      return storageId as Id<"_storage">;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    try {
+      const storageId = await uploadFile(file, setUploadingCover);
+      setForm((f) => ({ ...f, coverStorageId: storageId, coverUrl: previewUrl }));
+    } catch (err) {
+      toast.error("Lỗi khi tải ảnh: Kích thước hoặc mạng");
+    }
+  };
+
+
 
   const handleSave = async () => {
     if (!form.event || !form.venue || !form.date) return;
@@ -78,13 +124,16 @@ export function AdminShows() {
     }
 
     setSaving(true);
+    const today = new Date().toISOString().split("T")[0];
     const data = {
-      date: form.date,
+      date: form.date, time: form.time || undefined,
       event: form.event, venue: form.venue, city: form.city, country: form.country,
       type: form.type, status: form.status,
       ticketUrl: form.ticketUrl || undefined,
-      isPast: form.isPast,
+      isPast: form.date < today,
       notes: form.notes || undefined,
+      coverUrl: form.coverStorageId ? undefined : form.coverUrl || undefined,
+      coverStorageId: form.coverStorageId,
     };
     try {
       if (editing === "new") {
@@ -193,9 +242,14 @@ export function AdminShows() {
             <Field label="Địa điểm">
               <input style={styles.input} value={form.venue} onChange={(e) => setForm({ ...form, venue: e.target.value })} placeholder="Hanoi Opera House" />
             </Field>
-            <Field label="Ngày diễn" required>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <Field label="Ngày diễn *">
               <input type="date" style={styles.input} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
             </Field>
+            <Field label="Thời gian">
+              <input type="time" style={styles.input} value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} />
+            </Field>
+          </div>
             <Field label="Thành phố">
               <input style={styles.input} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} placeholder="Hanoi" />
             </Field>
@@ -208,6 +262,7 @@ export function AdminShows() {
                 <option value="S.E Project">S.E Project</option>
                 <option value="Bluemato">Bluemato</option>
                 <option value="Personal">Personal</option>
+                <option value="OPEN Project">OPEN Project</option>
               </select>
             </Field>
             <Field label="Trạng thái">
@@ -222,21 +277,53 @@ export function AdminShows() {
             </Field>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8 }}>
-            <label style={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={form.isPast}
-                onChange={(e) => setForm({ ...form, isPast: e.target.checked })}
-                style={{ accentColor: "#111827", marginRight: 8, width: 16, height: 16 }}
-              />
-              Buổi diễn đã qua
-            </label>
-          </div>
+          <div style={{ paddingBottom: 8 }}></div>
 
           <Field label="Ghi chú (tùy chọn)">
             <textarea style={{ ...styles.input, minHeight: 72, resize: "vertical" }} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Thông tin thêm…" />
           </Field>
+
+          {/* Cover image */}
+          <div style={{ border: "1px solid #E5E7EB", borderRadius: "6px", padding: "16px", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              <Image size={16} strokeWidth={1.5} color="#6B7280" />
+              <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#374151" }}>Ảnh minh họa (tùy chọn)</span>
+            </div>
+            
+            {form.coverUrl ? (
+              <div style={{ position: "relative", width: "100%", height: 180, borderRadius: 8, overflow: "hidden", border: "1px solid #E5E7EB", backgroundColor: "#F3F4F6" }}>
+                <img src={form.coverUrl} alt="Cover Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <div style={{ position: "absolute", top: 8, right: 8, display: "flex", gap: 8 }}>
+                  <button onClick={(e) => { e.preventDefault(); coverInputRef.current?.click(); }} style={{ ...styles.iconBtn, backgroundColor: "rgba(255,255,255,0.9)", padding: "6px 12px", borderRadius: 4, color: "#111827", fontSize: "0.75rem", fontWeight: 500 }}>
+                    Thay đổi
+                  </button>
+                  <button onClick={(e) => { e.preventDefault(); setForm(f => ({ ...f, coverUrl: "", coverStorageId: undefined })); }} style={{ ...styles.iconBtn, backgroundColor: "rgba(239,68,68,0.9)", padding: "6px 12px", borderRadius: 4, color: "#FFF", fontSize: "0.75rem", fontWeight: 500 }}>
+                    Xóa
+                  </button>
+                </div>
+                {uploadingCover && (
+                  <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 500, color: "#111827" }}>
+                    Đang tải...
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px", border: "1px dashed #D1D5DB", borderRadius: 8, backgroundColor: "#F9FAFB" }}>
+                <Upload size={24} color="#9CA3AF" style={{ marginBottom: 12 }} />
+                <p style={{ margin: "0 0 12px 0", fontSize: "0.875rem", color: "#6B7280" }}>Chưa có ảnh tải lên</p>
+                <button
+                  onClick={(e) => { e.preventDefault(); coverInputRef.current?.click(); }}
+                  disabled={uploadingCover}
+                  style={styles.btnSecondary}
+                >
+                  <Upload size={14} strokeWidth={1.5} />
+                  {uploadingCover ? "Đang tải…" : "Chọn ảnh tải lên"}
+                </button>
+              </div>
+            )}
+            <input ref={coverInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleCoverChange} />
+          </div>
+
 
           <div style={{ ...styles.formActions, justifyContent: "space-between" }}>
             {editing !== "new" ? (

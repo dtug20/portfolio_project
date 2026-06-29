@@ -1,48 +1,75 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
+// ── Helper ────────────────────────────────────────────────
+async function resolveShowUrls(ctx: any, show: any) {
+  let coverUrl = show.coverUrl;
+  if (show.coverStorageId) {
+    coverUrl = (await ctx.storage.getUrl(show.coverStorageId)) ?? coverUrl;
+  }
+  
+  let galleryUrls: string[] = [];
+  if (show.galleryStorageIds && show.galleryStorageIds.length > 0) {
+    galleryUrls = (await Promise.all(
+      show.galleryStorageIds.map((id: string) => ctx.storage.getUrl(id))
+    )).filter(Boolean) as string[];
+  }
+  
+  return { ...show, coverUrl, galleryUrls };
+}
+
 // ── Queries ───────────────────────────────────────────────
 
 export const listUpcoming = query({
   args: {},
   handler: async (ctx) => {
-    return ctx.db
-      .query("shows")
-      .withIndex("by_is_past", (q) => q.eq("isPast", false))
-      .order("asc")
-      .collect();
+    const today = new Date().toISOString().split("T")[0];
+    const allShows = await ctx.db.query("shows").collect();
+    const upcoming = allShows.filter(s => (s.date || "") >= today);
+    upcoming.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+    return Promise.all(upcoming.map((s: any) => resolveShowUrls(ctx, { ...s, isPast: false })));
   },
 });
 
 export const listPast = query({
   args: {},
   handler: async (ctx) => {
-    return ctx.db
-      .query("shows")
-      .withIndex("by_is_past", (q) => q.eq("isPast", true))
-      .order("desc")
-      .collect();
+    const today = new Date().toISOString().split("T")[0];
+    const allShows = await ctx.db.query("shows").collect();
+    const past = allShows.filter(s => (s.date || "") < today);
+    past.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    return Promise.all(past.map((s: any) => resolveShowUrls(ctx, { ...s, isPast: true })));
   },
 });
 
 export const listAll = query({
   args: {},
   handler: async (ctx) => {
-    return ctx.db.query("shows").order("desc").collect();
+    const today = new Date().toISOString().split("T")[0];
+    const shows = await ctx.db.query("shows").order("desc").collect();
+    const processed = shows.map(s => ({ ...s, isPast: (s.date || "") < today }));
+    return Promise.all(processed.map((s: any) => resolveShowUrls(ctx, s)));
   },
 });
 
 export const getById = query({
   args: { id: v.id("shows") },
   handler: async (ctx, { id }) => {
-    return ctx.db.get(id);
+    const show = await ctx.db.get(id);
+    if (!show) return null;
+    return resolveShowUrls(ctx, show);
   },
 });
 
 // ── Mutations ─────────────────────────────────────────────
 
 const showArgs = {
-  date: v.string(),
+  date: v.optional(v.string()),
+  time: v.optional(v.string()),
+  day: v.optional(v.string()),
+  month: v.optional(v.string()),
+  year: v.optional(v.string()),
+  sortDate: v.optional(v.string()),
   event: v.string(),
   venue: v.string(),
   city: v.string(),
@@ -57,6 +84,9 @@ const showArgs = {
   ticketUrl: v.optional(v.string()),
   isPast: v.boolean(),
   notes: v.optional(v.string()),
+  coverStorageId: v.optional(v.id("_storage")),
+  coverUrl: v.optional(v.string()),
+  galleryStorageIds: v.optional(v.array(v.id("_storage"))),
 };
 
 export const create = mutation({
@@ -82,6 +112,10 @@ export const remove = mutation({
   handler: async (ctx, { id }) => {
     await ctx.db.delete(id);
   },
+});
+
+export const generateUploadUrl = mutation(async (ctx) => {
+  return await ctx.storage.generateUploadUrl();
 });
 
 // ── Seed helper (called from admin panel first time) ──────
@@ -116,3 +150,4 @@ export const seedInitialShows = mutation({
     return { seeded: upcoming.length + past.length };
   },
 });
+

@@ -84,7 +84,7 @@ export function ServicesPage() {
       {/* ── HEADER ── */}
       <section
         ref={headerRef}
-        className="relative w-full flex items-start overflow-hidden mb-0"
+        className="relative w-full h-[65vh] min-h-[500px] flex flex-col justify-end overflow-hidden mb-0"
       >
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
@@ -109,35 +109,9 @@ export function ServicesPage() {
           />
         </div>
 
-        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pt-32 pb-[120px] md:pb-[180px]">
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 pb-12 md:pb-16">
           {/* Back */}
-          <motion.div
-            initial={{ opacity: 0, x: -8 }}
-            animate={headerInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.4 }}
-            className="mb-14"
-          >
-            <Link
-              to="/"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.65rem",
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "#8A7F72",
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}
-            >
-              <ArrowLeft size={12} strokeWidth={1.5} />
-              Back to Home
-            </Link>
-          </motion.div>
+
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div>
@@ -378,25 +352,7 @@ export function ServicesPage() {
               Get in Touch <ArrowRight size={13} strokeWidth={1.5} />
             </button>
 
-            <Link
-              to="/"
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.68rem",
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "#8A7F72",
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}
-            >
-              Back to Home
-            </Link>
+
           </motion.div>
         </div>
       </section>
