@@ -89,7 +89,7 @@ export function ServicesPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="/images/hero.jpg"
+            src="/images/hero.webp"
             alt="Services"
             className="w-full h-full object-cover"
             style={{ objectPosition: "center 40%" }}

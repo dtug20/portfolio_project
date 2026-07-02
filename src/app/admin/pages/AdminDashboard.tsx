@@ -1,26 +1,44 @@
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { AdminLayout } from "../AdminLayout";
-import { Calendar, Film, User, ArrowUpRight, Clock } from "lucide-react";
+import { Calendar, Film, User, ArrowUpRight, Clock, ChevronLeft, ChevronRight, BookOpen, Mail } from "lucide-react";
 import { Link } from "react-router";
 
 export function AdminDashboard() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+
   const allShows = useQuery(api.shows.listAll) ?? [];
   const allMedia = useQuery(api.media.listAll) ?? [];
+  const allBlogs = useQuery(api.blog.listAll) ?? [];
+  const allMessages = useQuery(api.contact.list) ?? [];
   const artistInfo = useQuery(api.artist.getArtistInfo);
 
   const upcoming = allShows.filter((s) => !s.isPast).length;
   const past = allShows.filter((s) => s.isPast).length;
   const published = allMedia.filter((m) => m.isPublished).length;
   const draft = allMedia.filter((m) => !m.isPublished).length;
+  const publishedBlogs = allBlogs.filter((b) => b.isPublished).length;
+  const draftBlogs = allBlogs.filter((b) => !b.isPublished).length;
 
   const recentShows = [...allShows]
     .sort((a, b) => b.createdAt - a.createdAt)
     .slice(0, 5);
 
-  const recentMedia = [...allMedia]
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .slice(0, 5);
+  const recentMessages = allMessages.slice(0, 5);
+
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const startingDay = firstDay === 0 ? 6 : firstDay - 1; // Mon = 0, Sun = 6
+    return { daysInMonth, startingDay, year, month };
+  };
+
+  const { daysInMonth, startingDay, year, month } = getDaysInMonth(currentDate);
+  const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const blanksArray = Array.from({ length: startingDay }, (_, i) => i);
 
   return (
     <AdminLayout title="Tổng quan" subtitle={`Chào mừng trở lại, ${artistInfo?.name ?? "Admin"}`}>
@@ -44,6 +62,14 @@ export function AdminDashboard() {
           color="#3B82F6"
         />
         <StatCard
+          label="Bài viết đã đăng"
+          value={String(publishedBlogs)}
+          sub={draftBlogs > 0 ? `${draftBlogs} bản nháp` : "Tất cả đã công bố"}
+          icon={<BookOpen size={20} strokeWidth={1.5} />}
+          link="/admin/blog"
+          color="#8B5CF6"
+        />
+        <StatCard
           label="Hồ sơ nghệ sĩ"
           value={artistInfo ? "Đã cập nhật" : "Chưa có"}
           sub={artistInfo ? `Cập nhật ${timeAgo(artistInfo.updatedAt)}` : "Nhấn để thiết lập"}
@@ -55,68 +81,93 @@ export function AdminDashboard() {
 
       {/* Recent activity */}
       <div style={styles.twoCol}>
-        {/* Recent shows */}
+        {/* Calendar View */}
         <div style={styles.panel}>
           <div style={styles.panelHeader}>
-            <span style={styles.panelTitle}>Lịch diễn gần đây</span>
-            <Link to="/admin/shows" style={styles.panelLink}>
-              Xem tất cả <ArrowUpRight size={14} strokeWidth={1.5} />
-            </Link>
+            <span style={styles.panelTitle}>Lịch diễn tháng {month + 1}/{year}</span>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button 
+                onClick={() => setCurrentDate(new Date(year, month - 1, 1))}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "#6B7280", display: "flex", alignItems: "center", padding: 4 }}
+              ><ChevronLeft size={18} /></button>
+              <button 
+                onClick={() => setCurrentDate(new Date(year, month + 1, 1))}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "#6B7280", display: "flex", alignItems: "center", padding: 4 }}
+              ><ChevronRight size={18} /></button>
+            </div>
           </div>
-          {recentShows.length === 0 ? (
-            <Empty message="Chưa có buổi diễn nào" />
-          ) : (
-            recentShows.map((show) => (
-              <div key={show._id} style={styles.listRow}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={styles.listTitle}>{show.event}</p>
-                  <p style={styles.listMeta}>{show.city}, {show.country} · {show.month} {show.day}, {show.year}</p>
-                </div>
-                <span style={{
-                  ...styles.badge,
-                  backgroundColor: show.isPast ? "#F3F4F6" : "#ECFDF5",
-                  color: show.isPast ? "#6B7280" : "#059669",
-                  border: `1px solid ${show.isPast ? "#E5E7EB" : "#A7F3D0"}`,
-                }}>
-                  {show.isPast ? "Đã qua" : "Sắp tới"}
-                </span>
-              </div>
-            ))
-          )}
+          <div style={{ padding: "24px 20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8, textAlign: "center", marginBottom: 12 }}>
+              {['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].map(d => (
+                <div key={d} style={{ fontSize: "0.75rem", fontWeight: 600, color: "#6B7280" }}>{d}</div>
+              ))}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8 }}>
+              {blanksArray.map((_, i) => (
+                <div key={`blank-${i}`} style={{ height: 40 }} />
+              ))}
+              {daysArray.map((day) => {
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayShows = allShows.filter(s => s.date === dateString);
+                const hasEvent = dayShows.length > 0;
+                const isToday = new Date().toDateString() === new Date(year, month, day).toDateString();
+                
+                return (
+                  <div key={day} style={{
+                    height: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 8,
+                    fontSize: "0.875rem",
+                    backgroundColor: hasEvent ? "#ECFDF5" : isToday ? "#F3F4F6" : "transparent",
+                    color: hasEvent ? "#059669" : "#111827",
+                    fontWeight: hasEvent || isToday ? 600 : 400,
+                    border: hasEvent ? "1px solid #A7F3D0" : "1px solid transparent",
+                    cursor: hasEvent ? "pointer" : "default"
+                  }}
+                  title={hasEvent ? dayShows.map(s => s.event).join('\n') : undefined}
+                  >
+                    {day}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop: 24, textAlign: "center", borderTop: "1px solid #F3F4F6", paddingTop: 16 }}>
+              <Link to="/admin/shows" style={{ fontSize: "0.875rem", color: "#3B82F6", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4, fontWeight: 500 }}>
+                Quản lý lịch diễn <ArrowUpRight size={16} />
+              </Link>
+            </div>
+          </div>
         </div>
 
-        {/* Recent media */}
+        {/* Recent messages */}
         <div style={styles.panel}>
           <div style={styles.panelHeader}>
-            <span style={styles.panelTitle}>Tác phẩm gần đây</span>
-            <Link to="/admin/media" style={styles.panelLink}>
-              Xem tất cả <ArrowUpRight size={14} strokeWidth={1.5} />
-            </Link>
+            <span style={styles.panelTitle}>Tin nhắn liên hệ</span>
+            <span style={{ fontSize: "0.75rem", color: "#6B7280" }}>Mới nhất</span>
           </div>
-          {recentMedia.length === 0 ? (
-            <Empty message="Chưa có tác phẩm nào" />
+          {recentMessages.length === 0 ? (
+            <Empty message="Chưa có tin nhắn nào" />
           ) : (
-            recentMedia.map((item) => (
-              <div key={item._id} style={styles.listRow}>
-                {item.coverUrl && (
-                  <img
-                    src={item.coverUrl}
-                    alt={item.title}
-                    style={{ width: 48, height: 32, objectFit: "cover", flexShrink: 0, border: "1px solid #E5E7EB", borderRadius: 4 }}
-                  />
-                )}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={styles.listTitle}>{item.title}</p>
-                  <p style={styles.listMeta}>{item.category} · {item.year}</p>
-                </div>
-                <span style={{
-                  ...styles.badge,
-                  backgroundColor: item.isPublished ? "#EFF6FF" : "#FEF3C7",
-                  color: item.isPublished ? "#2563EB" : "#D97706",
-                  border: `1px solid ${item.isPublished ? "#BFDBFE" : "#FDE68A"}`,
+            recentMessages.map((msg) => (
+              <div key={msg._id} style={styles.listRow}>
+                <div style={{
+                  width: 40, height: 40, borderRadius: "50%", backgroundColor: msg.isRead ? "#F3F4F6" : "#EFF6FF",
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0
                 }}>
-                  {item.isPublished ? "Đã đăng" : "Bản nháp"}
-                </span>
+                  <Mail size={18} color={msg.isRead ? "#9CA3AF" : "#3B82F6"} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                    <p style={{ ...styles.listTitle, fontWeight: msg.isRead ? 500 : 600 }}>{msg.name}</p>
+                    <span style={{ fontSize: "0.7rem", color: "#9CA3AF" }}>{timeAgo(msg.createdAt)}</span>
+                  </div>
+                  <p style={styles.listMeta}>{msg.type} · {msg.email}</p>
+                  <p style={{ fontSize: "0.8rem", color: "#4B5563", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
+                    {msg.message}
+                  </p>
+                </div>
               </div>
             ))
           )}
@@ -130,6 +181,7 @@ export function AdminDashboard() {
           {[
             { label: "Thêm buổi diễn", to: "/admin/shows", desc: "Tạo lịch diễn mới" },
             { label: "Thêm tác phẩm", to: "/admin/media", desc: "Upload media mới" },
+            { label: "Viết blog mới", to: "/admin/blog", desc: "Đăng bài viết" },
             { label: "Sửa hồ sơ", to: "/admin/artist", desc: "Cập nhật thông tin" },
             { label: "Xem trang web", to: "/", desc: "Mở portfolio", external: true },
           ].map((item) => (

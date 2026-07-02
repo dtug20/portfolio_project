@@ -58,11 +58,6 @@ export default defineSchema({
 
   // ── Media items (tác phẩm) ──────────────────────────────
   mediaItems: defineTable({
-    category: v.union(
-      v.literal("Video"),
-      v.literal("Projects"),
-      v.literal("Campaigns"),
-    ),
     title: v.string(),
     description: v.string(),
     tag: v.string(),           // "Official Video", "Studio Album", ...
@@ -90,7 +85,6 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-    .index("by_category", ["category"])
     .index("by_order", ["order"])
     .index("by_published", ["isPublished"]),
 
@@ -161,4 +155,13 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_published", ["isPublished", "publishedAt"]),
+  // ── Contact Messages ───────────────────────────────────────
+  messages: defineTable({
+    name: v.string(),
+    email: v.string(),
+    type: v.string(),
+    message: v.string(),
+    isRead: v.boolean(),
+    createdAt: v.number(),
+  }).index("by_is_read", ["isRead"]),
 });

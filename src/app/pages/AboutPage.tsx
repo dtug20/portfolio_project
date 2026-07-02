@@ -3,8 +3,10 @@ import { motion, useInView } from "motion/react";
 import { Link } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
-const milestones = [
+const fallbackMilestones = [
   {
     year: "1985",
     title: "Born in Hanoi, Vietnam",
@@ -56,6 +58,10 @@ const milestones = [
 ];
 
 export function AboutPage() {
+  const artistInfo = useQuery(api.artist.getArtistInfo);
+  const fetchedMilestones = useQuery(api.artist.listMilestones);
+  const currentMilestones = fetchedMilestones ?? fallbackMilestones;
+
   const headerRef = useRef(null);
   const storyRef = useRef(null);
   const timelineRef = useRef(null);
@@ -74,7 +80,7 @@ export function AboutPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="/images/about.jpg"
+            src="/images/about.webp"
             alt="Biography"
             className="w-full h-full object-cover"
             style={{ objectPosition: "center" }}
@@ -139,7 +145,7 @@ export function AboutPage() {
               >
                 <ImageWithFallback
                   src="https://nguyennhatminh.carrd.co/assets/images/image01.jpg?v=b"
-                  alt="Nguyen Minh — official portrait"
+                  alt={artistInfo?.name ? `${artistInfo.name} — official portrait` : "Nguyen Minh — official portrait"}
                   className="w-full h-full object-cover"
                   style={{ filter: "grayscale(100%) contrast(1.05)" }}
                 />
@@ -168,7 +174,7 @@ export function AboutPage() {
                   textTransform: "uppercase",
                 }}
               >
-                Nguyen Minh · Hanoi, 2024
+                {artistInfo?.name || "Nguyen Minh"} · Hanoi, {new Date().getFullYear()}
               </p>
             </motion.div>
 
@@ -179,30 +185,47 @@ export function AboutPage() {
               transition={{ duration: 0.8, delay: 0.15 }}
               className="lg:col-span-8 flex flex-col gap-8"
             >
-              <BioParagraph
-                label="Early Life & Formation"
-                text="Born in Hanoi in 1985 into a family of educators and amateur musicians, Nguyen Minh's path was shaped early by the confluence of Vietnamese classical tradition and the recordings of Western masters that filled his childhood home. By the age of eight, he had composed his first piece — a short study for đàn tranh and piano — performed at his school's annual recital to standing applause."
-              />
-
-              <BioParagraph
-                label="Education"
-                text="Minh trained at the Hanoi Conservatory of Music before earning a full scholarship to the Royal College of Music in London, where he studied under Sir Harrison Birtwistle. It was in London that he developed the compositional language that would define his career: a harmonic architecture rooted in Vietnamese pentatonic modes, voiced through the vocabulary of late European modernism and filtered through a deep sensitivity to silence and space."
-              />
-
-              <BioParagraph
-                label="Artistic Philosophy"
-                text="'I am not interested in fusion as a concept,' Minh has said. 'I am interested in truth — the truth of what it sounds like to be Vietnamese, to have absorbed two musical worlds, and to speak honestly from that place.' His music avoids the superficial borrowing that characterises much cross-cultural work, instead seeking structural and emotional resonances between traditions that appear, on the surface, to have little in common."
-              />
-
-              <BioParagraph
-                label="International Career"
-                text="Over two decades of international touring have taken Minh to Carnegie Hall, the Barbican, the Seoul Arts Centre, and the Sydney Opera House, where he was named Artist in Residence for 2024–2025. His discography spans twelve studio albums, including the Grammy-nominated 'Between Silence' (Deutsche Grammophon, 2021) and the critically acclaimed film score for 'Homeland' (Best Original Score, Golden Kite Awards, 2022)."
-              />
-
-              <BioParagraph
-                label="Legacy & Teaching"
-                text="In 2018, Minh founded the Vietnam Contemporary Music Ensemble, a chamber group dedicated to premiering new works by Southeast Asian composers. He serves as a UNESCO Artist for Peace and regularly conducts masterclasses at leading conservatories across Asia, Europe, and the Americas, mentoring the next generation of composers who seek, as he does, to speak to the world from a deeply particular place."
-              />
+              {artistInfo?.aboutHeadline && (
+                <h3 style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: "2rem",
+                  fontWeight: 400,
+                  color: "#FFFDF8",
+                  marginBottom: "0.5rem",
+                  lineHeight: 1.2
+                }}>
+                  {artistInfo.aboutHeadline}
+                </h3>
+              )}
+              
+              {artistInfo?.fullBio ? (
+                artistInfo.fullBio.split('\n').filter(p => p.trim()).map((paragraph, idx) => (
+                  <BioParagraph key={idx} text={paragraph} />
+                ))
+              ) : (
+                <>
+                  <BioParagraph
+                    label="Early Life & Formation"
+                    text="Born in Hanoi in 1985 into a family of educators and amateur musicians, Nguyen Minh's path was shaped early by the confluence of Vietnamese classical tradition and the recordings of Western masters that filled his childhood home. By the age of eight, he had composed his first piece — a short study for đàn tranh and piano — performed at his school's annual recital to standing applause."
+                  />
+                  <BioParagraph
+                    label="Education"
+                    text="Minh trained at the Hanoi Conservatory of Music before earning a full scholarship to the Royal College of Music in London, where he studied under Sir Harrison Birtwistle. It was in London that he developed the compositional language that would define his career: a harmonic architecture rooted in Vietnamese pentatonic modes, voiced through the vocabulary of late European modernism and filtered through a deep sensitivity to silence and space."
+                  />
+                  <BioParagraph
+                    label="Artistic Philosophy"
+                    text="'I am not interested in fusion as a concept,' Minh has said. 'I am interested in truth — the truth of what it sounds like to be Vietnamese, to have absorbed two musical worlds, and to speak honestly from that place.' His music avoids the superficial borrowing that characterises much cross-cultural work, instead seeking structural and emotional resonances between traditions that appear, on the surface, to have little in common."
+                  />
+                  <BioParagraph
+                    label="International Career"
+                    text="Over two decades of international touring have taken Minh to Carnegie Hall, the Barbican, the Seoul Arts Centre, and the Sydney Opera House, where he was named Artist in Residence for 2024–2025. His discography spans twelve studio albums, including the Grammy-nominated 'Between Silence' (Deutsche Grammophon, 2021) and the critically acclaimed film score for 'Homeland' (Best Original Score, Golden Kite Awards, 2022)."
+                  />
+                  <BioParagraph
+                    label="Legacy & Teaching"
+                    text="In 2018, Minh founded the Vietnam Contemporary Music Ensemble, a chamber group dedicated to premiering new works by Southeast Asian composers. He serves as a UNESCO Artist for Peace and regularly conducts masterclasses at leading conservatories across Asia, Europe, and the Americas, mentoring the next generation of composers who seek, as he does, to speak to the world from a deeply particular place."
+                  />
+                </>
+              )}
             </motion.div>
           </div>
         </div>
@@ -262,13 +285,13 @@ export function AboutPage() {
             />
 
             <div className="flex flex-col">
-              {milestones.map((item, i) => (
+              {currentMilestones.map((item, i) => (
                 <TimelineRow
-                  key={item.year}
+                  key={item._id || item.year + i}
                   item={item}
                   index={i}
                   inView={timelineInView}
-                  isLast={i === milestones.length - 1}
+                  isLast={i === currentMilestones.length - 1}
                 />
               ))}
             </div>
@@ -279,21 +302,23 @@ export function AboutPage() {
   );
 }
 
-function BioParagraph({ label, text }: { label: string; text: string }) {
+function BioParagraph({ label, text }: { label?: string; text: string }) {
   return (
     <div>
-      <p
-        style={{
-          fontFamily: "'Inter', sans-serif",
-          fontSize: "0.58rem",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: "#776D62",
-          marginBottom: "0.75rem",
-        }}
-      >
-        {label}
-      </p>
+      {label && (
+        <p
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "0.58rem",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "#776D62",
+            marginBottom: "0.75rem",
+          }}
+        >
+          {label}
+        </p>
+      )}
       <p
         style={{
           fontFamily: "'Inter', sans-serif",
@@ -315,7 +340,7 @@ function TimelineRow({
   inView,
   isLast,
 }: {
-  item: (typeof milestones)[0];
+  item: any;
   index: number;
   inView: boolean;
   isLast: boolean;

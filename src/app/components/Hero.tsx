@@ -1,11 +1,19 @@
 import { motion } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ChevronDown } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 export function Hero() {
+  const artistInfo = useQuery(api.artist.getArtistInfo);
+
   const scrollToAbout = () => {
     document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const nameParts = artistInfo?.name ? artistInfo.name.split(" ") : ["Nguyen", "Minh"];
+  const lastName = nameParts.pop();
+  const firstName = nameParts.join(" ");
 
   return (
     <section
@@ -16,8 +24,8 @@ export function Hero() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <ImageWithFallback
-          src="/images/hero.jpg"
-          alt="Stage performance"
+          src="/images/hero.webp"
+          alt={artistInfo?.name || "Stage performance"}
           className="w-full h-full object-cover landscape:object-contain object-center landscape:object-left"
           style={{ transform: "scaleX(-1)" }}
         />
@@ -55,13 +63,7 @@ export function Hero() {
               lineHeight: "1.8",
             }}
           >
-            Composer
-            <span className="hidden md:inline"> · </span>
-            <br className="md:hidden" />
-            Performer
-            <span className="hidden md:inline"> · </span>
-            <br className="md:hidden" />
-            Music Director
+            {artistInfo?.subtitle || "Composer · Performer · Music Director"}
           </p>
 
           <h1
@@ -75,10 +77,9 @@ export function Hero() {
               marginBottom: "2rem",
             }}
           >
-            Nguyen
-            <br />
-
-            <em style={{ fontStyle: "italic", fontWeight: 300 }}>Minh</em>
+            {firstName}
+            {firstName && <br />}
+            <em style={{ fontStyle: "italic", fontWeight: 300 }}>{lastName}</em>
           </h1>
 
           <div

@@ -32,11 +32,13 @@ export function AdminBlog() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
+  const [previewCover, setPreviewCover] = useState<string | null>(null);
 
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   const openNew = () => {
     setForm(EMPTY_FORM);
+    setPreviewCover(null);
     setEditing("new");
   };
 
@@ -50,6 +52,7 @@ export function AdminBlog() {
       coverUrl: item.coverUrl ?? "",
       coverStorageId: item.coverStorageId,
     });
+    setPreviewCover(item.coverUrl || null);
     setEditing(item._id);
   };
 
@@ -72,6 +75,11 @@ export function AdminBlog() {
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Create local preview immediately
+    const localUrl = URL.createObjectURL(file);
+    setPreviewCover(localUrl);
+
     const storageId = await uploadFile(file);
     setForm((f) => ({ ...f, coverStorageId: storageId, coverUrl: "" }));
   };
@@ -187,24 +195,38 @@ export function AdminBlog() {
               <Image size={16} strokeWidth={1.5} color="#6B7280" />
               <span style={styles.uploadLabel}>Ảnh bìa</span>
             </div>
-            <div style={styles.uploadRow}>
-              <input style={{ ...styles.input, flex: 1 }}
-                value={form.coverUrl}
-                onChange={(e) => setForm({ ...form, coverUrl: e.target.value, coverStorageId: undefined })}
-                placeholder="URL ảnh (hoặc tải lên bên dưới)"
-              />
+            
+            {previewCover ? (
+              <div style={{ position: "relative", width: "100%", height: 200, backgroundColor: "#F3F4F6", borderRadius: 6, overflow: "hidden", marginBottom: 12, border: "1px solid #E5E7EB" }}>
+                <img src={previewCover} alt="Cover preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <button 
+                  onClick={() => { setForm(f => ({ ...f, coverUrl: "", coverStorageId: undefined })); setPreviewCover(null); }}
+                  style={{ position: "absolute", top: 8, right: 8, background: "rgba(0,0,0,0.5)", border: "none", color: "#FFF", padding: 6, borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                  title="Xoá ảnh"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ) : (
+              <div style={{ ...styles.emptyState, minHeight: 120, marginBottom: 12 }}>
+                <Image size={24} strokeWidth={1} color="#9CA3AF" />
+                <p style={{ color: "#6B7280", fontSize: "0.875rem", marginTop: 8 }}>Chưa có ảnh bìa</p>
+              </div>
+            )}
+
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <button
                 onClick={() => coverInputRef.current?.click()}
                 disabled={uploadingCover}
-                style={styles.uploadBtn}
+                style={{ ...styles.uploadBtn, width: previewCover ? "auto" : "100%", justifyContent: "center" }}
               >
                 <Upload size={14} strokeWidth={1.5} />
-                {uploadingCover ? "Đang tải…" : "Tải ảnh"}
+                {uploadingCover ? "Đang tải…" : previewCover ? "Thay đổi ảnh" : "Tải ảnh lên"}
               </button>
               <input ref={coverInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleCoverChange} />
             </div>
             {form.coverStorageId && (
-              <p style={styles.uploadNote}><Check size={14} strokeWidth={2} color="#10B981" /> Đã tải lên Convex Storage</p>
+              <p style={styles.uploadNote}><Check size={14} strokeWidth={2} color="#10B981" /> Đã tải lên máy chủ</p>
             )}
           </div>
 

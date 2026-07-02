@@ -1,15 +1,13 @@
 import { useState, useRef, ReactNode } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
 import { AdminLayout } from "../AdminLayout";
-import { Check, Upload, Plus, Pencil, Trash2, X, AlertTriangle, GripVertical } from "lucide-react";
+import { Check, Plus, Pencil, Trash2, X, AlertTriangle, GripVertical } from "lucide-react";
 
 export function AdminArtist() {
   const artistInfo = useQuery(api.artist.getArtistInfo);
   const milestones = useQuery(api.artist.listMilestones) ?? [];
   const upsertArtist = useMutation(api.artist.upsertArtistInfo);
-  const generateUrl = useMutation(api.artist.generateUploadUrl);
   const createMilestone = useMutation(api.artist.createMilestone);
   const updateMilestone = useMutation(api.artist.updateMilestone);
   const deleteMilestone = useMutation(api.artist.deleteMilestone);
@@ -19,13 +17,9 @@ export function AdminArtist() {
   const [activeSection, setActiveSection] = useState<"profile" | "milestones">("profile");
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
-  const [uploading, setUploading] = useState<Record<string, boolean>>({});
   const [msEditing, setMsEditing] = useState<string | null>(null);
   const [msForm, setMsForm] = useState({ year: "", title: "", description: "" });
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-
-  const heroInputRef = useRef<HTMLInputElement>(null);
-  const portraitInputRef = useRef<HTMLInputElement>(null);
 
   // Form state — sync from DB on first load
   const [form, setForm] = useState<any>(null);
@@ -50,29 +44,7 @@ export function AdminArtist() {
     );
   }
 
-  const uploadFile = async (file: File, field: string): Promise<Id<"_storage">> => {
-    setUploading((u) => ({ ...u, [field]: true }));
-    try {
-      const uploadUrl = await generateUrl();
-      const res = await fetch(uploadUrl, { method: "POST", headers: { "Content-Type": file.type }, body: file });
-      const { storageId } = await res.json();
-      return storageId as Id<"_storage">;
-    } finally {
-      setUploading((u) => ({ ...u, [field]: false }));
-    }
-  };
 
-  const handleHeroUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; if (!file) return;
-    const id = await uploadFile(file, "hero");
-    setForm((f: any) => ({ ...f, heroImageStorageId: id, heroImageUrl: "" }));
-  };
-
-  const handlePortraitUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; if (!file) return;
-    const id = await uploadFile(file, "portrait");
-    setForm((f: any) => ({ ...f, portraitStorageId: id, portraitUrl: "" }));
-  };
 
   const handleSaveProfile = async () => {
     if (!form) return;
@@ -81,10 +53,6 @@ export function AdminArtist() {
       await upsertArtist({
         name: form.name, subtitle: form.subtitle, heroBio: form.heroBio,
         fullBio: form.fullBio, aboutHeadline: form.aboutHeadline,
-        heroImageStorageId: form.heroImageStorageId,
-        heroImageUrl: form.heroImageStorageId ? undefined : form.heroImageUrl || undefined,
-        portraitStorageId: form.portraitStorageId,
-        portraitUrl: form.portraitStorageId ? undefined : form.portraitUrl || undefined,
         statYears: form.statYears, statConcerts: form.statConcerts,
         statAlbums: form.statAlbums, statAwards: form.statAwards,
         bookingEmail: form.bookingEmail, touringEmail: form.touringEmail, pressEmail: form.pressEmail,
@@ -172,45 +140,9 @@ export function AdminArtist() {
             </Field>
           </Section>
 
-          <Section title="Thống kê hiển thị">
-            <div style={styles.grid4}>
-              <Field label="Năm hoạt động"><input style={styles.input} value={form.statYears ?? ""} onChange={(e) => setForm({ ...form, statYears: e.target.value })} placeholder="20+" /></Field>
-              <Field label="Số buổi biểu diễn"><input style={styles.input} value={form.statConcerts ?? ""} onChange={(e) => setForm({ ...form, statConcerts: e.target.value })} placeholder="300+" /></Field>
-              <Field label="Album"><input style={styles.input} value={form.statAlbums ?? ""} onChange={(e) => setForm({ ...form, statAlbums: e.target.value })} placeholder="12" /></Field>
-              <Field label="Giải thưởng"><input style={styles.input} value={form.statAwards ?? ""} onChange={(e) => setForm({ ...form, statAwards: e.target.value })} placeholder="8" /></Field>
-            </div>
-          </Section>
 
-          <Section title="Hình ảnh">
-            <div style={styles.grid2}>
-              <div>
-                <p style={styles.imageLabel}>Ảnh nền Hero</p>
-                {(form.heroImageUrl || artistInfo?.heroImageUrl) && (
-                  <img src={form.heroImageUrl || artistInfo?.heroImageUrl} alt="Hero" style={styles.imagePreview} />
-                )}
-                <div style={styles.uploadRow}>
-                  <input style={{ ...styles.input, flex: 1 }} value={form.heroImageUrl ?? ""} onChange={(e) => setForm({ ...form, heroImageUrl: e.target.value, heroImageStorageId: undefined })} placeholder="URL ảnh" />
-                  <button onClick={() => heroInputRef.current?.click()} disabled={uploading.hero} style={styles.uploadBtn}>
-                    <Upload size={14} strokeWidth={1.5} /> {uploading.hero ? "Đang tải…" : "Tải ảnh"}
-                  </button>
-                  <input ref={heroInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleHeroUpload} />
-                </div>
-              </div>
-              <div>
-                <p style={styles.imageLabel}>Ảnh chân dung</p>
-                {(form.portraitUrl || artistInfo?.portraitUrl) && (
-                  <img src={form.portraitUrl || artistInfo?.portraitUrl} alt="Portrait" style={styles.imagePreview} />
-                )}
-                <div style={styles.uploadRow}>
-                  <input style={{ ...styles.input, flex: 1 }} value={form.portraitUrl ?? ""} onChange={(e) => setForm({ ...form, portraitUrl: e.target.value, portraitStorageId: undefined })} placeholder="URL ảnh" />
-                  <button onClick={() => portraitInputRef.current?.click()} disabled={uploading.portrait} style={styles.uploadBtn}>
-                    <Upload size={14} strokeWidth={1.5} /> {uploading.portrait ? "Đang tải…" : "Tải ảnh"}
-                  </button>
-                  <input ref={portraitInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handlePortraitUpload} />
-                </div>
-              </div>
-            </div>
-          </Section>
+
+
 
           <Section title="Thông tin liên hệ">
             <div style={styles.grid3}>

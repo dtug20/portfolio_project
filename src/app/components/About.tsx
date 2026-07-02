@@ -44,7 +44,7 @@ export function About() {
           >
             <div className="relative aspect-[3/4] overflow-hidden">
               <ImageWithFallback
-                src="/images/about.jpg"
+                src="/images/about.webp"
                 alt="Nguyen Minh — musician portrait"
                 className="w-full h-full object-cover"
                 style={{ filter: "grayscale(20%)" }}

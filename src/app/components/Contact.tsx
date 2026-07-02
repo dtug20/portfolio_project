@@ -1,12 +1,17 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { Send } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 const inquiryTypes = ["Booking", "Composition", "Production", "Education", "Press", "Other"];
 
 export function Contact() {
+  const artistInfo = useQuery(api.artist.getArtistInfo);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const submitMessage = useMutation(api.contact.submit);
+  
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -14,10 +19,24 @@ export function Contact() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await submitMessage({
+        name: formState.name,
+        email: formState.email,
+        type: formState.type || "Other",
+        message: formState.message,
+      });
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Failed to submit message", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -87,9 +106,9 @@ export function Contact() {
               </p>
 
               <div className="flex flex-col gap-6">
-                <ContactDetail label="General Inquiries" value="hello@nguyenminh.asia" />
-                <ContactDetail label="Booking & Management" value="booking@nguyenminh.asia" />
-                <ContactDetail label="Press & Media" value="press@nguyenminh.asia" />
+                <ContactDetail label="General Inquiries" value={artistInfo?.touringEmail || "touring@nguyenminh.asia"} />
+                <ContactDetail label="Booking & Management" value={artistInfo?.bookingEmail || "booking@nguyenminh.asia"} />
+                <ContactDetail label="Press & Media" value={artistInfo?.pressEmail || "press@nguyenminh.asia"} />
                 <ContactDetail label="Based In" value="Hanoi, Vietnam · Available Worldwide" />
               </div>
             </motion.div>
@@ -208,6 +227,7 @@ export function Contact() {
 
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="flex items-center justify-center gap-3 mt-2"
                   style={{
                     fontFamily: "'Inter', sans-serif",
@@ -218,14 +238,15 @@ export function Contact() {
                     backgroundColor: "#FFFDF8",
                     border: "none",
                     padding: "16px 40px",
-                    cursor: "pointer",
+                    cursor: isSubmitting ? "wait" : "pointer",
                     transition: "opacity 0.25s",
                     alignSelf: "flex-start",
+                    opacity: isSubmitting ? 0.7 : 1,
                   }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.85"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
+                  onMouseEnter={(e) => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.opacity = "0.85"; }}
+                  onMouseLeave={(e) => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
                 >
-                  Send Message <Send size={13} />
+                  {isSubmitting ? "Sending..." : "Send Message"} {!isSubmitting && <Send size={13} />}
                 </button>
               </form>
             )}

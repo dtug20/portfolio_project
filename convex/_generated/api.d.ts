@@ -12,6 +12,7 @@ import type * as adminAuth from "../adminAuth.js";
 import type * as adminUsers from "../adminUsers.js";
 import type * as artist from "../artist.js";
 import type * as blog from "../blog.js";
+import type * as contact from "../contact.js";
 import type * as gallery from "../gallery.js";
 import type * as media from "../media.js";
 import type * as shows from "../shows.js";
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   adminUsers: typeof adminUsers;
   artist: typeof artist;
   blog: typeof blog;
+  contact: typeof contact;
   gallery: typeof gallery;
   media: typeof media;
   shows: typeof shows;

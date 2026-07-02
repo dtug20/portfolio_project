@@ -38,6 +38,7 @@ export function ShowsPage() {
   const navigate = useNavigate();
 
   // Live data from Convex (undefined while loading, [] if no data yet)
+  const artistInfo = useQuery(api.artist.getArtistInfo);
   const dbUpcoming = useQuery(api.shows.listUpcoming);
   const dbPast = useQuery(api.shows.listPast);
 
@@ -48,11 +49,11 @@ export function ShowsPage() {
 
   const getHeroImage = (tab: string) => {
     switch (tab) {
-      case "S.E Project": return "/images/S.E_project.jpg";
-      case "Bluemato": return "/images/bluemato.jpg";
-      case "Personal": return "/images/personal.png";
-      case "OPEN - project": return "/images/open_project.jpg";
-      default: return "/images/on_stage.jpeg";
+      case "S.E Project": return "/images/S.E_project.webp";
+      case "Bluemato": return "/images/bluemato.webp";
+      case "Personal": return "/images/personal.webp";
+      case "OPEN - project": return "/images/open_project.webp";
+      default: return "/images/on_stage.webp";
     }
   };
 
@@ -173,9 +174,9 @@ export function ShowsPage() {
                 Please contact management directly for all live performance bookings, festival appearances, keynote engagements, and touring enquiries.
               </p>
               <div className="flex flex-col gap-4">
-                <BookingContact label="General Booking" email="booking@nguyenminh.asia" />
-                <BookingContact label="International Touring" email="touring@nguyenminh.asia" />
-                <BookingContact label="Press & Media" email="press@nguyenminh.asia" />
+                <BookingContact label="General Booking" email={artistInfo?.bookingEmail || "booking@nguyenminh.asia"} />
+                <BookingContact label="International Touring" email={artistInfo?.touringEmail || "touring@nguyenminh.asia"} />
+                <BookingContact label="Press & Media" email={artistInfo?.pressEmail || "press@nguyenminh.asia"} />
               </div>
               <div className="flex items-center gap-4 mt-2">
                 <button onClick={() => navigate("/", { state: { scrollTo: "contact" } })} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#11100F", backgroundColor: "#FFFDF8", border: "1px solid #FFFDF8", padding: "14px 36px", cursor: "pointer", transition: "all 0.25s ease", display: "inline-flex", alignItems: "center", gap: 8 }}

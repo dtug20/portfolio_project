@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "motion/react";
 import { Link, useNavigate } from "react-router";
-import { ArrowLeft, Play, Calendar, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ArrowLeft, Play, Pause, Calendar, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -18,6 +18,30 @@ export function MediaPage() {
 
   const [activeTab, setActiveTab] = useState<MainTab>("Projects");
   const [lightbox, setLightbox] = useState<{ images: string[], index: number } | null>(null);
+  
+  const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const togglePlay = (e: React.MouseEvent, item: any) => {
+    e.stopPropagation();
+    
+    // If it's currently playing this item's audio, pause it
+    if (playingAudioId === item._id) {
+      audioRef.current?.pause();
+      setPlayingAudioId(null);
+      return;
+    }
+    
+    // Play new audio
+    if (item.audioUrl && audioRef.current) {
+      audioRef.current.src = item.audioUrl;
+      audioRef.current.play();
+      setPlayingAudioId(item._id);
+    } else if (item.videoUrl) {
+      // Fallback: if no audio but it has a video link, just open the video link
+      window.open(item.videoUrl, "_blank");
+    }
+  };
 
   const dbMedia = useQuery(api.media.listPublished);
   const mediaItems = dbMedia ? dbMedia : [];
@@ -29,16 +53,19 @@ export function MediaPage() {
   const blogItems = dbBlogs ? dbBlogs : [];
 
   const renderProjects = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
       {mediaItems.map((item: any, i: number) => (
         <motion.div
           key={item._id}
           initial={{ opacity: 0, y: 20 }}
           animate={gridInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 + i * 0.08 }}
-          className="group relative overflow-hidden cursor-pointer bg-[#171513]"
+          onClick={() => {
+            if (item.videoUrl) window.open(item.videoUrl, "_blank");
+          }}
+          className="group relative overflow-hidden cursor-pointer bg-[#171513] rounded-md"
         >
-          <div className="relative overflow-hidden aspect-[4/5]">
+          <div className="relative overflow-hidden aspect-[4/3] md:aspect-[5/4]">
             <ImageWithFallback
               src={item.coverUrl}
               alt={item.title}
@@ -54,8 +81,12 @@ export function MediaPage() {
 
             {/* Play button */}
             {item.hasPlay && (
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div 
+                className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 pointer-events-none"
+              >
                 <div
+                  onClick={(e) => togglePlay(e, item)}
+                  className="pointer-events-auto cursor-pointer"
                   style={{
                     width: 52,
                     height: 52,
@@ -68,48 +99,60 @@ export function MediaPage() {
                     backdropFilter: "blur(8px)",
                   }}
                 >
-                  <Play size={18} color="#FFFDF8" fill="#FFFDF8" style={{ marginLeft: 3 }} />
+                  {playingAudioId === item._id ? (
+                    <Pause size={20} color="#FFFDF8" fill="#FFFDF8" />
+                  ) : (
+                    <Play size={18} color="#FFFDF8" fill="#FFFDF8" style={{ marginLeft: 3 }} />
+                  )}
                 </div>
               </div>
             )}
 
             {/* Info */}
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "#CDC1B3",
-                  display: "block",
-                  marginBottom: 6,
-                }}
-              >
-                {item.category}
-              </span>
-              <h3
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: "1.5rem",
-                  fontWeight: 400,
-                  color: "#FFFDF8",
-                  lineHeight: 1.2,
-                  marginBottom: 4,
-                }}
-              >
-                {item.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.7rem",
-                  color: "#B0A496",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                {item.venue || item.tag} {item.year ? `· ${item.year}` : ''}
-              </p>
+            <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+              <div className="transform transition-transform duration-500 translate-y-4 group-hover:translate-y-0">
+                <h3
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: "1.5rem",
+                    fontWeight: 400,
+                    color: "#FFFDF8",
+                    lineHeight: 1.2,
+                    marginBottom: 4,
+                  }}
+                >
+                  {item.title}
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "0.7rem",
+                    color: "#B0A496",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  {item.venue || item.tag} {item.year ? `· ${item.year.includes('-') ? item.year.split('-').slice(0, 2).reverse().join('/') : item.year}` : ''}
+                </p>
+                {item.description && (
+                  <div className="max-h-0 opacity-0 group-hover:max-h-24 group-hover:opacity-100 transition-all duration-500 overflow-hidden">
+                    <p 
+                      className="pt-3"
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "0.75rem",
+                        color: "#CDC1B3",
+                        lineHeight: 1.6,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {item.description}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </motion.div>
@@ -214,7 +257,7 @@ export function MediaPage() {
       >
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="/images/on_stage.jpeg"
+            src="/images/on_stage.webp"
             alt="Selected Works"
             className="w-full h-full object-cover"
             style={{ objectPosition: "center 40%" }}
@@ -325,6 +368,9 @@ export function MediaPage() {
           )}
         </div>
       )}
+
+      {/* Hidden audio element for playback */}
+      <audio ref={audioRef} onEnded={() => setPlayingAudioId(null)} />
     </div>
   );
 }
@@ -434,12 +480,12 @@ export function ShowGalleryRow({ title, allImages, setLightbox }: any) {
             <div 
               key={idx} 
               onClick={() => setLightbox({ images: allImages, index: realIdx })}
-              className="relative shrink-0 w-[75vw] sm:w-[40vw] md:w-[25vw] lg:w-[20vw] max-w-[350px] aspect-[4/5] sm:aspect-square overflow-hidden bg-[#171513] group cursor-pointer rounded-sm"
+              className="relative shrink-0 h-[220px] sm:h-[300px] md:h-[400px] overflow-hidden bg-[#171513] group cursor-pointer rounded-md"
             >
               <ImageWithFallback
                 src={imgUrl}
                 alt={`${title} - Image ${realIdx + 1}`}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="h-full w-auto object-cover transition-transform duration-700 group-hover:scale-105"
                 style={{ filter: "brightness(0.9)" }}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
