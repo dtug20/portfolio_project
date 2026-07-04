@@ -78,7 +78,11 @@ export const listFeatured = query({
         if (item.coverStorageId) {
           coverUrl = (await ctx.storage.getUrl(item.coverStorageId)) ?? coverUrl;
         }
-        return { ...item, coverUrl };
+        let audioUrl: string | undefined;
+        if (item.audioStorageId) {
+          audioUrl = (await ctx.storage.getUrl(item.audioStorageId)) ?? undefined;
+        }
+        return { ...item, coverUrl, audioUrl };
       }),
     );
   },
@@ -119,6 +123,7 @@ const mediaArgs = {
   coverUrl: v.optional(v.string()),
   videoUrl: v.optional(v.string()),
   videoStorageId: v.optional(v.id("_storage")),
+  projectUrl: v.optional(v.string()),
   audioStorageId: v.optional(v.id("_storage")),
   audioFilename: v.optional(v.string()),
   galleryStorageIds: v.optional(v.array(v.id("_storage"))),

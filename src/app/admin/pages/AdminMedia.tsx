@@ -2,6 +2,7 @@ import { useState, useRef, ReactNode } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { convertToWebP } from "../../../lib/imageUtils";
 import { AdminLayout } from "../AdminLayout";
 import {
   Plus, Pencil, Trash2, X, Check, Upload, Film, Music, Image, Eye, EyeOff, AlertTriangle, Star
@@ -17,6 +18,7 @@ interface MediaForm {
   isFeatured: boolean;
   coverUrl: string;
   videoUrl: string;
+  projectUrl: string;
   audioFilename: string;
   coverStorageId?: Id<"_storage">;
   audioStorageId?: Id<"_storage">;
@@ -25,7 +27,7 @@ interface MediaForm {
 
 const EMPTY_FORM: MediaForm = {
   title: "", description: "", tag: "", year: new Date().getFullYear().toString(),
-  hasPlay: false, isPublished: true, isFeatured: false, coverUrl: "", videoUrl: "", audioFilename: "",
+  hasPlay: false, isPublished: true, isFeatured: false, coverUrl: "", videoUrl: "", projectUrl: "", audioFilename: "",
 };
 
 export function AdminMedia() {
@@ -58,7 +60,7 @@ export function AdminMedia() {
     setForm({
       title: item.title, description: item.description,
       tag: item.tag, year: item.year, hasPlay: item.hasPlay, isPublished: item.isPublished, isFeatured: item.isFeatured ?? false,
-      coverUrl: item.coverUrl ?? "", videoUrl: item.videoUrl ?? "", audioFilename: item.audioFilename ?? "",
+      coverUrl: item.coverUrl ?? "", videoUrl: item.videoUrl ?? "", projectUrl: item.projectUrl ?? "", audioFilename: item.audioFilename ?? "",
       coverStorageId: item.coverStorageId, audioStorageId: item.audioStorageId,
     });
     setPreviewCover(item.coverUrl || null);
@@ -66,9 +68,10 @@ export function AdminMedia() {
   };
 
   // File upload helper
-  const uploadFile = async (file: File, field: "cover" | "audio"): Promise<Id<"_storage">> => {
+  const uploadFile = async (rawFile: File, field: "cover" | "audio"): Promise<Id<"_storage">> => {
     setUploading((u) => ({ ...u, [field]: true }));
     try {
+      const file = field === "cover" ? await convertToWebP(rawFile) : rawFile;
       const uploadUrl = await generateUploadUrl();
       const res = await fetch(uploadUrl, {
         method: "POST",
@@ -114,6 +117,7 @@ export function AdminMedia() {
       coverUrl: form.coverStorageId ? undefined : form.coverUrl || undefined,
       coverStorageId: form.coverStorageId,
       videoUrl: form.videoUrl || undefined,
+      projectUrl: form.projectUrl || undefined,
       audioStorageId: form.audioStorageId,
       audioFilename: form.audioFilename || undefined,
     };
@@ -195,11 +199,7 @@ export function AdminMedia() {
       subtitle={`${items.length} mục`}
       actions={
         <div style={{ display: "flex", gap: 8 }}>
-          {items.length === 0 && (
-            <button onClick={handleSeed} disabled={seeding} style={styles.btnSecondary}>
-              {seeding ? "Đang tải…" : "Tải dữ liệu mẫu"}
-            </button>
-          )}
+
           <button onClick={openNew} style={styles.btnPrimary}>
             <Plus size={16} strokeWidth={2} /> Thêm tác phẩm
           </button>
@@ -228,7 +228,7 @@ export function AdminMedia() {
             </div>
 
             <Field label="Mô tả">
-              <textarea style={{ ...styles.input, minHeight: 88, resize: "vertical" }}
+              <textarea style={{ ...styles.input, minHeight: 250, resize: "vertical" }}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Mô tả về tác phẩm này…"
@@ -280,11 +280,24 @@ export function AdminMedia() {
             <div style={styles.uploadSection}>
               <div style={styles.uploadHeader}>
                 <Film size={16} strokeWidth={1.5} color="#6B7280" />
-                <span style={styles.uploadLabel}>URL Bandcamp</span>
+                <span style={styles.uploadLabel}>URL Video (YouTube / Vimeo)</span>
               </div>
               <input style={styles.input}
                 value={form.videoUrl}
                 onChange={(e) => setForm({ ...form, videoUrl: e.target.value })}
+                placeholder="https://youtube.com/..."
+              />
+            </div>
+
+            {/* Project Link */}
+            <div style={styles.uploadSection}>
+              <div style={styles.uploadHeader}>
+                <Star size={16} strokeWidth={1.5} color="#6B7280" />
+                <span style={styles.uploadLabel}>URL Dự án (Bandcamp, Spotify...)</span>
+              </div>
+              <input style={styles.input}
+                value={form.projectUrl}
+                onChange={(e) => setForm({ ...form, projectUrl: e.target.value })}
                 placeholder="https://nguyennhatminh.bandcamp.com/track/..."
               />
             </div>
@@ -349,7 +362,7 @@ export function AdminMedia() {
         <div style={styles.emptyState}>
           <Film size={32} strokeWidth={1} color="#9CA3AF" />
           <p style={{ color: "#6B7280", fontSize: "0.875rem", marginTop: 16 }}>
-            {items.length === 0 ? "Chưa có tác phẩm nào. Nhấn \"Tải dữ liệu mẫu\" hoặc thêm mới." : "Không có kết quả."}
+            {items.length === 0 ? "Chưa có tác phẩm nào." : "Không có kết quả."}
           </p>
         </div>
       ) : (
@@ -443,7 +456,7 @@ const styles: Record<string, React.CSSProperties> = {
   btnPrimary: { display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif", fontSize: "0.875rem", fontWeight: 500, color: "#FFFFFF", backgroundColor: "#111827", border: "1px solid #111827", borderRadius: "6px", padding: "10px 20px", cursor: "pointer", transition: "background-color 0.2s" },
   btnSecondary: { display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif", fontSize: "0.875rem", fontWeight: 500, color: "#374151", backgroundColor: "#FFFFFF", border: "1px solid #D1D5DB", borderRadius: "6px", padding: "10px 20px", cursor: "pointer", transition: "background-color 0.2s" },
   iconBtn: { background: "none", border: "none", color: "#6B7280", cursor: "pointer", padding: "6px", borderRadius: "4px", display: "flex", alignItems: "center", transition: "color 0.2s, background-color 0.2s" },
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 },
   card: { backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px 0 rgba(0,0,0,0.1)", transition: "transform 0.2s, box-shadow 0.2s" },
   cardCover: { position: "relative", aspectRatio: "16/9", overflow: "hidden", backgroundColor: "#F3F4F6", borderBottom: "1px solid #E5E7EB" },
   cardCoverPlaceholder: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" },
@@ -456,7 +469,7 @@ const styles: Record<string, React.CSSProperties> = {
   cardTitle: { fontSize: "1.125rem", fontWeight: 600, color: "#111827", margin: "0 0 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const },
   cardMeta: { fontSize: "0.875rem", color: "#6B7280", margin: "0 0 12px" },
   catPill: { fontSize: "0.75rem", fontWeight: 500, textTransform: "uppercase", backgroundColor: "#F3F4F6", border: "1px solid #E5E7EB", borderRadius: "4px", color: "#4B5563", padding: "4px 10px" },
-  cardDesc: { fontSize: "0.875rem", color: "#4B5563", margin: 0, lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" },
+  cardDesc: { fontSize: "0.875rem", color: "#4B5563", margin: 0, lineHeight: 1.6, maxHeight: 120, overflowY: "auto", paddingRight: 4 },
   cardMedia: { display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" as const },
   mediaChip: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.75rem", fontWeight: 500, color: "#374151", backgroundColor: "#F9FAFB", border: "1px solid #E5E7EB", borderRadius: "4px", padding: "4px 10px" },
   cardActions: { display: "flex", justifyContent: "flex-end", gap: 4, padding: "12px 16px", borderTop: "1px solid #F3F4F6", backgroundColor: "#F9FAFB" },

@@ -26,10 +26,16 @@ export function useAdminAuth() {
         convex
           .action(api.adminAuth.verifyToken, { token: parsed.token })
           .then((res) => {
-            if (res.valid) {
-              setSession(parsed);
+            if (res.valid && res.email && res.name) {
+              const freshSession = { ...parsed, email: res.email, name: res.name };
+              localStorage.setItem(SESSION_KEY, JSON.stringify(freshSession));
+              setSession(freshSession);
+              if (parsed.email !== res.email) {
+                window.location.reload();
+              }
             } else {
               localStorage.removeItem(SESSION_KEY);
+              window.location.reload();
             }
             setLoading(false);
           })

@@ -1,42 +1,20 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ArrowRight } from "lucide-react";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Doc } from "../../../convex/_generated/dataModel";
+import { useLanguage } from "../contexts/LanguageContext";
 
-const services = [
-  {
-    number: "01",
-    title: "Composition",
-    description:
-      "Original compositions for orchestral ensembles, chamber groups, solo instruments, and hybrid electronic formats. Each work crafted with narrative precision and cultural depth.",
-    tags: ["Orchestral", "Chamber", "Electronic", "Film Score"],
-  },
-  {
-    number: "02",
-    title: "Live Performance",
-    description:
-      "Solo recitals, concerto performances, and collaborative ensemble appearances at concert halls, festivals, and private events worldwide. Bespoke programmes on request.",
-    tags: ["Solo Recital", "Concerto", "Festival", "Private Events"],
-  },
-  {
-    number: "03",
-    title: "Music Production",
-    description:
-      "Full-service music production for recording artists, film productions, and commercial projects. Arrangement, orchestration, session direction, and final mix oversight.",
-    tags: ["Recording", "Orchestration", "Arrangement", "Mix"],
-  },
-  {
-    number: "04",
-    title: "Masterclasses & Consulting",
-    description:
-      "Intensive masterclasses for advanced students and professional musicians. Creative consulting for arts organisations, cultural institutions, and music education programs.",
-    tags: ["Masterclass", "Education", "Consulting", "Workshops"],
-  },
-];
+type ServiceType = Doc<"services">;
 
 export function Services() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const services = useQuery(api.services.listFeatured) ?? [];
+  const { t } = useLanguage();
 
   return (
     <section
@@ -60,7 +38,7 @@ export function Services() {
                 marginBottom: "4rem",
               }}
             >
-              — Services
+              — {t("services.label")}
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 18 }}
@@ -74,7 +52,7 @@ export function Services() {
                 color: "#FFFDF8",
               }}
             >
-              What I Offer
+              {t("services.offer")}
             </motion.h2>
           </div>
           <motion.p
@@ -90,14 +68,13 @@ export function Services() {
               fontWeight: 300,
             }}
           >
-            A carefully curated range of musical services for discerning clients,
-            institutions, and fellow artists.
+            {t("services.desc")}
           </motion.p>
         </div>
 
         <div>
           {services.map((service, i) => (
-            <ServiceRow key={service.number} service={service} index={i} inView={inView} />
+            <ServiceRow key={service.title} service={service} index={i} inView={inView} />
           ))}
         </div>
 
@@ -117,7 +94,7 @@ export function Services() {
               letterSpacing: "0.08em",
             }}
           >
-            {services.length} services available
+            {services.length} {t("services.count")}
           </p>
           <Link
             to="/services"
@@ -136,7 +113,7 @@ export function Services() {
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#B0A496"; }}
           >
-            See more <ArrowRight size={13} strokeWidth={1.5} />
+            {t("general.seeMore")} <ArrowRight size={13} strokeWidth={1.5} />
           </Link>
         </motion.div>
       </div>
@@ -149,11 +126,12 @@ function ServiceRow({
   index,
   inView,
 }: {
-  service: (typeof services)[0];
+  service: ServiceType;
   index: number;
   inView: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -162,29 +140,38 @@ function ServiceRow({
       transition={{ duration: 0.6, delay: 0.15 + index * 0.1 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => navigate("/services", { state: { expandService: service._id } })}
+      className="relative overflow-hidden group"
       style={{
         borderTop: "1px solid rgba(255,255,255,0.07)",
         padding: "36px 0",
         transition: "background-color 0.3s",
         backgroundColor: hovered ? "rgba(255,255,255,0.02)" : "transparent",
-        cursor: "default",
+        cursor: "pointer",
       }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
-        <div className="lg:col-span-1">
-          <span
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "0.85rem",
-              color: "#6E655B",
-              fontWeight: 400,
-            }}
-          >
-            {service.number}
-          </span>
-        </div>
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-all duration-700 ease-out"
+        style={{
+          opacity: hovered ? 0.3 : 0.15,
+          zIndex: 0,
+        }}
+      >
+        <ImageWithFallback
+          src={service.imageUrl as string}
+          alt={service.title}
+          className="w-full h-full object-cover scale-100 group-hover:scale-[1.02] transition-transform duration-1000"
+          style={{
+            objectPosition: service.imagePosition || "center",
+            maskImage: "linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%)",
+          }}
+        />
+      </div>
 
-        <div className="lg:col-span-3">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start relative z-10">
+        <div className="lg:col-span-4">
           <h3
             style={{
               fontFamily: "'Cormorant Garamond', serif",
@@ -210,7 +197,7 @@ function ServiceRow({
               marginBottom: "1.25rem",
             }}
           >
-            {service.description}
+            {service.shortDesc}
           </p>
           <div className="flex flex-wrap gap-2">
             {service.tags.map((tag) => (

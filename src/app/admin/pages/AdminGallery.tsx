@@ -4,6 +4,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { AdminLayout } from "../AdminLayout";
 import { Plus, Trash2, Image as ImageIcon, Upload, Loader2, GripVertical, Star } from "lucide-react";
+import { convertToWebP } from "../../../lib/imageUtils";
 
 type GalleryType = "Personal" | "Open Project" | "S.E Project" | "Bluemato";
 const CATEGORIES: GalleryType[] = ["Personal", "Open Project", "S.E Project", "Bluemato"];
@@ -27,9 +28,9 @@ export function AdminGallery() {
     
     setUploading(true);
     try {
-      // Tải lên tuần tự từng file
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+        const rawFile = files[i];
+        const file = await convertToWebP(rawFile);
         const uploadUrl = await generateUploadUrl();
         const res = await fetch(uploadUrl, {
           method: "POST",

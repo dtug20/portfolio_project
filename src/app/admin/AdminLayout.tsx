@@ -11,6 +11,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   BookOpen,
+  LayoutGrid,
 } from "lucide-react";
 import { useAdminAuth } from "./hooks/useAdminAuth";
 import { Toaster } from "sonner";
@@ -27,6 +28,7 @@ const navItems: NavItem[] = [
   { label: "Lịch diễn", path: "/admin/shows", icon: <Calendar size={15} strokeWidth={1.5} /> },
   { label: "Thư viện ảnh", path: "/admin/gallery", icon: <Film size={15} strokeWidth={1.5} /> },
   { label: "Tác phẩm & Media", path: "/admin/media", icon: <Film size={15} strokeWidth={1.5} /> },
+  { label: "Dịch vụ", path: "/admin/services", icon: <LayoutGrid size={15} strokeWidth={1.5} /> },
   { label: "Blog", path: "/admin/blog", icon: <BookOpen size={15} strokeWidth={1.5} /> },
   { label: "Hồ sơ nghệ sĩ", path: "/admin/artist", icon: <User size={15} strokeWidth={1.5} /> },
   { label: "Cài đặt", path: "/admin/settings", icon: <Settings size={15} strokeWidth={1.5} /> },
@@ -168,13 +170,26 @@ export function AdminLayout({ children, title, subtitle, actions }: AdminLayoutP
       <Toaster position="top-right" richColors />
 
       <style>{`
+        /* Desktop base */
+        .admin-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .admin-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .admin-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .admin-table-wrapper { overflow-x: auto; width: 100%; border-radius: 8px; }
+
         @media (min-width: 768px) {
           .admin-sidebar { transform: translateX(0) !important; }
           .mobile-menu-btn { display: none !important; }
         }
+        @media (max-width: 1024px) {
+          .admin-grid-4 { grid-template-columns: repeat(2, 1fr); }
+          .admin-grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
         @media (max-width: 767px) {
           .mobile-menu-btn { display: flex !important; }
           .admin-main { margin-left: 0 !important; }
+          .admin-main header { padding: 16px !important; }
+          .admin-main main { padding: 16px !important; }
+          .admin-grid-2, .admin-grid-3, .admin-grid-4 { grid-template-columns: 1fr; gap: 16px; }
         }
         .admin-sidebar {
           transform: translateX(-100%);

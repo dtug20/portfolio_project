@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { convertToWebP } from "../../../lib/imageUtils";
 import { AdminLayout } from "../AdminLayout";
 import { useRef } from "react";
 import { Plus, Trash2, Calendar, X, Check, Upload, Image } from "lucide-react";
@@ -86,9 +87,10 @@ export function AdminShows() {
     setEditing(show._id);
   };
 
-  const uploadFile = async (file: File, setUploading: (u: boolean) => void): Promise<Id<"_storage">> => {
+  const uploadFile = async (rawFile: File, setUploading: (u: boolean) => void): Promise<Id<"_storage">> => {
     setUploading(true);
     try {
+      const file = await convertToWebP(rawFile);
       const uploadUrl = await generateUploadUrl();
       const res = await fetch(uploadUrl, {
         method: "POST",
@@ -181,11 +183,7 @@ export function AdminShows() {
       subtitle={`${allShows.length} buổi diễn`}
       actions={
         <div style={{ display: "flex", gap: 8 }}>
-          {allShows.length === 0 && (
-            <button onClick={handleSeed} disabled={seeding} style={styles.btnSecondary}>
-              {seeding ? "Đang tải…" : "Tải dữ liệu mẫu"}
-            </button>
-          )}
+
           <button onClick={openNew} style={styles.btnPrimary}>
             <Plus size={16} strokeWidth={2} />
             Thêm buổi diễn
@@ -235,14 +233,14 @@ export function AdminShows() {
             </button>
           </div>
 
-          <div style={styles.formGrid}>
+          <div className="admin-grid-2" style={{ marginBottom: 20 }}>
             <Field label="Tên sự kiện" required>
               <input style={styles.input} value={form.event} onChange={(e) => setForm({ ...form, event: e.target.value })} placeholder="Hanoi International Music Festival" />
             </Field>
             <Field label="Địa điểm">
               <input style={styles.input} value={form.venue} onChange={(e) => setForm({ ...form, venue: e.target.value })} placeholder="Hanoi Opera House" />
             </Field>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div className="admin-grid-2">
             <Field label="Ngày diễn *">
               <input type="date" style={styles.input} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
             </Field>
@@ -347,11 +345,11 @@ export function AdminShows() {
         <div style={styles.emptyState}>
           <Calendar size={32} strokeWidth={1} color="#9CA3AF" />
           <p style={{ color: "#6B7280", fontSize: "0.875rem", marginTop: 16 }}>
-            {allShows.length === 0 ? "Chưa có dữ liệu. Nhấn \"Tải dữ liệu mẫu\" hoặc thêm buổi diễn." : "Không có buổi diễn nào."}
+            {allShows.length === 0 ? "Chưa có dữ liệu." : "Không có buổi diễn nào."}
           </p>
         </div>
       ) : (
-        <div style={{ overflowX: "auto", paddingBottom: 16, margin: "0 -4px", padding: "0 4px" }}>
+        <div className="admin-table-wrapper" style={{ paddingBottom: 16, margin: "0 -4px", padding: "0 4px" }}>
           <div style={{ ...styles.table, minWidth: 800 }}>
           <div style={styles.tableHeader}>
             <span style={{ ...styles.th, flex: "0 0 100px" }}>Ngày</span>
@@ -429,7 +427,7 @@ const styles: Record<string, React.CSSProperties> = {
   dateDay: { fontFamily: "'Inter', sans-serif", fontSize: "1.125rem", fontWeight: 600, color: "#111827" },
   dateMY: { fontSize: "0.875rem", color: "#6B7280" },
   eventName: { fontSize: "1rem", fontWeight: 500, color: "#111827", margin: "0 0 4px", lineHeight: 1.4 },
-  eventVenue: { fontSize: "0.875rem", color: "#6B7280", margin: 0 },
+  eventVenue: { fontSize: "0.875rem", color: "#6B7280", margin: 0, maxHeight: 120, overflowY: "auto", paddingRight: 4 },
   typeBadge: { fontSize: "0.75rem", fontWeight: 500, backgroundColor: "#F3F4F6", borderRadius: "4px", padding: "4px 8px", color: "#374151" },
   statusDot: { display: "inline-block", width: 8, height: 8, borderRadius: "50%", marginRight: 8 },
   statusLabel: { fontSize: "0.875rem", color: "#4B5563" },

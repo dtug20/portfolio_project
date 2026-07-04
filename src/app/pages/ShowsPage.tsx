@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { ArrowLeft, ArrowUpRight, Mail } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useLanguage, TranslationKey } from "../contexts/LanguageContext";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 type ShowStatus = "tickets" | "rsvp" | "sold_out" | "details";
@@ -35,6 +36,7 @@ export function ShowsPage() {
   const tableInView = useInView(tableRef, { once: true, margin: "-40px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-40px" });
   const [activeTab, setActiveTab] = useState<string>("All");
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   // Live data from Convex (undefined while loading, [] if no data yet)
@@ -49,7 +51,7 @@ export function ShowsPage() {
 
   const getHeroImage = (tab: string) => {
     switch (tab) {
-      case "S.E Project": return "/images/S.E_project.webp";
+      case "S.E Project": return "/images/SE_project.webp";
       case "Bluemato": return "/images/bluemato.webp";
       case "Personal": return "/images/personal.webp";
       case "OPEN - project": return "/images/open_project.webp";
@@ -60,7 +62,7 @@ export function ShowsPage() {
   const getHeroImagePosition = (tab: string) => {
     switch (tab) {
       case "Personal": return "center 35%";
-      case "S.E Project": return "70% 40%";
+      case "S.E Project": return "center 30%";
       default: return "center 40%";
     }
   };
@@ -92,7 +94,7 @@ export function ShowsPage() {
                 src={getHeroImage(activeTab)}
                 alt={`${activeTab} Stage`}
                 className="w-full h-full object-cover"
-                style={{ 
+                style={{
                   objectPosition: getHeroImagePosition(activeTab),
                   filter: getHeroImageFilter(activeTab)
                 }}
@@ -120,7 +122,7 @@ export function ShowsPage() {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
             <div>
               <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 9.5rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFDF8", letterSpacing: "-0.025em" }}>
-                On <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Stage</em>
+                {t("page.shows.title")} <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>{t("page.shows.highlight")}</em>
               </motion.h1>
             </div>
           </div>
@@ -136,7 +138,7 @@ export function ShowsPage() {
               <button key={tab} onClick={() => setActiveTab(tab)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.7rem", letterSpacing: "0.16em", textTransform: "uppercase", color: activeTab === tab ? "#FFFDF8" : "#8A7F72", background: "none", border: "none", borderBottom: activeTab === tab ? "1px solid #FFFDF8" : "1px solid transparent", padding: "18px 32px 17px", cursor: "pointer", marginBottom: -1, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 10 }}
                 onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#DED4C8"; }}
                 onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#8A7F72"; }}>
-                {tab}
+                {tab === "All" ? t("page.shows.tab.all") : tab}
                 <span style={{ fontSize: "0.55rem", color: activeTab === tab ? "#A09588" : "#514A42", letterSpacing: "0.08em", transition: "color 0.2s" }}>
                   {tab === "All" ? allShows.length : allShows.filter(s => s.type === tab).length}
                 </span>
@@ -162,32 +164,30 @@ export function ShowsPage() {
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={ctaInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#8A7F72", marginBottom: "1.5rem" }}>— Booking</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.62rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#8A7F72", marginBottom: "1.5rem" }}>{t("page.shows.cta.bookingLabel")}</p>
               <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.5rem, 4.5vw, 4.2rem)", fontWeight: 400, lineHeight: 1.08, color: "#FFFDF8", marginBottom: "2rem" }}>
-                For booking inquiries<br />and live <em style={{ fontStyle: "italic", color: "#CDC1B3", fontWeight: 300 }}>scheduling</em>
+                {t("page.shows.cta.title")}<br />{t("page.shows.cta.titleHighlight").includes(" ") ? "" : " "}<em style={{ fontStyle: "italic", color: "#CDC1B3", fontWeight: 300 }}>{t("page.shows.cta.titleHighlight")}</em>
               </h2>
               <div style={{ width: 40, height: 1, backgroundColor: "#6E655B" }} />
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={ctaInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7, delay: 0.15 }} className="flex flex-col gap-8">
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.82rem", lineHeight: 1.9, color: "#A09588", fontWeight: 300, maxWidth: 420 }}>
-                Please contact management directly for all live performance bookings, festival appearances, keynote engagements, and touring enquiries.
+                {t("page.shows.cta.desc")}
               </p>
               <div className="flex flex-col gap-4">
-                <BookingContact label="General Booking" email={artistInfo?.bookingEmail || "booking@nguyenminh.asia"} />
-                <BookingContact label="International Touring" email={artistInfo?.touringEmail || "touring@nguyenminh.asia"} />
-                <BookingContact label="Press & Media" email={artistInfo?.pressEmail || "press@nguyenminh.asia"} />
+                <BookingContact label="Email" email={artistInfo?.bookingEmail || ""} />
               </div>
               <div className="flex items-center gap-4 mt-2">
                 <button onClick={() => navigate("/", { state: { scrollTo: "contact" } })} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#11100F", backgroundColor: "#FFFDF8", border: "1px solid #FFFDF8", padding: "14px 36px", cursor: "pointer", transition: "all 0.25s ease", display: "inline-flex", alignItems: "center", gap: 8 }}
                   onMouseEnter={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "transparent"; b.style.color = "#FFFDF8"; }}
                   onMouseLeave={(e) => { const b = e.currentTarget as HTMLButtonElement; b.style.backgroundColor = "#FFFDF8"; b.style.color = "#11100F"; }}>
-                  Send an Enquiry <ArrowUpRight size={13} strokeWidth={1.5} />
+                  {t("page.shows.cta.button1")} <ArrowUpRight size={13} strokeWidth={1.5} />
                 </button>
                 <Link to="/services" style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7F72", textDecoration: "none", transition: "color 0.2s" }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#DED4C8"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8A7F72"; }}>
-                  View Services
+                  {t("page.shows.cta.button2")}
                 </Link>
               </div>
             </motion.div>
@@ -262,7 +262,7 @@ function ShowRow({ show, index, inView, isPast, isLast }: { show: Show; index: n
             <div className="flex flex-col items-center justify-center min-w-[90px]">
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", marginBottom: -4 }}>{dayOfWeek}</span>
               <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "3.2rem", fontWeight: 300, color: isPast ? "#8A7F72" : hovered ? "#FFFDF8" : "#F0EAE3", lineHeight: 1, letterSpacing: "-0.02em", transition: "color 0.3s" }}>{day}</span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", mt: 1 }}>{month} {year}</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: isPast ? "#6E655B" : "#B0A496", marginTop: 4 }}>{month} {year}</span>
               {show.time && <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.75rem", color: isPast ? "#6E655B" : "#B0A496", marginTop: 8 }}>{show.time}</span>}
             </div>
 
@@ -308,10 +308,11 @@ function ShowRow({ show, index, inView, isPast, isLast }: { show: Show; index: n
 function ShowCta({ show, hovered, isPast }: { show: Show; hovered: boolean; isPast: boolean }) {
   const [btnHovered, setBtnHovered] = useState(false);
   const active = hovered || btnHovered;
+  const { t } = useLanguage();
   if (show.status === "sold_out") {
-    return <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#6E655B", border: "1px solid #342F2A", padding: "9px 16px", display: "inline-block", whiteSpace: "nowrap" }}>Sold Out</span>;
+    return <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.58rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#6E655B", border: "1px solid #342F2A", padding: "9px 16px", display: "inline-block", whiteSpace: "nowrap" }}>{t("shows.soldOut")}</span>;
   }
-  const label = isPast ? "Details" : show.status === "rsvp" ? "RSVP" : "Get Tickets";
+  const label = isPast ? t("page.shows.cta.details") : show.status === "rsvp" ? t("page.shows.cta.rsvp") : t("page.shows.cta.getTickets");
   const handleClick = () => {
     if (show.ticketUrl) {
       let url = show.ticketUrl;

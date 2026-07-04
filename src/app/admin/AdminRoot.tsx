@@ -9,6 +9,7 @@ import { AdminMedia } from "./pages/AdminMedia";
 import { AdminBlog } from "./pages/AdminBlog";
 import { AdminArtist } from "./pages/AdminArtist";
 import { AdminSettings } from "./pages/AdminSettings";
+import { AdminServices } from "./pages/AdminServices";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, loading } = useAdminAuth();
@@ -64,6 +65,7 @@ export function AdminRoot() {
               <Route path="gallery" element={<AdminGallery />} />
               <Route path="media" element={<AdminMedia />} />
               <Route path="blog" element={<AdminBlog />} />
+              <Route path="services" element={<AdminServices />} />
               <Route path="artist" element={<AdminArtist />} />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="*" element={<Navigate to="/admin" replace />} />

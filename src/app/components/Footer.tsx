@@ -1,13 +1,15 @@
 import { motion } from "motion/react";
+import { useQuery } from "convex/react";
+import { useNavigate, useLocation } from "react-router";
+import { api } from "../../../convex/_generated/api";
+import { useLanguage, TranslationKey } from "../contexts/LanguageContext";
 
-const footerLinks = ["Home", "About", "Media", "Services", "Contact"];
+const footerLinks = ["Home", "About", "Shows", "Media", "Services", "Contact"];
 
-function LinkedInIcon() {
+function SpotifyIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="2" y="9" width="4" height="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10C22 6.477 17.523 2 12 2zm4.586 14.422c-.172.28-.544.364-.823.19-2.253-1.376-5.088-1.688-8.423-.924-.316.07-.63-.122-.7-.44-.07-.315.122-.63.44-.7 3.63-.83 6.75-.48 9.317 1.08.28.17.363.54.19.82zm1.2-3.197c-.22.353-.68.468-1.03.25-2.58-1.585-6.526-2.03-9.92-1.11-.403.11-.81-.13-.92-.53-.11-.404.13-.81.53-.92 3.88-1.04 8.24-.53 11.1 1.23.35.22.46.68.25 1.03zm.14-3.328C14.773 8.056 8.55 7.848 4.98 8.93c-.48.146-.98-.124-1.126-.604-.146-.48.124-.98.604-1.126 4.12-1.25 10.975-.99 15.166 1.49.43.254.576.81.32 1.24-.256.43-.81.575-1.24.32z" fill="currentColor"/>
     </svg>
   );
 }
@@ -21,23 +23,66 @@ function YouTubeIcon() {
   );
 }
 
-function FacebookIcon() {
+function InstagramIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function BandcampIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16.5 6l-9 0l-4 12l9 0l4 -12z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
 const socialLinks = [
-  { label: "LinkedIn", icon: LinkedInIcon, href: "#" },
-  { label: "YouTube", icon: YouTubeIcon, href: "https://www.youtube.com/c/Nguyenminh" },
-  { label: "Facebook", icon: FacebookIcon, href: "#" },
+  { label: "Instagram", icon: InstagramIcon, href: "https://www.instagram.com/studion2m" },
+  { label: "Bandcamp", icon: BandcampIcon, href: "https://nguyennhatminh.bandcamp.com/" },
+  { label: "Spotify", icon: SpotifyIcon, href: "https://open.spotify.com/artist/0bdGcGb18FuCTioczLplU8" },
+  { label: "YouTube", icon: YouTubeIcon, href: "https://www.youtube.com/@NguyenMinh" },
 ];
 
 export function Footer() {
-  const scrollTo = (id: string) => {
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+  const artistInfo = useQuery(api.artist.getArtistInfo);
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavClick = (link: string) => {
+    if (link === "Home") {
+      if (location.pathname === "/") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        navigate("/");
+      }
+      return;
+    }
+
+    if (link === "Contact") {
+      if (location.pathname === "/") {
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate("/", { state: { scrollTo: "contact" } });
+      }
+      return;
+    }
+
+    const paths: Record<string, string> = {
+      About: "/about",
+      Shows: "/shows",
+      Media: "/media",
+      Services: "/services",
+    };
+    
+    if (paths[link]) {
+      navigate(paths[link]);
+    }
   };
 
   return (
@@ -83,11 +128,15 @@ export function Footer() {
                 color: "#8A7F72",
                 fontWeight: 300,
                 maxWidth: 240,
+                marginBottom: "1.5rem"
               }}
             >
-              Composer, performer, and music director based in Hanoi, Vietnam.
-              Available for international engagements.
+              {t("footer.bio")}
             </p>
+            <div className="flex flex-col gap-2">
+              <a href={`mailto:${artistInfo?.bookingEmail || ""}`} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.72rem", color: "#A09588", textDecoration: "none", transition: "color 0.2s", display: artistInfo?.bookingEmail ? "block" : "none" }} onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#A09588"; }}>{artistInfo?.bookingEmail || ""}</a>
+              <a href={`tel:${artistInfo?.phone || ""}`} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.72rem", color: "#A09588", textDecoration: "none", transition: "color 0.2s", display: artistInfo?.phone ? "block" : "none" }} onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#A09588"; }}>{artistInfo?.phone || ""}</a>
+            </div>
           </div>
 
           {/* Col 2: Navigation */}
@@ -102,13 +151,13 @@ export function Footer() {
                 marginBottom: "1.25rem",
               }}
             >
-              Navigation
+              {t("footer.nav")}
             </p>
             <nav className="flex flex-col gap-3">
               {footerLinks.map((link) => (
                 <button
                   key={link}
-                  onClick={() => scrollTo(link)}
+                  onClick={() => handleNavClick(link)}
                   style={{
                     fontFamily: "'Inter', sans-serif",
                     fontSize: "0.78rem",
@@ -124,7 +173,7 @@ export function Footer() {
                   onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#E8E1D8"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#B0A496"; }}
                 >
-                  {link}
+                  {t(`nav.${link.toLowerCase()}` as TranslationKey)}
                 </button>
               ))}
             </nav>
@@ -142,7 +191,7 @@ export function Footer() {
                 marginBottom: "1.25rem",
               }}
             >
-              Follow
+              {t("footer.follow")}
             </p>
             <div className="flex flex-col gap-4">
               {socialLinks.map(({ label, icon: Icon, href }) => (
@@ -194,7 +243,7 @@ export function Footer() {
               fontWeight: 300,
             }}
           >
-            © {new Date().getFullYear()} Nguyen Minh. All rights reserved.
+            © {new Date().getFullYear()} Nguyen Minh. {t("general.allRightsReserved")}.
           </p>
           <div className="flex items-center gap-6">
             {["Privacy Policy", "Terms of Use"].map((item) => (
@@ -212,7 +261,7 @@ export function Footer() {
                 onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#CDC1B3"; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#6E655B"; }}
               >
-                {item}
+                {item === "Privacy Policy" ? t("footer.privacy") : t("footer.terms")}
               </a>
             ))}
           </div>

@@ -1,82 +1,29 @@
-import { useRef, useState } from "react";
-import { motion, useInView } from "motion/react";
-import { Link, useNavigate } from "react-router";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { motion, useInView, AnimatePresence } from "motion/react";
+import { Link, useNavigate, useLocation } from "react-router";
+import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown, CheckCircle2 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { Doc } from "../../../convex/_generated/dataModel";
+import { useLanguage } from "../contexts/LanguageContext";
 
-const services = [
-  {
-    number: "01",
-    title: "Composition",
-    shortDesc: "Original works for orchestral, chamber, and electronic forces.",
-    fullDesc:
-      "Bespoke compositions conceived from first principles — from intimate solo études to full orchestral canvases. Each score is shaped by a deep understanding of your brief, the acoustic context, and the cultural resonance you wish to create. Nguyen Minh's compositional voice bridges Vietnamese pentatonic tradition and late European modernism to produce music that is unmistakably particular, and universally felt.",
-    deliverables: ["Fully notated score", "MIDI mockup / reference recording", "Performance notes", "Rights clearance support"],
-    timeline: "8 – 24 weeks",
-    tags: ["Orchestral", "Chamber", "Solo", "Electronic", "Film Score"],
-  },
-  {
-    number: "02",
-    title: "Live Performance",
-    shortDesc: "Solo recitals, concertos, and bespoke ensemble programmes.",
-    fullDesc:
-      "From intimate salon recitals to headline festival slots, Nguyen Minh curates each performance programme with the precision of a dramatist. Engagements include solo piano recitals, concerto appearances with symphony orchestras, and collaborative projects with the Vietnam Contemporary Music Ensemble. All bookings include pre-concert programme notes, artist liaison, and technical rider.",
-    deliverables: ["Custom programme design", "Programme notes for print", "Artist Q&A / Masterclass (optional)", "Technical rider"],
-    timeline: "Minimum 12 weeks notice",
-    tags: ["Solo Recital", "Concerto", "Festival", "Private Event", "Residency"],
-  },
-  {
-    number: "03",
-    title: "Music Production",
-    shortDesc: "Full-service recording production — arrangement to final mix.",
-    fullDesc:
-      "End-to-end production for recording artists, film directors, and brands requiring original music of the highest standard. Services span creative arrangement, full orchestration, session direction (Hanoi, London, Singapore), and mix oversight at partner studios. Nguyen Minh has produced records released on Deutsche Grammophon, Sony Classical, and independent labels across Southeast Asia.",
-    deliverables: ["Arrangement & orchestration", "Session direction", "Stem delivery", "Mastered final audio"],
-    timeline: "4 – 16 weeks",
-    tags: ["Recording", "Orchestration", "Arrangement", "Mixing", "Mastering"],
-  },
-  {
-    number: "04",
-    title: "Film & Media Scoring",
-    shortDesc: "Original scores for film, television, documentary, and campaigns.",
-    fullDesc:
-      "Narrative-driven scores crafted to serve the story. From intimate documentary underscore to full orchestral feature film music, each project begins with a thorough review of picture, a creative brief session, and a detailed spotting process. Prior credits include Golden Kite Award-winning 'Homeland' and UNESCO international campaign films screened across 44 countries.",
-    deliverables: ["Spotted cue list", "Recorded & mixed stems", "Deliverables to spec (M&E, stereo, 5.1)", "Sync licensing support"],
-    timeline: "6 – 20 weeks",
-    tags: ["Feature Film", "Documentary", "TV Series", "Campaign", "Trailers"],
-  },
-  {
-    number: "05",
-    title: "Masterclasses & Education",
-    shortDesc: "Intensive programmes for conservatories, festivals, and institutions.",
-    fullDesc:
-      "Intensive workshops and masterclasses designed for advanced students, emerging professionals, and institutional education programmes. Topics include composition technique, cross-cultural musical language, career navigation for performing artists, and the business of new music. Delivered in person or via high-quality video link. Available in English and Vietnamese.",
-    deliverables: ["Pre-session diagnostic", "Bespoke curriculum outline", "Post-session feedback document", "Follow-up consultation"],
-    timeline: "2 – 8 weeks",
-    tags: ["Masterclass", "Workshop", "Curriculum Design", "Residency", "Lecture"],
-  },
-];
-
-const process = [
-  { step: "01", title: "Initial Enquiry", desc: "Submit a brief via the contact form. We aim to respond within 48 hours with a short set of scoping questions." },
-  { step: "02", title: "Creative Brief", desc: "A focused consultation — by video or in person — to align on vision, deliverables, timeline, and budget." },
-  { step: "03", title: "Proposal & Agreement", desc: "A clear written proposal with scope, milestones, fees, and rights. No ambiguity, no surprises." },
-  { step: "04", title: "Creation & Review", desc: "Iterative development with structured review checkpoints. You are part of the process, not an audience to it." },
-  { step: "05", title: "Delivery", desc: "Final delivery to agreed specifications, with full handover documentation and ongoing support as required." },
-];
+type ServiceType = Doc<"services">;
 
 export function ServicesPage() {
   const headerRef = useRef(null);
   const listRef = useRef(null);
-  const processRef = useRef(null);
   const ctaRef = useRef(null);
 
   const headerInView = useInView(headerRef, { once: true });
   const listInView = useInView(listRef, { once: true, margin: "-60px" });
-  const processInView = useInView(processRef, { once: true, margin: "-60px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-60px" });
 
+  const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
+  const services = useQuery(api.services.listPublished) ?? [];
+  const expandServiceId = location.state?.expandService;
 
   return (
     <div style={{ backgroundColor: "#11100F" }}>
@@ -84,15 +31,20 @@ export function ServicesPage() {
       {/* ── HEADER ── */}
       <section
         ref={headerRef}
-        className="relative w-full h-[65vh] min-h-[500px] flex flex-col justify-end overflow-hidden mb-0"
+        className="relative w-full h-[65vh] min-h-[500px] flex flex-col justify-end overflow-hidden mb-16 md:mb-24"
       >
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="/images/hero.webp"
+            src="/images/engineer.webp"
             alt="Services"
             className="w-full h-full object-cover"
-            style={{ objectPosition: "center 40%" }}
+            style={{ 
+              objectPosition: "center 50%", 
+              transform: "scale(1.08)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 60%, transparent 100%)",
+            }}
           />
           {/* Soft gradient overlays for readability without obscuring the image */}
           <div
@@ -102,9 +54,9 @@ export function ServicesPage() {
             }}
           />
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, rgba(17,16,15,1) 0%, rgba(17,16,15,0.5) 30%, rgba(17,16,15,0) 60%)",
+              background: "linear-gradient(to top, #11100F 0%, rgba(17,16,15,0.8) 15%, transparent 50%)",
             }}
           />
         </div>
@@ -128,9 +80,9 @@ export function ServicesPage() {
                   letterSpacing: "-0.02em",
                 }}
               >
-                Services &amp;
+                {t("page.services.title")}
                 <br />
-                <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Expertise</em>
+                <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>{t("page.services.highlight")}</em>
               </motion.h1>
             </div>
           </div>
@@ -145,109 +97,14 @@ export function ServicesPage() {
         <div className="max-w-[1400px] mx-auto px-8 md:px-16">
           {services.map((service, i) => (
             <ServiceBlock
-              key={service.number}
+              key={service._id}
               service={service}
               index={i}
               inView={listInView}
               isLast={i === services.length - 1}
+              initiallyExpanded={expandServiceId === service._id}
             />
           ))}
-        </div>
-      </section>
-
-      {/* ── PROCESS ── */}
-      <section
-        ref={processRef}
-        style={{
-          padding: "120px 0 140px",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-          backgroundColor: "#151412",
-        }}
-      >
-        <div className="max-w-[1400px] mx-auto px-8 md:px-16">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={processInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="mb-16"
-          >
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "0.62rem",
-                letterSpacing: "0.3em",
-                textTransform: "uppercase",
-                color: "#8A7F72",
-                marginBottom: "1.25rem",
-              }}
-            >
-              — How It Works
-            </p>
-            <h2
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "clamp(2.5rem, 4.5vw, 3.8rem)",
-                fontWeight: 400,
-                lineHeight: 1.05,
-                color: "#FFFDF8",
-              }}
-            >
-              The{" "}
-              <em style={{ fontStyle: "italic", color: "#CDC1B3", fontWeight: 300 }}>
-                Process
-              </em>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-px" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-            {process.map((step, i) => (
-              <motion.div
-                key={step.step}
-                initial={{ opacity: 0, y: 16 }}
-                animate={processInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.55, delay: 0.1 + i * 0.08 }}
-                style={{ backgroundColor: "#151412", padding: "40px 28px" }}
-              >
-                <span
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: "2.2rem",
-                    fontWeight: 300,
-                    color: "#4E473F",
-                    display: "block",
-                    lineHeight: 1,
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  {step.step}
-                </span>
-                <h3
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "0.78rem",
-                    fontWeight: 500,
-                    color: "#E8E1D8",
-                    letterSpacing: "0.04em",
-                    marginBottom: "0.75rem",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {step.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "0.72rem",
-                    lineHeight: 1.75,
-                    color: "#A09588",
-                    fontWeight: 300,
-                  }}
-                >
-                  {step.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -291,9 +148,9 @@ export function ServicesPage() {
               marginBottom: "2rem",
             }}
           >
-            Have a project
+            {t("page.services.cta.title")}
             <br />
-            <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>in mind?</em>
+            <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>{t("page.services.cta.titleHighlight")}</em>
           </motion.h2>
 
           <motion.p
@@ -310,9 +167,7 @@ export function ServicesPage() {
               marginBottom: "3.5rem",
             }}
           >
-            Whether you are commissioning a new work, seeking a headline
-            performer, or looking for a collaborator who will elevate the
-            ambition of your project — the conversation starts here.
+            {t("page.services.cta.desc")}
           </motion.p>
 
           <motion.div
@@ -349,7 +204,7 @@ export function ServicesPage() {
                 btn.style.color = "#11100F";
               }}
             >
-              Get in Touch <ArrowRight size={13} strokeWidth={1.5} />
+              {t("page.services.cta.button")} <ArrowRight size={13} strokeWidth={1.5} />
             </button>
 
 
@@ -365,22 +220,35 @@ function ServiceBlock({
   index,
   inView,
   isLast,
+  initiallyExpanded = false,
 }: {
-  service: (typeof services)[0];
+  service: ServiceType;
   index: number;
   inView: boolean;
   isLast: boolean;
+  initiallyExpanded?: boolean;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(initiallyExpanded);
   const [hovered, setHovered] = useState(false);
+  const blockRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initiallyExpanded && blockRef.current) {
+      setTimeout(() => {
+        blockRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+    }
+  }, [initiallyExpanded]);
 
   return (
     <motion.div
+      ref={blockRef}
       initial={{ opacity: 0, y: 16 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: 0.1 + index * 0.09 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="relative overflow-hidden group"
       style={{
         borderTop: "1px solid rgba(255,255,255,0.08)",
         borderBottom: isLast ? "1px solid rgba(255,255,255,0.08)" : "none",
@@ -388,10 +256,30 @@ function ServiceBlock({
         backgroundColor: hovered ? "rgba(255,255,255,0.02)" : "transparent",
       }}
     >
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-all duration-700 ease-out"
+        style={{
+          opacity: expanded ? 0.25 : (hovered ? 0.3 : 0.15),
+          zIndex: 0,
+        }}
+      >
+        <ImageWithFallback
+          src={service.imageUrl as string}
+          alt={service.title}
+          className="w-full h-full object-cover"
+          style={{
+            objectPosition: service.imagePosition || "center",
+            maskImage: "linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%)",
+          }}
+        />
+      </div>
+
       {/* Main row — always visible */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full text-left"
+        className="w-full text-left relative z-10"
         style={{
           padding: "40px 0",
           background: "none",
@@ -402,34 +290,9 @@ function ServiceBlock({
         }}
       >
         <div className="grid grid-cols-12 gap-6 items-center">
-          {/* Number */}
-          <div className="col-span-1 hidden md:block">
-            <span
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "0.9rem",
-                fontWeight: 400,
-                color: "#6E655B",
-                letterSpacing: "0.06em",
-              }}
-            >
-              {service.number}
-            </span>
-          </div>
-
           {/* Title + short desc */}
-          <div className="col-span-11 md:col-span-7">
+          <div className="col-span-11 md:col-span-8">
             <div className="flex items-baseline gap-4 mb-2">
-              <span
-                className="md:hidden"
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: "0.82rem",
-                  color: "#6E655B",
-                }}
-              >
-                {service.number}
-              </span>
               <h3
                 style={{
                   fontFamily: "'Cormorant Garamond', serif",
@@ -502,6 +365,7 @@ function ServiceBlock({
           opacity: expanded ? 1 : 0,
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="relative z-10"
         style={{ overflow: "hidden" }}
       >
         <div

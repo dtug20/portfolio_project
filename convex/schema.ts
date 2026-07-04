@@ -75,6 +75,9 @@ export default defineSchema({
     videoUrl: v.optional(v.string()),
     videoStorageId: v.optional(v.id("_storage")),
 
+    // Project Link (e.g., Bandcamp, Spotify)
+    projectUrl: v.optional(v.string()),
+
     // Audio — uploaded file
     audioStorageId: v.optional(v.id("_storage")),
     audioFilename: v.optional(v.string()),
@@ -112,6 +115,7 @@ export default defineSchema({
 
     // Contact info
     bookingEmail: v.string(),
+    phone: v.optional(v.string()),
     touringEmail: v.string(),
     pressEmail: v.string(),
 
@@ -130,17 +134,22 @@ export default defineSchema({
 
   // ── Services ─────────────────────────────────────────────
   services: defineTable({
-    number: v.string(),               // "01", "02", ...
     title: v.string(),
     shortDesc: v.string(),
     fullDesc: v.string(),
     deliverables: v.array(v.string()),
     timeline: v.string(),
     tags: v.array(v.string()),
+    imageStorageId: v.optional(v.id("_storage")),
+    imageUrl: v.optional(v.string()),
+    imagePosition: v.optional(v.string()),
     isPublished: v.boolean(),
+    isFeatured: v.optional(v.boolean()),
     order: v.number(),
     updatedAt: v.number(),
-  }).index("by_order", ["order"]),
+  })
+    .index("by_order", ["order"])
+    .index("by_featured", ["isFeatured"]),
 
   // ── Blog posts ───────────────────────────────────────────
   blogPosts: defineTable({

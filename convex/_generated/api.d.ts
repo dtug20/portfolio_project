@@ -15,6 +15,7 @@ import type * as blog from "../blog.js";
 import type * as contact from "../contact.js";
 import type * as gallery from "../gallery.js";
 import type * as media from "../media.js";
+import type * as services from "../services.js";
 import type * as shows from "../shows.js";
 
 import type {
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   contact: typeof contact;
   gallery: typeof gallery;
   media: typeof media;
+  services: typeof services;
   shows: typeof shows;
 }>;
 

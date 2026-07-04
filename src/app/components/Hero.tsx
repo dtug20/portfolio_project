@@ -3,15 +3,17 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ChevronDown } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export function Hero() {
   const artistInfo = useQuery(api.artist.getArtistInfo);
+  const { t } = useLanguage();
 
   const scrollToAbout = () => {
     document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const nameParts = artistInfo?.name ? artistInfo.name.split(" ") : ["Nguyen", "Minh"];
+  const nameParts = artistInfo?.name ? artistInfo.name.split(" ") : [];
   const lastName = nameParts.pop();
   const firstName = nameParts.join(" ");
 
@@ -25,7 +27,7 @@ export function Hero() {
       <div className="absolute inset-0">
         <ImageWithFallback
           src="/images/hero.webp"
-          alt={artistInfo?.name || "Stage performance"}
+          alt={artistInfo?.name || ""}
           className="w-full h-full object-cover landscape:object-contain object-center landscape:object-left"
           style={{ transform: "scaleX(-1)" }}
         />
@@ -63,7 +65,7 @@ export function Hero() {
               lineHeight: "1.8",
             }}
           >
-            {artistInfo?.subtitle || "Composer · Performer · Music Director"}
+            {artistInfo?.subtitle || ""}
           </p>
 
           <h1
@@ -134,7 +136,7 @@ export function Hero() {
                 (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.25)";
               }}
             >
-              Discover More
+              {t("hero.discover")}
             </button>
 
             <button
@@ -153,7 +155,7 @@ export function Hero() {
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFDF8"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#B0A496"; }}
             >
-              Book a Session →
+              {t("hero.book")}
             </button>
           </motion.div>
         </motion.div>
@@ -177,7 +179,7 @@ export function Hero() {
             writingMode: "vertical-rl",
           }}
         >
-          Scroll
+          {t("hero.scroll")}
         </span>
         <ChevronDown size={14} color="#8A7F72" />
       </motion.button>

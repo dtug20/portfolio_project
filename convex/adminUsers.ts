@@ -11,6 +11,14 @@ export const getUserByEmail = internalQuery({
   },
 });
 
+export const getUserById = internalQuery({
+  args: { adminId: v.id("adminUsers") },
+  handler: async (ctx, { adminId }) => {
+    return ctx.db.get(adminId);
+  },
+});
+
+
 export const createAdminUser = internalMutation({
   args: { email: v.string(), passwordHash: v.string(), name: v.string() },
   handler: async (ctx, { email, passwordHash, name }) => {
@@ -28,4 +36,11 @@ export const updatePasswordHash = internalMutation({
   handler: async (ctx, { adminId, passwordHash }) => {
     await ctx.db.patch(adminId, { passwordHash });
   },
+});
+
+import { query } from "./_generated/server";
+export const getAllAdminUsers = query({
+  handler: async (ctx) => {
+    return ctx.db.query("adminUsers").collect();
+  }
 });

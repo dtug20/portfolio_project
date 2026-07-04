@@ -164,7 +164,7 @@ export function AdminDashboard() {
                     <span style={{ fontSize: "0.7rem", color: "#9CA3AF" }}>{timeAgo(msg.createdAt)}</span>
                   </div>
                   <p style={styles.listMeta}>{msg.type} · {msg.email}</p>
-                  <p style={{ fontSize: "0.8rem", color: "#4B5563", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" }}>
+                  <p style={{ fontSize: "0.8rem", color: "#4B5563", marginTop: 4, maxHeight: 120, overflowY: "auto", paddingRight: 4 }}>
                     {msg.message}
                   </p>
                 </div>
@@ -259,7 +259,7 @@ const styles: Record<string, React.CSSProperties> = {
   statValue: { fontFamily: "'Inter', sans-serif", fontSize: "2rem", fontWeight: 600, color: "#111827", margin: "0 0 4px" },
   statLabel: { fontSize: "0.875rem", fontWeight: 500, color: "#374151", margin: "0 0 4px" },
   statSub: { fontSize: "0.75rem", color: "#6B7280", margin: 0 },
-  twoCol: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20, marginBottom: 32 },
+  twoCol: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, marginBottom: 32 },
   panel: { backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", boxShadow: "0 1px 2px 0 rgba(0,0,0,0.05)" },
   panelHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #F3F4F6", backgroundColor: "#F9FAFB" },
   panelTitle: { fontSize: "0.875rem", fontWeight: 600, color: "#111827" },

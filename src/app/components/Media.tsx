@@ -1,11 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { Play, ArrowUpRight, ArrowLeft } from "lucide-react";
+import { Play, Pause, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { ShowGalleryRow } from "../pages/MediaPage";
+import { useLanguage, TranslationKey } from "../contexts/LanguageContext";
 
 const filterTabs = ["Works", "Pictures", "Blog"];
 
@@ -13,7 +14,9 @@ export function Media() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [activeFilter, setActiveFilter] = useState("Works");
+  const [activeAudioId, setActiveAudioId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const dbMedia = useQuery(api.media.listFeatured);
   const mediaItems = dbMedia || [];
@@ -31,7 +34,7 @@ export function Media() {
     if (mediaItems.length === 0) {
       return (
         <div className="py-16 text-center text-[#8A7F72] font-['Inter'] text-sm tracking-widest uppercase">
-          No featured works yet.
+          {t("media.empty.works")}
         </div>
       );
     }
@@ -43,6 +46,13 @@ export function Media() {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 + i * 0.08 }}
+            onClick={() => {
+              if (item.projectUrl) {
+                window.open(item.projectUrl, "_blank", "noopener,noreferrer");
+              } else if (item.videoUrl) {
+                window.open(item.videoUrl, "_blank", "noopener,noreferrer");
+              }
+            }}
             className={
               i === 0
                 ? "lg:col-span-8 group relative overflow-hidden cursor-pointer"
@@ -50,7 +60,12 @@ export function Media() {
             }
             style={{ backgroundColor: "#171513" }}
           >
-            <MediaCard item={item} featured={i === 0} />
+            <MediaCard 
+              item={item} 
+              featured={i === 0} 
+              activeAudioId={activeAudioId}
+              setActiveAudioId={setActiveAudioId}
+            />
           </motion.div>
         ))}
       </div>
@@ -61,7 +76,7 @@ export function Media() {
     if (galleryImages.length === 0) {
       return (
         <div className="py-16 text-center text-[#8A7F72] font-['Inter'] text-sm tracking-widest uppercase">
-          No featured pictures yet.
+          {t("media.empty.pictures")}
         </div>
       );
     }
@@ -72,7 +87,7 @@ export function Media() {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="w-full"
       >
-        <ShowGalleryRow title="Featured Pictures" allImages={galleryImages} setLightbox={() => {}} />
+        <ShowGalleryRow title={t("media.featuredPictures")} allImages={galleryImages} setLightbox={() => {}} />
       </motion.div>
     );
   };
@@ -81,7 +96,7 @@ export function Media() {
     if (blogItems.length === 0) {
       return (
         <div className="py-16 text-center text-[#8A7F72] font-['Inter'] text-sm tracking-widest uppercase">
-          No featured blog posts yet.
+          {t("media.empty.blog")}
         </div>
       );
     }
@@ -108,7 +123,7 @@ export function Media() {
             )}
             <div className="w-full md:w-3/5 flex flex-col justify-center">
               <span className="font-['Inter'] text-[0.65rem] tracking-[0.2em] uppercase text-[#8A7F72] mb-4">
-                {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Draft'}
+                {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : t("blog.draft")}
               </span>
               <h3 className="font-['Cormorant_Garamond'] text-3xl md:text-4xl font-light text-[#FFFDF8] mb-4 group-hover:text-[#DED4C8] transition-colors">
                 {post.title}
@@ -117,7 +132,7 @@ export function Media() {
                 {post.excerpt}
               </p>
               <span className="font-['Inter'] text-[0.7rem] tracking-widest uppercase text-[#CDC1B3] flex items-center gap-2">
-                Read More <ArrowLeft size={12} className="rotate-180" />
+                {t("blog.readMore")} <ArrowLeft size={12} className="rotate-180" />
               </span>
             </div>
           </motion.div>
@@ -149,7 +164,7 @@ export function Media() {
                 marginBottom: "4rem",
               }}
             >
-              — Media
+              — {t("media.label")}
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 18 }}
@@ -163,7 +178,7 @@ export function Media() {
                 color: "#FFFDF8",
               }}
             >
-              Featured Highlights
+              {t("media.featured")}
             </motion.h2>
           </div>
 
@@ -204,7 +219,7 @@ export function Media() {
                   }
                 }}
               >
-                {tab}
+                {t(`media.tab.${tab.toLowerCase()}` as TranslationKey)}
               </button>
             ))}
           </motion.div>
@@ -239,7 +254,7 @@ export function Media() {
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#CDC1B3"; }}
           >
-            View All Media <ArrowUpRight size={14} />
+            {t("media.explore")} <ArrowUpRight size={14} />
           </Link>
         </motion.div>
       </div>
@@ -247,7 +262,42 @@ export function Media() {
   );
 }
 
-function MediaCard({ item, featured }: { item: any; featured: boolean }) {
+function MediaCard({ 
+  item, 
+  featured, 
+  activeAudioId, 
+  setActiveAudioId 
+}: { 
+  item: any; 
+  featured: boolean;
+  activeAudioId?: string | null;
+  setActiveAudioId?: (id: string | null) => void;
+}) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isPlaying = activeAudioId === item._id;
+
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isPlaying]);
+
+  const handlePlayToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!item.audioUrl) return;
+
+    if (isPlaying) {
+      setActiveAudioId?.(null);
+    } else {
+      setActiveAudioId?.(item._id);
+    }
+  };
+
   return (
     <div className={`relative overflow-hidden ${featured ? "aspect-[16/10]" : "aspect-[4/5]"}`}>
       <ImageWithFallback
@@ -263,9 +313,21 @@ function MediaCard({ item, featured }: { item: any; featured: boolean }) {
         }}
       />
 
+      {item.audioUrl && (
+        <audio 
+          ref={audioRef} 
+          src={item.audioUrl} 
+          onEnded={() => setActiveAudioId?.(null)}
+          preload="none"
+        />
+      )}
+
       {/* Play button */}
       {item.hasPlay && (
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div 
+          className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isPlaying ? "opacity-100 bg-black/20" : "opacity-0 group-hover:opacity-100"}`}
+          onClick={handlePlayToggle}
+        >
           <div
             style={{
               width: 52,
@@ -277,9 +339,14 @@ function MediaCard({ item, featured }: { item: any; featured: boolean }) {
               justifyContent: "center",
               backgroundColor: "rgba(255,255,255,0.08)",
               backdropFilter: "blur(8px)",
+              cursor: "pointer"
             }}
           >
-            <Play size={18} color="#FFFDF8" fill="#FFFDF8" style={{ marginLeft: 3 }} />
+            {isPlaying ? (
+              <Pause size={18} color="#FFFDF8" fill="#FFFDF8" />
+            ) : (
+              <Play size={18} color="#FFFDF8" fill="#FFFDF8" style={{ marginLeft: 3 }} />
+            )}
           </div>
         </div>
       )}

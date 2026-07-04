@@ -2,6 +2,7 @@ import { useState, useRef, ReactNode } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { convertToWebP } from "../../../lib/imageUtils";
 import { AdminLayout } from "../AdminLayout";
 import { Plus, Pencil, Trash2, X, Check, Upload, Image, Eye, EyeOff, AlertTriangle, Star } from "lucide-react";
 import { BlogEditor } from "../components/BlogEditor";
@@ -56,9 +57,10 @@ export function AdminBlog() {
     setEditing(item._id);
   };
 
-  const uploadFile = async (file: File): Promise<Id<"_storage">> => {
+  const uploadFile = async (rawFile: File): Promise<Id<"_storage">> => {
     setUploadingCover(true);
     try {
+      const file = await convertToWebP(rawFile);
       const uploadUrl = await generateUploadUrl();
       const res = await fetch(uploadUrl, {
         method: "POST",
@@ -182,7 +184,7 @@ export function AdminBlog() {
           </div>
 
           <Field label="Tóm tắt (Excerpt)">
-            <textarea style={{ ...styles.input, minHeight: 60, resize: "vertical" }}
+            <textarea style={{ ...styles.input, minHeight: 150, resize: "vertical" }}
               value={form.excerpt}
               onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
               placeholder="Short description..."
@@ -342,7 +344,7 @@ const styles: Record<string, React.CSSProperties> = {
   btnPrimary: { display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif", fontSize: "0.875rem", fontWeight: 500, color: "#FFFFFF", backgroundColor: "#111827", border: "1px solid #111827", borderRadius: "6px", padding: "10px 20px", cursor: "pointer", transition: "background-color 0.2s" },
   btnSecondary: { display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif", fontSize: "0.875rem", fontWeight: 500, color: "#374151", backgroundColor: "#FFFFFF", border: "1px solid #D1D5DB", borderRadius: "6px", padding: "10px 20px", cursor: "pointer", transition: "background-color 0.2s" },
   iconBtn: { background: "none", border: "none", color: "#6B7280", cursor: "pointer", padding: "6px", borderRadius: "4px", display: "flex", alignItems: "center", transition: "color 0.2s, background-color 0.2s" },
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 24 },
   card: { backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 1px 3px 0 rgba(0,0,0,0.1)", transition: "transform 0.2s, box-shadow 0.2s" },
   cardCover: { position: "relative", aspectRatio: "16/9", overflow: "hidden", backgroundColor: "#F3F4F6", borderBottom: "1px solid #E5E7EB" },
   cardCoverPlaceholder: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" },
@@ -351,7 +353,7 @@ const styles: Record<string, React.CSSProperties> = {
   featureBadge: { fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", backgroundColor: "rgba(0,0,0,0.7)", color: "#FFF", padding: "4px 10px", borderRadius: "4px", display: "flex", alignItems: "center" },
   cardBody: { padding: "20px", flex: 1 },
   cardTitle: { fontSize: "1.125rem", fontWeight: 600, color: "#111827", margin: "0 0 4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const },
-  cardDesc: { fontSize: "0.875rem", color: "#4B5563", margin: 0, lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" },
+  cardDesc: { fontSize: "0.875rem", color: "#4B5563", margin: 0, lineHeight: 1.6, maxHeight: 120, overflowY: "auto", paddingRight: 4 },
   cardActions: { display: "flex", justifyContent: "flex-end", gap: 4, padding: "12px 16px", borderTop: "1px solid #F3F4F6", backgroundColor: "#F9FAFB" },
   emptyState: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 240, border: "1px dashed #D1D5DB", borderRadius: "8px", backgroundColor: "#F9FAFB" },
 };

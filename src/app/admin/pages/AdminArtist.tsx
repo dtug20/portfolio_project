@@ -37,9 +37,10 @@ export function AdminArtist() {
         statConcerts: "300+",
         statAlbums: "12",
         statAwards: "8",
-        bookingEmail: "booking@nguyenminh.asia",
-        touringEmail: "touring@nguyenminh.asia",
-        pressEmail: "press@nguyenminh.asia",
+        bookingEmail: "nguyenminh.meulo@gmail.com",
+        phone: "",
+        touringEmail: "nguyenminh.meulo@gmail.com",
+        pressEmail: "nguyenminh.meulo@gmail.com",
       }
     );
   }
@@ -51,12 +52,15 @@ export function AdminArtist() {
     setSaving(true);
     try {
       await upsertArtist({
-        name: form.name, subtitle: form.subtitle, heroBio: form.heroBio,
-        fullBio: form.fullBio, aboutHeadline: form.aboutHeadline,
-        statYears: form.statYears, statConcerts: form.statConcerts,
-        statAlbums: form.statAlbums, statAwards: form.statAwards,
-        bookingEmail: form.bookingEmail, touringEmail: form.touringEmail, pressEmail: form.pressEmail,
+        name: form.name ?? "", subtitle: form.subtitle ?? "", heroBio: form.heroBio ?? "",
+        fullBio: form.fullBio ?? "", aboutHeadline: form.aboutHeadline ?? "",
+        statYears: form.statYears ?? "", statConcerts: form.statConcerts ?? "",
+        statAlbums: form.statAlbums ?? "", statAwards: form.statAwards ?? "",
+        bookingEmail: form.bookingEmail ?? "", phone: form.phone, touringEmail: form.touringEmail ?? "", pressEmail: form.pressEmail ?? "",
       });
+      alert("Lưu thành công!");
+    } catch (e: any) {
+      alert("Lỗi: " + e.message);
     } finally {
       setSaving(false);
     }
@@ -93,11 +97,7 @@ export function AdminArtist() {
       subtitle="Thông tin hiển thị trên trang chủ"
       actions={
         <div style={{ display: "flex", gap: 8 }}>
-          {!artistInfo && (
-            <button onClick={handleSeedAll} disabled={seeding} style={styles.btnSecondary}>
-              {seeding ? "Đang tải…" : "Tải dữ liệu mẫu"}
-            </button>
-          )}
+
           {activeSection === "profile" && (
             <button onClick={handleSaveProfile} disabled={saving} style={styles.btnPrimary}>
               {saving ? "Đang lưu…" : <><Check size={16} strokeWidth={2} /> Lưu thay đổi</>}
@@ -121,7 +121,7 @@ export function AdminArtist() {
       {activeSection === "profile" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
           <Section title="Thông tin cơ bản">
-            <div style={styles.grid2}>
+            <div className="admin-grid-2">
               <Field label="Tên nghệ danh">
                 <input style={styles.input} value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               </Field>
@@ -133,22 +133,22 @@ export function AdminArtist() {
               <input style={styles.input} value={form.aboutHeadline ?? ""} onChange={(e) => setForm({ ...form, aboutHeadline: e.target.value })} placeholder="A Voice Between Two Worlds" />
             </Field>
             <Field label="Bio ngắn (Hero section)">
-              <textarea style={{ ...styles.input, minHeight: 96, resize: "vertical" }} value={form.heroBio ?? ""} onChange={(e) => setForm({ ...form, heroBio: e.target.value })} />
+              <textarea style={{ ...styles.input, minHeight: 150, resize: "vertical" }} value={form.heroBio ?? ""} onChange={(e) => setForm({ ...form, heroBio: e.target.value })} />
             </Field>
             <Field label="Bio đầy đủ (About page)">
-              <textarea style={{ ...styles.input, minHeight: 160, resize: "vertical" }} value={form.fullBio ?? ""} onChange={(e) => setForm({ ...form, fullBio: e.target.value })} />
+              <textarea style={{ ...styles.input, minHeight: 250, resize: "vertical" }} value={form.fullBio ?? ""} onChange={(e) => setForm({ ...form, fullBio: e.target.value })} />
             </Field>
           </Section>
 
 
-
-
-
           <Section title="Thông tin liên hệ">
-            <div style={styles.grid3}>
-              <Field label="Email Booking"><input style={styles.input} type="email" value={form.bookingEmail ?? ""} onChange={(e) => setForm({ ...form, bookingEmail: e.target.value })} /></Field>
-              <Field label="Email Touring"><input style={styles.input} type="email" value={form.touringEmail ?? ""} onChange={(e) => setForm({ ...form, touringEmail: e.target.value })} /></Field>
-              <Field label="Email Press"><input style={styles.input} type="email" value={form.pressEmail ?? ""} onChange={(e) => setForm({ ...form, pressEmail: e.target.value })} /></Field>
+            <div className="admin-grid-2">
+              <Field label="Email liên hệ">
+                <input style={styles.input} value={form.bookingEmail ?? ""} onChange={(e) => setForm({ ...form, bookingEmail: e.target.value })} />
+              </Field>
+              <Field label="Số điện thoại">
+                <input style={styles.input} value={form.phone ?? ""} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              </Field>
             </div>
           </Section>
         </div>
@@ -169,14 +169,14 @@ export function AdminArtist() {
                 <span style={styles.formTitle}>{msEditing === "new" ? "Thêm cột mốc" : "Sửa cột mốc"}</span>
                 <button onClick={() => setMsEditing(null)} style={styles.iconBtn}><X size={16} strokeWidth={1.5} /></button>
               </div>
-              <div style={styles.grid3}>
+              <div className="admin-grid-3">
                 <Field label="Năm"><input style={styles.input} value={msForm.year} onChange={(e) => setMsForm({ ...msForm, year: e.target.value })} placeholder="2024" /></Field>
                 <Field label="Tiêu đề" required>
                   <input style={{ ...styles.input, gridColumn: "span 2" }} value={msForm.title} onChange={(e) => setMsForm({ ...msForm, title: e.target.value })} />
                 </Field>
               </div>
               <Field label="Mô tả">
-                <textarea style={{ ...styles.input, minHeight: 96, resize: "vertical" }} value={msForm.description} onChange={(e) => setMsForm({ ...msForm, description: e.target.value })} />
+                <textarea style={{ ...styles.input, minHeight: 200, resize: "vertical" }} value={msForm.description} onChange={(e) => setMsForm({ ...msForm, description: e.target.value })} />
               </Field>
               <div style={styles.formActions}>
                 <button onClick={() => setMsEditing(null)} style={styles.btnSecondary}>Hủy</button>
@@ -187,14 +187,16 @@ export function AdminArtist() {
 
           <div style={styles.msList}>
             {milestones.map((ms) => (
-              <div key={ms._id} style={styles.msRow} className="ms-row">
-                <GripVertical size={16} strokeWidth={1.5} color="#D1D5DB" style={{ flexShrink: 0, marginTop: 4, cursor: "grab" }} />
-                <span style={styles.msYear}>{ms.year}</span>
-                <div style={{ flex: 1, minWidth: 0 }}>
+              <div key={ms._id} className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-6 p-4 sm:p-5 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-3 sm:w-28 flex-shrink-0">
+                  <GripVertical size={16} strokeWidth={1.5} color="#D1D5DB" className="cursor-grab mt-0.5" />
+                  <span style={styles.msYear}>{ms.year}</span>
+                </div>
+                <div className="flex-1 min-w-0 pl-7 sm:pl-0">
                   <p style={styles.msTitle}>{ms.title}</p>
                   <p style={styles.msDesc}>{ms.description}</p>
                 </div>
-                <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                <div className="flex gap-2 flex-shrink-0 pl-7 sm:pl-0 mt-2 sm:mt-0 justify-end sm:justify-start">
                   <button onClick={() => { setMsForm({ year: ms.year, title: ms.title, description: ms.description }); setMsEditing(ms._id); }} style={styles.iconBtn} title="Sửa"><Pencil size={16} strokeWidth={1.5} /></button>
                   {deleteConfirm === ms._id ? (
                     <button onClick={() => { deleteMilestone({ id: ms._id }); setDeleteConfirm(null); }} style={{ ...styles.iconBtn, color: "#EF4444" }} title="Xác nhận xóa"><AlertTriangle size={16} strokeWidth={1.5} /></button>
@@ -255,8 +257,7 @@ const styles: Record<string, React.CSSProperties> = {
   formTitle: { fontSize: "1.125rem", fontWeight: 600, color: "#111827" },
   formActions: { display: "flex", justifyContent: "flex-end", gap: 12, marginTop: 24, paddingTop: 20, borderTop: "1px solid #F3F4F6" },
   msList: { display: "flex", flexDirection: "column", gap: 0, border: "1px solid #E5E7EB", borderRadius: "8px", overflow: "hidden", backgroundColor: "#FFFFFF", boxShadow: "0 1px 2px 0 rgba(0,0,0,0.05)" },
-  msRow: { display: "flex", alignItems: "flex-start", gap: 16, padding: "20px", borderBottom: "1px solid #E5E7EB", transition: "background-color 0.2s" },
   msYear: { fontFamily: "'Inter', sans-serif", fontSize: "1.25rem", fontWeight: 600, color: "#111827", flexShrink: 0, width: 64, paddingTop: 2 },
   msTitle: { fontSize: "1rem", fontWeight: 500, color: "#111827", margin: "0 0 8px" },
-  msDesc: { fontSize: "0.875rem", color: "#4B5563", margin: 0, lineHeight: 1.6 },
+  msDesc: { fontSize: "0.875rem", color: "#4B5563", margin: 0, lineHeight: 1.6, maxHeight: 120, overflowY: "auto", paddingRight: 4 },
 };

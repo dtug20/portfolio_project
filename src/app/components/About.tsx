@@ -3,12 +3,14 @@ import { motion, useInView } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useLanguage } from "../contexts/LanguageContext";
 
 
 
 export function About() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const { t } = useLanguage();
 
   return (
     <section
@@ -31,7 +33,7 @@ export function About() {
             marginBottom: "4rem",
           }}
         >
-          — About
+          — {t("about.title")}
         </motion.p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
@@ -131,25 +133,9 @@ export function About() {
                   textAlign: "justify",
                 }}
               >
-                Nguyen Minh is a Hanoi-born composer and multi-instrumentalist whose
-                work inhabits the space between Vietnamese classical tradition and
-                contemporary global music. Trained at the Hanoi Conservatory of Music
-                and later at the Royal College of Music in London, he brings a rare
-                depth of cultural fluency to every performance.
-              </p>
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "0.875rem",
-                  lineHeight: 1.9,
-                  color: "#B0A496",
-                  fontWeight: 300,
-                  textAlign: "justify",
-                }}
-              >
-                His compositions have been performed at venues spanning Carnegie Hall,
-                the Hanoi Opera House, and the Sydney Opera House — earning him
-                recognition as one of Southeast Asia's most distinguished musical voices.
+                I am an musician and performer working across ambient, film scoring, and theatre.
+                My practice explores sound as space, blending performance, installation, and multimedia works.
+                This portfolio showcases my projects in theatre, experimental concerts, and collaborative shows.
               </p>
 
               <Link
@@ -170,7 +156,7 @@ export function About() {
                 onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#B0A496"; }}
               >
-                See more <ArrowRight size={13} strokeWidth={1.5} />
+                {t("about.readFull")} <ArrowRight size={13} strokeWidth={1.5} />
               </Link>
             </motion.div>
 

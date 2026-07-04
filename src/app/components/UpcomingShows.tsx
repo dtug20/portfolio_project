@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useLanguage } from "../contexts/LanguageContext";
 
 type ShowStatus = "tickets" | "rsvp" | "sold_out" | "details";
 
@@ -44,6 +45,7 @@ export function UpcomingShows() {
 
   const dbUpcoming = useQuery(api.shows.listUpcoming);
   const shows: Show[] = dbUpcoming ? dbUpcoming.slice(0, 4) : [];
+  const { t } = useLanguage();
 
   return (
     <section
@@ -83,11 +85,7 @@ export function UpcomingShows() {
               letterSpacing: "-0.01em",
             }}
           >
-            Upcoming
-            <br />
-            <em style={{ fontStyle: "italic", color: "#DED4C8", fontWeight: 300 }}>
-              Appearances
-            </em>
+            {t("shows.title")}
           </motion.h2>
         </div>
 
@@ -124,7 +122,7 @@ export function UpcomingShows() {
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#FFFDF8"; }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#B0A496"; }}
           >
-            View All Dates
+            {t("shows.allDates")}
             <ArrowRight size={13} strokeWidth={1.5} />
           </Link>
         </motion.div>
@@ -192,7 +190,7 @@ function ShowRow({
             <div className="flex flex-col items-center justify-center min-w-[90px]">
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#B0A496", marginBottom: -4 }}>{dayOfWeek}</span>
               <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "3.2rem", fontWeight: 300, color: hovered ? "#FFFDF8" : "#F0EAE3", lineHeight: 1, letterSpacing: "-0.02em", transition: "color 0.3s" }}>{day}</span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#A09588", mt: 1 }}>{month} {year}</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#A09588", marginTop: 4 }}>{month} {year}</span>
               {show.time && <span style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.75rem", color: "#A09588", marginTop: 8 }}>{show.time}</span>}
             </div>
 
@@ -243,6 +241,7 @@ function CtaButton({
   hovered: boolean;
 }) {
   const [btnHovered, setBtnHovered] = useState(false);
+  const { t } = useLanguage();
   const active = hovered || btnHovered;
 
   if (show.soldOut || show.status === "sold_out") {
@@ -260,7 +259,7 @@ function CtaButton({
           whiteSpace: "nowrap",
         }}
       >
-        Sold Out
+        {t("shows.soldOut")}
       </span>
     );
   }
@@ -298,7 +297,7 @@ function CtaButton({
         whiteSpace: "nowrap",
       }}
     >
-      {show.status === "rsvp" ? "RSVP" : "Tickets"}
+      {show.status === "rsvp" ? "RSVP" : t("shows.tickets")}
     </button>
   );
 }

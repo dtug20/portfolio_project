@@ -33,14 +33,16 @@ export const login = action({
 // ── Verify token (used by admin pages) ───────────────────
 export const verifyToken = action({
   args: { token: v.string() },
-  handler: async (_ctx, { token }) => {
+  handler: async (ctx, { token }) => {
     try {
       const payload = jwt.verify(token, JWT_SECRET) as {
         adminId: string;
         email: string;
         name: string;
       };
-      return { valid: true, adminId: payload.adminId, email: payload.email, name: payload.name };
+      const user: any = await ctx.runQuery(internal.adminUsers.getUserById, { adminId: payload.adminId as any });
+      if (!user) return { valid: false };
+      return { valid: true, adminId: user._id, email: user.email, name: user.name };
     } catch {
       return { valid: false };
     }

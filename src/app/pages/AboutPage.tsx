@@ -5,69 +5,20 @@ import { ArrowLeft } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-
-const fallbackMilestones = [
-  {
-    year: "1985",
-    title: "Born in Hanoi, Vietnam",
-    description:
-      "Raised in a musical household, Nguyen Minh began formal piano studies at the age of five under master teacher Pham Thi Lan at the Hanoi School of Music.",
-  },
-  {
-    year: "2003",
-    title: "Hanoi Conservatory of Music — First Prize",
-    description:
-      "Graduated with highest honours from the Hanoi Conservatory of Music, earning the National Young Musician Prize for his original composition cycle 'Song of the Red River'.",
-  },
-  {
-    year: "2007",
-    title: "Royal College of Music, London",
-    description:
-      "Awarded a full scholarship to pursue postgraduate study in composition and performance at the Royal College of Music, studying under Sir Harrison Birtwistle.",
-  },
-  {
-    year: "2010",
-    title: "International Debut — Carnegie Hall",
-    description:
-      "Made his international solo debut at Carnegie Hall, New York, performing his own composition 'Monsoon Suite' to critical acclaim from The New York Times and Le Monde.",
-  },
-  {
-    year: "2014",
-    title: "UNESCO Artist for Peace",
-    description:
-      "Appointed as a UNESCO Artist for Peace in recognition of his contribution to cultural dialogue through music between Vietnam and the international community.",
-  },
-  {
-    year: "2018",
-    title: "Founding of the Vietnam Contemporary Music Ensemble",
-    description:
-      "Established the Vietnam Contemporary Music Ensemble, a pioneering chamber group dedicated to premiering new works by Southeast Asian composers.",
-  },
-  {
-    year: "2021",
-    title: "Grammy Nomination — Best Classical Composition",
-    description:
-      "Received a Grammy nomination for his orchestral work 'Between Silence', recorded with the London Symphony Orchestra and released on Deutsche Grammophon.",
-  },
-  {
-    year: "2024",
-    title: "Artist in Residence — Sydney Opera House",
-    description:
-      "Named Artist in Residence at the Sydney Opera House for the 2024–2025 season, premiering three new works exploring the intersection of Vietnamese folk tradition and electronic composition.",
-  },
-];
+import { useLanguage } from "../contexts/LanguageContext";
 
 export function AboutPage() {
   const artistInfo = useQuery(api.artist.getArtistInfo);
   const fetchedMilestones = useQuery(api.artist.listMilestones);
-  const currentMilestones = fetchedMilestones ?? fallbackMilestones;
+  const currentMilestones = fetchedMilestones ?? [];
+  const { t } = useLanguage();
 
   const headerRef = useRef(null);
   const storyRef = useRef(null);
   const timelineRef = useRef(null);
 
   const headerInView = useInView(headerRef, { once: true });
-  const storyInView = useInView(storyRef, { once: true, margin: "-60px" });
+  const storyInView = useInView(storyRef, { once: true, margin: "-100px" });
   const timelineInView = useInView(timelineRef, { once: true, margin: "-60px" });
 
   return (
@@ -117,8 +68,8 @@ export function AboutPage() {
                   letterSpacing: "-0.02em",
                 }}
               >
-                Biogra
-                <em style={{ fontStyle: "italic" }}>phy</em>
+                {t("page.about.title")}
+                <em style={{ fontStyle: "italic" }}>{t("page.about.highlight")}</em>
               </motion.h1>
             </div>
           </div>
@@ -144,10 +95,9 @@ export function AboutPage() {
                 style={{ aspectRatio: "3/4" }}
               >
                 <ImageWithFallback
-                  src="https://nguyennhatminh.carrd.co/assets/images/image01.jpg?v=b"
-                  alt={artistInfo?.name ? `${artistInfo.name} — official portrait` : "Nguyen Minh — official portrait"}
+                  src="/images/biography.webp"
+                  alt={artistInfo?.name ? `${artistInfo.name} — official portrait` : ""}
                   className="w-full h-full object-cover"
-                  style={{ filter: "grayscale(100%) contrast(1.05)" }}
                 />
                 <div
                   className="absolute inset-0"
@@ -174,7 +124,7 @@ export function AboutPage() {
                   textTransform: "uppercase",
                 }}
               >
-                {artistInfo?.name || "Nguyen Minh"} · Hanoi, {new Date().getFullYear()}
+                {artistInfo?.name || ""} · Hanoi, {new Date().getFullYear()}
               </p>
             </motion.div>
 
@@ -197,34 +147,11 @@ export function AboutPage() {
                   {artistInfo.aboutHeadline}
                 </h3>
               )}
-              
-              {artistInfo?.fullBio ? (
+
+              {artistInfo?.fullBio && (
                 artistInfo.fullBio.split('\n').filter(p => p.trim()).map((paragraph, idx) => (
                   <BioParagraph key={idx} text={paragraph} />
                 ))
-              ) : (
-                <>
-                  <BioParagraph
-                    label="Early Life & Formation"
-                    text="Born in Hanoi in 1985 into a family of educators and amateur musicians, Nguyen Minh's path was shaped early by the confluence of Vietnamese classical tradition and the recordings of Western masters that filled his childhood home. By the age of eight, he had composed his first piece — a short study for đàn tranh and piano — performed at his school's annual recital to standing applause."
-                  />
-                  <BioParagraph
-                    label="Education"
-                    text="Minh trained at the Hanoi Conservatory of Music before earning a full scholarship to the Royal College of Music in London, where he studied under Sir Harrison Birtwistle. It was in London that he developed the compositional language that would define his career: a harmonic architecture rooted in Vietnamese pentatonic modes, voiced through the vocabulary of late European modernism and filtered through a deep sensitivity to silence and space."
-                  />
-                  <BioParagraph
-                    label="Artistic Philosophy"
-                    text="'I am not interested in fusion as a concept,' Minh has said. 'I am interested in truth — the truth of what it sounds like to be Vietnamese, to have absorbed two musical worlds, and to speak honestly from that place.' His music avoids the superficial borrowing that characterises much cross-cultural work, instead seeking structural and emotional resonances between traditions that appear, on the surface, to have little in common."
-                  />
-                  <BioParagraph
-                    label="International Career"
-                    text="Over two decades of international touring have taken Minh to Carnegie Hall, the Barbican, the Seoul Arts Centre, and the Sydney Opera House, where he was named Artist in Residence for 2024–2025. His discography spans twelve studio albums, including the Grammy-nominated 'Between Silence' (Deutsche Grammophon, 2021) and the critically acclaimed film score for 'Homeland' (Best Original Score, Golden Kite Awards, 2022)."
-                  />
-                  <BioParagraph
-                    label="Legacy & Teaching"
-                    text="In 2018, Minh founded the Vietnam Contemporary Music Ensemble, a chamber group dedicated to premiering new works by Southeast Asian composers. He serves as a UNESCO Artist for Peace and regularly conducts masterclasses at leading conservatories across Asia, Europe, and the Americas, mentoring the next generation of composers who seek, as he does, to speak to the world from a deeply particular place."
-                  />
-                </>
               )}
             </motion.div>
           </div>
@@ -254,7 +181,7 @@ export function AboutPage() {
                 marginBottom: "1.25rem",
               }}
             >
-              04 / Milestones
+              {t("page.about.milestones")}
             </p>
             <h2
               style={{
@@ -265,32 +192,21 @@ export function AboutPage() {
                 color: "#FFFDF8",
               }}
             >
-              Key{" "}
+              {t("page.about.achievements")}{" "}
               <em style={{ fontStyle: "italic", color: "#CDC1B3", fontWeight: 300 }}>
-                Achievements
+                {t("page.about.achievementsHighlight")}
               </em>
             </h2>
           </motion.div>
 
           {/* Timeline */}
-          <div className="relative">
-            {/* Vertical spine — desktop */}
-            <div
-              className="hidden md:block absolute top-0 bottom-0"
-              style={{
-                left: "10rem",
-                width: 1,
-                backgroundColor: "rgba(255,255,255,0.06)",
-              }}
-            />
-
+          <div className="relative mt-8">
             <div className="flex flex-col">
               {currentMilestones.map((item, i) => (
                 <TimelineRow
                   key={item._id || item.year + i}
                   item={item}
                   index={i}
-                  inView={timelineInView}
                   isLast={i === currentMilestones.length - 1}
                 />
               ))}
@@ -337,83 +253,108 @@ function BioParagraph({ label, text }: { label?: string; text: string }) {
 function TimelineRow({
   item,
   index,
-  inView,
   isLast,
 }: {
   item: any;
   index: number;
-  inView: boolean;
   isLast: boolean;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: 0.1 + index * 0.07 }}
-      className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-0"
+      initial="initial"
+      whileInView="animate"
+      whileHover="hover"
+      viewport={{ once: true, margin: "-50px" }}
+      variants={{
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0, transition: { duration: 0.6, delay: index * 0.1, ease: "easeOut" } },
+      }}
+      className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-0 relative cursor-default"
       style={{
-        borderTop: "1px solid rgba(255,255,255,0.07)",
-        paddingTop: 28,
-        paddingBottom: isLast ? 0 : 28,
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        paddingTop: 36,
+        paddingBottom: 36,
       }}
     >
+      {/* Subtle hover background highlight */}
+      <motion.div
+        variants={{
+          hover: { opacity: 1 },
+          initial: { opacity: 0 },
+          animate: { opacity: 0 }
+        }}
+        transition={{ duration: 0.3 }}
+        className="absolute inset-0 -mx-6 md:-mx-10 rounded-lg pointer-events-none"
+        style={{ backgroundColor: "rgba(255,255,255,0.02)", zIndex: 0 }}
+      />
+
       {/* Year */}
-      <div className="md:col-span-2 flex items-start pt-0.5">
-        <span
+      <div className="md:col-span-3 lg:col-span-2 flex items-start pt-1 z-10">
+        <motion.span
+          variants={{ hover: { color: "#DED4C8" } }}
+          transition={{ duration: 0.3 }}
           style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "1.15rem",
             fontWeight: 400,
-            color: "#776D62",
+            color: "#8A7F72",
             letterSpacing: "0.04em",
-            lineHeight: 1,
+            lineHeight: 1.2,
           }}
         >
           {item.year}
-        </span>
+        </motion.span>
       </div>
 
-      {/* Dot on spine — desktop */}
-      <div className="hidden md:flex md:col-span-1 justify-center pt-1">
-        <div
+      {/* Dot — desktop */}
+      <div className="hidden md:flex md:col-span-1 justify-center pt-2.5 z-10">
+        <motion.div
+          variants={{
+            hover: { scale: 1.8, backgroundColor: "rgba(255,253,248,0.15)", borderColor: "#FFFDF8" },
+          }}
+          transition={{ duration: 0.3 }}
           style={{
-            width: 5,
-            height: 5,
+            width: 6,
+            height: 6,
             borderRadius: "50%",
-            border: "1px solid rgba(255,255,255,0.25)",
-            backgroundColor: "#11100F",
+            border: "1px solid rgba(138,127,114,0.6)",
+            backgroundColor: "transparent",
             flexShrink: 0,
-            marginTop: 2,
           }}
         />
       </div>
 
       {/* Content */}
-      <div className="md:col-span-9 md:pl-10">
-        <h3
+      <div className="md:col-span-8 lg:col-span-9 md:pl-6 lg:pl-10 z-10">
+        <motion.h3
+          variants={{ hover: { color: "#FFFFFF", x: 6 } }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "1.35rem",
+            fontSize: "1.45rem",
             fontWeight: 400,
             color: "#F0EAE3",
-            lineHeight: 1.2,
+            lineHeight: 1.3,
             marginBottom: "0.6rem",
           }}
         >
           {item.title}
-        </h3>
-        <p
+        </motion.h3>
+        <motion.p
+          variants={{ hover: { color: "#CDC1B3", x: 6 } }}
+          transition={{ duration: 0.3, ease: "easeOut", delay: 0.03 }}
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "0.78rem",
+            fontSize: "0.82rem",
             lineHeight: 1.85,
-            color: "#A09588",
+            color: "#8A7F72",
             fontWeight: 300,
-            maxWidth: 620,
+            maxWidth: 680,
+            margin: 0,
           }}
         >
           {item.description}
-        </p>
+        </motion.p>
       </div>
     </motion.div>
   );

@@ -5,6 +5,7 @@ import { ArrowLeft, Play, Pause, Calendar, ChevronLeft, ChevronRight, X } from "
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useLanguage, TranslationKey } from "../contexts/LanguageContext";
 
 
 
@@ -14,7 +15,8 @@ export function MediaPage() {
   const headerRef = useRef(null);
   const gridRef = useRef(null);
   const headerInView = useInView(headerRef, { once: true });
-  const gridInView = useInView(gridRef, { once: true, margin: "-40px" });
+  const gridInView = useInView(gridRef, { once: true, margin: "-60px" });
+  const { t } = useLanguage();
 
   const [activeTab, setActiveTab] = useState<MainTab>("Projects");
   const [lightbox, setLightbox] = useState<{ images: string[], index: number } | null>(null);
@@ -61,7 +63,11 @@ export function MediaPage() {
           animate={gridInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1 + i * 0.08 }}
           onClick={() => {
-            if (item.videoUrl) window.open(item.videoUrl, "_blank");
+            if (item.projectUrl) {
+              window.open(item.projectUrl, "_blank", "noopener,noreferrer");
+            } else if (item.videoUrl) {
+              window.open(item.videoUrl, "_blank", "noopener,noreferrer");
+            }
           }}
           className="group relative overflow-hidden cursor-pointer bg-[#171513] rounded-md"
         >
@@ -257,10 +263,10 @@ export function MediaPage() {
       >
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
-            src="/images/on_stage.webp"
+            src="/images/explore_media.webp"
             alt="Selected Works"
             className="w-full h-full object-cover"
-            style={{ objectPosition: "center 40%" }}
+            style={{ objectPosition: "center 40%", transform: "scaleX(-1)" }}
           />
           <div
             className="absolute inset-0"
@@ -277,7 +283,7 @@ export function MediaPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div>
               <motion.h1 initial={{ opacity: 0, y: 28 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.85, delay: 0.1 }} style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(4rem, 10vw, 8rem)", fontWeight: 300, lineHeight: 0.93, color: "#FFFDF8", letterSpacing: "-0.025em" }}>
-                Explore <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>Media</em>
+                {t("page.media.title")} <em style={{ fontStyle: "italic", color: "#CDC1B3" }}>{t("page.media.highlight")}</em>
               </motion.h1>
             </div>
           </div>
@@ -294,7 +300,7 @@ export function MediaPage() {
               <button key={tab} onClick={() => setActiveTab(tab)} style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.75rem", letterSpacing: "0.16em", textTransform: "uppercase", color: activeTab === tab ? "#FFFDF8" : "#8A7F72", background: "none", border: "none", borderBottom: activeTab === tab ? "2px solid #FFFDF8" : "2px solid transparent", padding: "18px 32px 17px", cursor: "pointer", marginBottom: -1, transition: "color 0.2s", display: "flex", alignItems: "center", gap: 10 }}
                 onMouseEnter={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#DED4C8"; }}
                 onMouseLeave={(e) => { if (activeTab !== tab) (e.currentTarget as HTMLButtonElement).style.color = "#8A7F72"; }}>
-                {tab}
+                {t(`page.media.tab.${tab.toLowerCase()}` as TranslationKey)}
               </button>
             ))}
           </motion.div>

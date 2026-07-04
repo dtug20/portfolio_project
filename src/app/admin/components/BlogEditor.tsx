@@ -22,6 +22,7 @@ import { LineHeightExtension } from "../../../extensions/line-height";
 
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { convertToWebP } from "../../../lib/imageUtils";
 
 import {
   Bold,
@@ -309,8 +310,9 @@ function EditorToolbar({ editor }: { editor: Editor }) {
     input.type = "file";
     input.accept = "image/*";
     input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
+      const rawFile = (e.target as HTMLInputElement).files?.[0];
+      if (!rawFile) return;
+      const file = await convertToWebP(rawFile);
       const postUrl = await generateUploadUrl();
       const result = await fetch(postUrl, {
         method: "POST",
@@ -657,10 +659,11 @@ export function BlogEditor({ content, onChange }: BlogEditorProps) {
           event.preventDefault();
           items.forEach((item) => {
             if (item.type.startsWith("image/")) {
-              const file = item.getAsFile();
-              if (file) {
+              const rawFile = item.getAsFile();
+              if (rawFile) {
                 (async () => {
                   try {
+                    const file = await convertToWebP(rawFile);
                     const postUrl = await generateUploadUrl();
                     const result = await fetch(postUrl, {
                       method: "POST",

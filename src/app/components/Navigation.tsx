@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLocation, useNavigate } from "react-router";
 import { Menu, X } from "lucide-react";
+import { useLanguage, TranslationKey } from "../contexts/LanguageContext";
 
-const navLinks = ["Home", "Shows", "About", "Media", "Services", "Contact"];
+const navLinks = ["Home", "About", "Shows", "Media", "Services", "Contact"];
 
 const linkToPath: Record<string, string> = {
   Home: "/",
@@ -27,6 +28,7 @@ export function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === "/";
+  const { lang, toggleLang, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -51,7 +53,11 @@ export function Navigation() {
     }
 
     if (link === "Contact") {
-      navigate("/", { state: { scrollTo: "contact" } });
+      if (isHome) {
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate("/", { state: { scrollTo: "contact" } });
+      }
       setActiveSection(link);
       return;
     }
@@ -111,21 +117,59 @@ export function Navigation() {
             {navLinks.map((link) => (
               <NavLink
                 key={link}
-                label={link}
+                label={t(`nav.${link.toLowerCase()}` as TranslationKey)}
                 active={activeSection === link}
                 onClick={() => handleNavClick(link)}
               />
             ))}
+            
+            {/* Language Toggle */}
+            <button
+              onClick={toggleLang}
+              className="text-[#CDC1B3] hover:text-[#FFFDF8] transition-colors flex items-center gap-2"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.72rem",
+                letterSpacing: "0.1em",
+                fontWeight: 500,
+                padding: "6px 12px",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: "20px"
+              }}
+            >
+              <span style={{ opacity: lang === 'en' ? 1 : 0.5 }}>EN</span>
+              <span style={{ opacity: 0.3 }}>/</span>
+              <span style={{ opacity: lang === 'vi' ? 1 : 0.5 }}>VN</span>
+            </button>
           </div>
 
-          {/* Mobile Toggle */}
-          <button
-            className="md:hidden text-white/70 hover:text-white transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          {/* Mobile Controls */}
+          <div className="md:hidden flex items-center gap-4">
+            <button
+              onClick={toggleLang}
+              className="text-[#CDC1B3] flex items-center gap-1"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "0.7rem",
+                letterSpacing: "0.05em",
+                fontWeight: 500,
+                padding: "4px 8px",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: "16px"
+              }}
+            >
+              <span style={{ opacity: lang === 'en' ? 1 : 0.5 }}>EN</span>
+              <span style={{ opacity: 0.3 }}>|</span>
+              <span style={{ opacity: lang === 'vi' ? 1 : 0.5 }}>VN</span>
+            </button>
+            <button
+              className="text-white/70 hover:text-white transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </motion.nav>
 
@@ -160,7 +204,7 @@ export function Navigation() {
                   textTransform: "uppercase",
                 }}
               >
-                {link}
+                {t(`nav.${link.toLowerCase()}` as TranslationKey)}
               </motion.button>
             ))}
           </motion.div>

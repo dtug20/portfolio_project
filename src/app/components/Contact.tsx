@@ -3,6 +3,8 @@ import { motion, useInView } from "motion/react";
 import { Send } from "lucide-react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useLanguage, TranslationKey } from "../contexts/LanguageContext";
 
 const inquiryTypes = ["Booking", "Composition", "Production", "Education", "Press", "Other"];
 
@@ -11,6 +13,7 @@ export function Contact() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const submitMessage = useMutation(api.contact.submit);
+  const { t } = useLanguage();
   
   const [formState, setFormState] = useState({
     name: "",
@@ -43,9 +46,33 @@ export function Contact() {
     <section
       id="contact"
       ref={ref}
+      className="relative overflow-hidden"
       style={{ backgroundColor: "#171513", padding: "120px 0 140px" }}
     >
-      <div className="max-w-[1400px] mx-auto px-8 md:px-16">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <ImageWithFallback
+          src="/images/contact.webp"
+          alt="Contact Background"
+          className="w-full h-full object-cover"
+          style={{ objectPosition: "center", opacity: 0.2 }}
+        />
+        {/* Gradient overlays to ensure text and form readability */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to right, #171513 0%, rgba(23,21,19,0.6) 50%, rgba(23,21,19,0.2) 100%)",
+          }}
+        />
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to top, #171513 0%, transparent 20%, transparent 80%, #171513 100%)",
+          }}
+        />
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-8 md:px-16 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32">
           {/* Left: Info */}
           <div>
@@ -62,7 +89,7 @@ export function Contact() {
                 marginBottom: "4rem",
               }}
             >
-              — Contact
+              — {t("nav.contact")}
             </motion.p>
 
             <motion.h2
@@ -78,9 +105,9 @@ export function Contact() {
                 marginBottom: "2.5rem",
               }}
             >
-              Let's Create
+              {t("contact.title")}
               <br />
-              <em style={{ fontStyle: "italic", color: "#DED4C8" }}>Together</em>
+              <em style={{ fontStyle: "italic", color: "#DED4C8" }}>{t("contact.titleHighlight")}</em>
             </motion.h2>
 
             <motion.div
@@ -100,16 +127,13 @@ export function Contact() {
                   marginBottom: "3rem",
                 }}
               >
-                For booking inquiries, commissioning projects, or press requests,
-                reach out directly. All serious enquiries receive a personal response
-                within 48 hours.
+                {t("contact.desc")}
               </p>
 
               <div className="flex flex-col gap-6">
-                <ContactDetail label="General Inquiries" value={artistInfo?.touringEmail || "touring@nguyenminh.asia"} />
-                <ContactDetail label="Booking & Management" value={artistInfo?.bookingEmail || "booking@nguyenminh.asia"} />
-                <ContactDetail label="Press & Media" value={artistInfo?.pressEmail || "press@nguyenminh.asia"} />
-                <ContactDetail label="Based In" value="Hanoi, Vietnam · Available Worldwide" />
+                <ContactDetail label="Email" value={artistInfo?.bookingEmail || ""} />
+                <ContactDetail label="Phone" value={artistInfo?.phone || ""} />
+                <ContactDetail label={t("contact.basedIn")} value={t("contact.basedInValue")} />
               </div>
             </motion.div>
           </div>
@@ -148,7 +172,7 @@ export function Contact() {
                     marginBottom: "1rem",
                   }}
                 >
-                  Message Received
+                  {t("contact.received")}
                 </h3>
                 <p
                   style={{
@@ -158,14 +182,14 @@ export function Contact() {
                     lineHeight: 1.8,
                   }}
                 >
-                  Thank you for reaching out. I will be in touch within 48 hours.
+                  {t("contact.receivedDesc")}
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 {/* Inquiry Type */}
                 <div>
-                  <label style={labelStyle}>Inquiry Type</label>
+                  <label style={labelStyle}>{t("contact.type")}</label>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {inquiryTypes.map((type) => (
                       <button
@@ -186,7 +210,7 @@ export function Contact() {
                           transition: "all 0.2s",
                         }}
                       >
-                        {type}
+                        {t(`contact.type.${type.toLowerCase()}` as TranslationKey)}
                       </button>
                     ))}
                   </div>
@@ -194,26 +218,26 @@ export function Contact() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
-                    label="Full Name"
+                    label={t("contact.name")}
                     value={formState.name}
                     onChange={(v) => setFormState((s) => ({ ...s, name: v }))}
-                    placeholder="Your name"
+                    placeholder={t("contact.namePlaceholder")}
                   />
                   <FormField
-                    label="Email Address"
+                    label={t("contact.email")}
                     value={formState.email}
                     onChange={(v) => setFormState((s) => ({ ...s, email: v }))}
-                    placeholder="your@email.com"
+                    placeholder={t("contact.emailPlaceholder")}
                     type="email"
                   />
                 </div>
 
                 <div>
-                  <label style={labelStyle}>Message</label>
+                  <label style={labelStyle}>{t("contact.message")}</label>
                   <textarea
                     value={formState.message}
                     onChange={(e) => setFormState((s) => ({ ...s, message: e.target.value }))}
-                    placeholder="Tell me about your project..."
+                    placeholder={t("contact.messagePlaceholder")}
                     rows={5}
                     style={{
                       ...inputStyle,
@@ -246,7 +270,7 @@ export function Contact() {
                   onMouseEnter={(e) => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.opacity = "0.85"; }}
                   onMouseLeave={(e) => { if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"} {!isSubmitting && <Send size={13} />}
+                  {isSubmitting ? t("contact.sending") : t("contact.send")} {!isSubmitting && <Send size={13} />}
                 </button>
               </form>
             )}

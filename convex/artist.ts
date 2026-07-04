@@ -40,6 +40,7 @@ export const upsertArtistInfo = mutation({
     statAlbums: v.string(),
     statAwards: v.string(),
     bookingEmail: v.string(),
+    phone: v.optional(v.string()),
     touringEmail: v.string(),
     pressEmail: v.string(),
   },
@@ -76,13 +77,27 @@ export const seedArtistInfo = mutation({
       statConcerts: "300+",
       statAlbums: "12",
       statAwards: "8",
-      bookingEmail: "booking@nguyenminh.asia",
-      touringEmail: "touring@nguyenminh.asia",
-      pressEmail: "press@nguyenminh.asia",
+      bookingEmail: "nguyenminh.meulo@gmail.com",
+      touringEmail: "nguyenminh.meulo@gmail.com",
+      pressEmail: "nguyenminh.meulo@gmail.com",
       updatedAt: Date.now(),
     });
     return { seeded: true };
   },
+});
+
+export const updateEmailOnly = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const existing = await ctx.db.query("artistInfo").take(1);
+    if (existing.length > 0) {
+      await ctx.db.patch(existing[0]._id, { 
+        bookingEmail: "nguyenminh.meulo@gmail.com",
+        touringEmail: "nguyenminh.meulo@gmail.com",
+        pressEmail: "nguyenminh.meulo@gmail.com"
+      });
+    }
+  }
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -152,12 +167,12 @@ export const listServices = query({
 
 export const createService = mutation({
   args: {
-    number: v.string(), title: v.string(), shortDesc: v.string(), fullDesc: v.string(),
+    title: v.string(), shortDesc: v.string(), fullDesc: v.string(),
     deliverables: v.array(v.string()), timeline: v.string(), tags: v.array(v.string()),
     isPublished: v.boolean(), order: v.number(),
   },
   handler: async (ctx, args) => {
-    return ctx.db.insert("services", { ...args, createdAt: Date.now(), updatedAt: Date.now() });
+    return ctx.db.insert("services", { ...args, updatedAt: Date.now() });
   },
 });
 
