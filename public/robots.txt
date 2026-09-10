@@ -3,5 +3,6 @@ Allow: /
 Disallow: /admin/
 Disallow: /admin/*
 
+Sitemap: https://nguyenminh.asia/sitemap_index.xml
 Sitemap: https://nguyenminh.asia/sitemap.xml
 Sitemap: https://nguyenminh.asia/sitemap.txt
