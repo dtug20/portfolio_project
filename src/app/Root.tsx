@@ -2,9 +2,24 @@ import { Outlet, useLocation } from "react-router";
 import { useEffect } from "react";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
+import pages from "../seo/pages.json";
 
 export function Root() {
   const location = useLocation();
+
+  useEffect(() => {
+    const path = location.pathname.replace(/\/+$/, "") || "/";
+    const page = pages[path as keyof typeof pages];
+    const url = `https://nguyenminh.asia${path}`;
+    document.querySelector('link[rel="canonical"]')?.setAttribute("href", url);
+    const title = page?.title ?? "Bài viết | Nguyễn Nhật Minh";
+    const description = page?.description ?? "Bài viết về âm nhạc và thiết kế âm thanh của Nguyễn Nhật Minh.";
+    document.title = title;
+    for (const key of ["title", "description", "og:title", "og:description", "og:url", "twitter:title", "twitter:description", "twitter:url"]) {
+      const value = key.endsWith("url") ? url : key.endsWith("title") ? title : description;
+      document.querySelector(`meta[name="${key}"], meta[property="${key}"]`)?.setAttribute("content", value);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const scrollTarget = (location.state as { scrollTo?: string } | null)?.scrollTo;
