@@ -17,7 +17,11 @@
       "destination": "/media/index.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/blog/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/:path*",
       "destination": "/index.html"
     }
   ],
