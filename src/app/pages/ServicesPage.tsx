@@ -8,6 +8,8 @@ import { api } from "../../../convex/_generated/api";
 import { Doc } from "../../../convex/_generated/dataModel";
 import { useLanguage } from "../contexts/LanguageContext";
 
+import serviceIntro from "../../seo/services-intro.json";
+
 type ServiceType = Doc<"services">;
 
 export function ServicesPage() {
@@ -19,7 +21,8 @@ export function ServicesPage() {
   const listInView = useInView(listRef, { once: true, margin: "-60px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-60px" });
 
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const intro = serviceIntro[lang];
   const navigate = useNavigate();
   const location = useLocation();
   const services = useQuery(api.services.listPublished) ?? [];
@@ -87,6 +90,12 @@ export function ServicesPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="max-w-[1400px] mx-auto px-8 md:px-16 pb-16" aria-labelledby="service-intro-title">
+        <h2 id="service-intro-title" className="text-2xl md:text-3xl mb-6" style={{ color: "#FFFDF8" }}>{intro.title}</h2>
+        {intro.paragraphs.map(paragraph => <p key={paragraph} className="max-w-3xl mb-4 leading-relaxed" style={{ color: "#BFB3A5" }}>{paragraph}</p>)}
+        <Link to="/media" className="inline-block underline underline-offset-4 mt-2" style={{ color: "#FFFDF8" }}>{intro.link}</Link>
       </section>
 
       {/* ── SERVICE LIST ── */}

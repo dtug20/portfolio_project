@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 const pages = JSON.parse(await readFile(new URL('../src/seo/pages.json', import.meta.url), 'utf8'));
+const serviceIntro = JSON.parse(await readFile(new URL('../src/seo/services-intro.json', import.meta.url), 'utf8')).vi;
 const dist = new URL('../dist/', import.meta.url);
 const template = await readFile(new URL('index.html', dist), 'utf8');
 const escape = s => s.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
@@ -14,7 +15,8 @@ for (const [path, page] of Object.entries(pages)) {
   if (path !== '/') {
     // Do not serve the homepage's fallback copy as the content of every route.
     const links = Object.entries(pages).map(([href, data]) => `<a href="${href}">${escape(data.title)}</a>`).join(' | ');
-    html = html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root"><main><h1>${escape(page.title)}</h1><p>${escape(page.description)}</p><nav>${links}</nav></main></div>`);
+    const content = path === '/services' ? `<section><h2>${escape(serviceIntro.title)}</h2>${serviceIntro.paragraphs.map(p => `<p>${escape(p)}</p>`).join('')}<a href="/media">${escape(serviceIntro.link)}</a></section>` : '';
+    html = html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root"><main><h1>${escape(page.title)}</h1><p>${escape(page.description)}</p>${content}<nav>${links}</nav></main></div>`);
     await mkdir(new URL(`.${path}/`, dist), { recursive: true });
   }
   await writeFile(new URL(path === '/' ? 'index.html' : `.${path}/index.html`, dist), html);
